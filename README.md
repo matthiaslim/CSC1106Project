@@ -18,7 +18,7 @@ Enterprise Resource Planning for a Furniture Company
 
 - Python 3.x
 - Django
-- PostgreSQL
+- MySQL
 
 ### Installation
 
