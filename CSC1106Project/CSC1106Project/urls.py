@@ -15,8 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from csc1106app import views as hrms_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', hrms_views.home_page, name='home_page'),  # Main page URL
+    path('hrms_main/', hrms_views.hrms_main, name='hrms_main'),  # HRMS home URL
+    path('hrms/', include('hrms.urls')),  # Include HRMS app URLs
 ]
