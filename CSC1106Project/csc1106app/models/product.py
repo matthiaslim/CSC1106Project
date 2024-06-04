@@ -8,4 +8,6 @@ class Products(models.Model):
     product_quantity = models.IntegerField()
     product_sale_price = models.FloatField()
     product_location = models.CharField(max_length=50)
-    # Skipped out on image, width, height ,length
+    product_width = models.IntegerField()
+    product_height = models.IntegerField()
+    product_length = models.IntegerField()
