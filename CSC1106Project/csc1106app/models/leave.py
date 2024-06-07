@@ -1,5 +1,5 @@
 from django.db import models
-from .employees import Employee
+from .employee import Employee
 
 class EmployeeLeave(models.Model):
     leave_id = models.AutoField(primary_key=True)

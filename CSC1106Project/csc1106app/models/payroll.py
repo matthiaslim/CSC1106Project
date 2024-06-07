@@ -1,5 +1,5 @@
 from django.db import models
-from .employees import Employee
+from .employee import Employee
 
 class Payroll(models.Model):
     payroll_id = models.AutoField(primary_key=True)

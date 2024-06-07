@@ -1,5 +1,5 @@
 from django.db import models
-from .employees import Employee
+from .employee import Employee
 from .membership import Membership
 
 class Transaction(models.Model):
