@@ -10,6 +10,11 @@
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Reddit+Mono:wght@200..900&display=swap" rel="stylesheet">
+
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 </head>
@@ -62,7 +67,7 @@
                 <i class="bi bi-chevron-right collapse-head" id="caret-crm"></i>
             </a>
             <div class="collapse" id="collapse-crm">
-                <a class="collapse-item" href="#">Customers</a>
+                <a class="collapse-item" href="/customer/management">Customers</a>
                 <a class="collapse-item" href="#">Support</a>
             </div>
             <a data-bs-toggle="collapse" href="#collapse-hrm" role="button" aria-expanded="false"
@@ -82,8 +87,8 @@
         </div>
     </aside>
     <div class="navbar-content-wrapper">
-        <nav class="navbar navbar-expand-lg">
-
+        <nav class="navbar navbar-expand-lg px-5">
+            <h4 class="mb-0"> {% block includes %} {{ page_title }} {% endblock includes %} </h4>
         </nav>
         <section class="page-content-wrapper">
             {% block content %}

@@ -20,6 +20,12 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name="home"),
+    path('login', views.login, name="login"),
     path('inventory/management', views.inventory_management, name="inventory_management"),
     path('inventory/statistics', views.inventory_statistics, name="inventory_statistics"),
+
+    # Customer URLs
+    path('customer/management', views.customer_management, name="customer_management"),
+    path('customer/details/<int:customerID>', views.customer_details, name="customer_details"),
+    path('customer/create', views.create_customer, name="create_customer")
 ]
