@@ -26,21 +26,11 @@
             <div class="col-1 border-start">
             </div>
             <div class="col">
-                <h3> Login </h3>
+                <h3> Sign Up </h3>
                 <form method=POST action="" class="py-4">
                     {% csrf_token %}
-                    <div class="my-3">
-                        <label class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" placeholder="Username" >
-                    </div>
-                    <div class="my-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Password">
-                    </div>
-                    <div class="d-flex justify-content-center my-4 gap-5">
-                        <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
-                        <button type="submit" id="login" class="btn btn-primary">Login</button>
-                    </div>
+                    {{form.as_p}}
+                    <button type="submit" id="signup" class="btn btn-primary">Sign Up</button>
                 </form>
             </div>
         </div>
