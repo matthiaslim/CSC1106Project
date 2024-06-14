@@ -1,0 +1,78 @@
+html,
+body {
+    background-color: #D9D9D9;
+    height: 100%;
+    font-family: 'Reddit Mono'
+}
+
+.navbar {
+    border-bottom: 1px solid #284B63;
+    height: 75px;
+}
+
+#wrapper {
+    padding-left: 275px;
+    overflow: hidden;
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    height: 75px;
+}
+
+.navbar-brand {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.company-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.sidenav-wrapper {
+    position: absolute;
+    left: 275px;
+    width: 275px;
+    height: 100%;
+    margin-left: -275px;
+    overflow-y: auto;
+    background: white;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.sidenav-wrapper a {
+    display: block;
+    color: black;
+    font-size: 1em;
+    text-decoration: none;
+    margin-top: 5%;
+}
+
+.sidenav-wrapper i {
+    margin-right: 15%;
+}
+
+.sidenav-items {
+    padding: 0 5% 0 10%;
+}
+
+#caret-icon {
+    transition: transform 1s ease;
+}
+
+.page-content-wrapper {
+    position: relative;
+    overflow-x: hidden;
+    padding: 25px;
+}
+
+.collapse-item {
+    border: none;
+}
+
+.collapse-head {
+    float: right;
+}

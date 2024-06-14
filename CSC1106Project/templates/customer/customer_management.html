@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %} Customers {% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4 cust-container px-5">
+    <div class="row mb-4 cust-stats-container">
+        <div class="col-lg-4 col-md-6 mb-4 ps-0">
+            <div class="cust-stats bg-white shadow h-100">
+                <i class="bi bi-people-fill fs-1"></i>
+                <h1 class="fw-bold"> 2 </h1>
+                <p> Total Customers </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="cust-stats bg-white shadow h-100">
+                 <i class="bi bi-play-circle-fill fs-1"></i>
+                <h1 class="fw-bold"> 2 </h1>
+                <p> Active Customers </p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4 pe-0">
+            <div class="cust-stats bg-white shadow h-100">
+                 <i class="bi bi-pause-circle-fill fs-1"></i>
+                <h1 class="fw-bold"> 2 </h1>
+                <p> Inactive Customers </p>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3 bg-white shadow filter-container rounded-3">
+        <div class="col-4 ps-0">
+            {# Search bar, filter, actions #}
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" class="form-control" placeholder="Search..."/>
+            </div>
+        </div>
+        <div class="col-5"></div>
+        <div class="col-3 btn-container">
+            <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter </button>
+            <a class="btn btn-primary" href="/customer/create"><i class="bi bi-person-fill-add"></i> New Customer </a>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col mb-4 px-0">
+            <table class="table table-hover shadow rounded-3 cust-table align-middle">
+                <thead>
+                    <tr>
+                        {# name, address, phone number, email address#}
+                        <th> # </th>
+                        <th> Name </th>
+                        <th> Address </th>
+                        <th> Phone Number </th>
+                        <th> Email </th>
+                        <th> Status </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {# TODO: Implement for loop to print table rows according to how many customers there are #}
+                    <tr>
+                        <th scope="row"><input class="form-check-input" type="checkbox" value="1" id="flexCheckIndeterminate"></th>
+                        <td> Emma Watson </td>
+                        <td> Blk 123 Woodlands Rd </td>
+                        <td> 91829581 </td>
+                        <td> EmmaWatson@gmail.com </td>
+                        <td> Active </td>
+                        <td>
+                            <button class="btn btn-outline" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                {# TODO: Embed id into this #}
+                                <li><a class="dropdown-item" href="/customer/edit/1"> Edit </a></li>
+                                <li><a class="dropdown-item" href="/customer/delete"> Delete </a></li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><input class="form-check-input" type="checkbox" value="2" id="flexCheckIndeterminate"></th>
+                        <td> Tom Holland </td>
+                        <td> Blk 152 Chua Chu Kang Rd </td>
+                        <td> 91019281 </td>
+                        <td> Holland@gmail.com </td>
+                        <td> Inactive </td>
+                        <td>
+                            <a class="btn btn-outline"><i class="bi bi-three-dots-vertical"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
