@@ -1,8 +1,8 @@
 from django.db import models
 from .employee import Employee
 
-class EmployeeLeave(models.Model):
+class Leave(models.Model):
     leave_id = models.AutoField(primary_key=True)
-    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    leave_start = models.DateField()
-    leave_end = models.DateField()
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    leave_start_date = models.DateField()
+    leave_end_date = models.DateField()

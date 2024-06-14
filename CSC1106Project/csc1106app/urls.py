@@ -30,13 +30,7 @@ urlpatterns = [
     # Customer URLs
     path('customer/management', login_required(views.customer_management), name="customer_management"),
     path('customer/details/<int:customerID>', login_required(views.customer_details), name="customer_details"),
-    path('customer/create', login_required(views.create_customer), name="create_customer")
-]
-
-from django.urls import path
-from . import views
-
-urlpatterns = [
+    path('customer/create', login_required(views.create_customer), name="create_customer"),
 
     # Employee URLs
     path('employees/', views.employee_list, name='employee_list'),
@@ -44,7 +38,6 @@ urlpatterns = [
     path('employees/create/', views.employee_create, name='employee_create'),
     path('employees/<int:employee_id>/update/', views.employee_update, name='employee_update'),
     path('employees/<int:employee_id>/delete/', views.employee_delete, name='employee_delete'),
-
 
     # Department URLs
     path('departments/', views.department_list, name='department_list'),

@@ -1,9 +1,9 @@
-from .attendance import EmployeeAttendance
+from .attendance import Attendance
 from .department import Department
 from .employee import Employee
 from .invoice import Invoice
 from .invoiceProduct import InvoiceProduct
-from .leave import EmployeeLeave
+from .leave import Leave
 from .membership import Membership
 from .payroll import Payroll
 from .product import Product
@@ -12,6 +12,6 @@ from .transactionproduct import TransactionProduct
 from .user import User
 
 
-__all__ = ['EmployeeAttendance','Department','Employee', 'Invoice',
-           'InvoiceProduct','EmployeeLeave','Membership','Payroll',
+__all__ = ['Attendance','Department','Employee', 'Invoice',
+           'InvoiceProduct','Leave','Membership','Payroll',
            'Product','Transaction','TransactionProduct','User']
