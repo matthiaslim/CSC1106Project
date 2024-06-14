@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit Employee{% else %}Add Employee{% endif %}{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit Employee{% else %}Add Employee{% endif %}</h1>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
+</form>
+<a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}

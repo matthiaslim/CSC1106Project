@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import *
+from .forms import *
+from .crud_ops import *
 
 
 # Home View
@@ -91,3 +95,182 @@ def create_customer(request):
                    {'title': 'Create Customer'}]
     return render(request, 'customer/create_customer.html',
                   {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer'})
+
+# Employee Views
+def employee_list(request):
+    query = request.GET.get('q')
+    sort_by = request.GET.get('sort', 'first_name')
+    order = request.GET.get('order', 'asc')
+    employees = search_and_filter_employees(query, sort_by, order)
+    return render(request, 'hrms/employee_list.html', {'employees': employees, 'query': query, 'sort_by': sort_by, 'order': order})
+
+def employee_detail(request, employee_id):
+    employee = get_object_or_404(Employee, pk=employee_id)
+    return render(request, 'hrms/employee_detail.html', {'employee': employee})
+
+def employee_create(request):
+    if request.method == "POST":
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('employee_list')
+    else:
+        form = EmployeeForm()
+    return render(request, 'hrms/employee_form.html', {'form': form})
+
+def employee_update(request, employee_id):
+    employee = get_object_or_404(Employee, pk=employee_id)
+    if request.method == "POST":
+        form = EmployeeForm(request.POST, instance=employee)
+        if form.is_valid():
+            form.save()
+            return redirect('employee_detail', employee_id=employee.employee_id)
+    else:
+        form = EmployeeForm(instance=employee)
+    return render(request, 'hrms/employee_form.html', {'form': form})
+
+def employee_delete(request, employee_id):
+    employee = get_object_or_404(Employee, pk=employee_id)
+    employee.delete()
+    return redirect('employee_list')
+
+# Department Views
+def department_list(request):
+    query = request.GET.get('q')
+    sort_by = request.GET.get('sort', 'department_name')
+    order = request.GET.get('order', 'asc')
+    departments = search_and_filter_departments(query, sort_by, order)
+    return render(request, 'hrms/department_list.html', {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
+
+
+def department_detail(request, department_id):
+    department = get_object_or_404(Department, pk=department_id)
+    return render(request, 'hrms/department_detail.html', {'department': department})
+
+def department_create(request):
+    if request.method == "POST":
+        form = DepartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('department_list')
+    else:
+        form = DepartmentForm()
+    return render(request, 'hrms/department_form.html', {'form': form})
+
+def department_update(request, department_id):
+    department = get_object_or_404(Department, pk=department_id)
+    if request.method == "POST":
+        form = DepartmentForm(request.POST, instance=department)
+        if form.is_valid():
+            form.save()
+            return redirect('department_detail', department_id=department.id)
+    else:
+        form = DepartmentForm(instance=department)
+    return render(request, 'hrms/department_form.html', {'form': form})
+
+def department_delete(request, department_id):
+    department = get_object_or_404(Department, pk=department_id)
+    department.delete()
+    return redirect('department_list')
+
+# Attendance Views
+def attendance_list(request):
+    query = request.GET.get('q')
+    sort_by = request.GET.get('sort', 'attendance_date')
+    order = request.GET.get('order', 'asc')
+    attendances = search_and_filter_attendances(query, sort_by, order)
+    return render(request, 'hrms/attendance_list.html', {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
+
+def attendance_create(request):
+    if request.method == "POST":
+        form = AttendanceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('attendance_list')
+    else:
+        form = AttendanceForm()
+    return render(request, 'hrms/attendance_form.html', {'form': form})
+
+def attendance_update(request, attendance_id):
+    attendance = get_object_or_404(Attendance, pk=attendance_id)
+    if request.method == "POST":
+        form = AttendanceForm(request.POST, instance=attendance)
+        if form.is_valid():
+            form.save()
+            return redirect('attendance_list')
+    else:
+        form = AttendanceForm(instance=attendance)
+    return render(request, 'hrms/attendance_form.html', {'form': form})
+
+def attendance_delete(request, attendance_id):
+    attendance = get_object_or_404(Attendance, pk=attendance_id)
+    attendance.delete()
+    return redirect('attendance_list')
+
+# Leave Views
+def leave_list(request):
+    query = request.GET.get('q')
+    sort_by = request.GET.get('sort', 'leave_start_date')
+    order = request.GET.get('order', 'asc')
+    leaves = search_and_filter_leaves(query, sort_by, order)
+    return render(request, 'hrms/leave_list.html', {'leaves': leaves, 'query': query, 'sort_by': sort_by, 'order': order})
+
+def leave_create(request):
+    if request.method == "POST":
+        form = LeaveForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('leave_list')
+    else:
+        form = LeaveForm()
+    return render(request, 'hrms/leave_form.html', {'form': form})
+
+def leave_update(request, leave_id):
+    leave = get_object_or_404(Leave, pk=leave_id)
+    if request.method == "POST":
+        form = LeaveForm(request.POST, instance=leave)
+        if form.is_valid():
+            form.save()
+            return redirect('leave_list')
+    else:
+        form = LeaveForm(instance=leave)
+    return render(request, 'hrms/leave_form.html', {'form': form})
+
+def leave_delete(request, leave_id):
+    leave = get_object_or_404(Leave, pk=leave_id)
+    leave.delete()
+    return redirect('leave_list')
+
+# Payroll Views
+def payroll_list(request):
+    query = request.GET.get('q')
+    sort_by = request.GET.get('sort', 'employee__first_name')
+    order = request.GET.get('order', 'asc')
+    payrolls = search_and_filter_payrolls(query, sort_by, order)
+    return render(request, 'hrms/payroll_list.html', {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
+
+def payroll_create(request):
+    if request.method == "POST":
+        form = PayrollForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm()
+    return render(request, 'hrms/payroll_form.html', {'form': form})
+
+def payroll_update(request, payroll_id):
+    payroll = get_object_or_404(Payroll, pk=payroll_id)
+    if request.method == "POST":
+        form = PayrollForm(request.POST, instance=payroll)
+        if form.is_valid():
+            form.save()
+            return redirect('payroll_list')
+    else:
+        form = PayrollForm(instance=payroll)
+    return render(request, 'hrms/payroll_form.html', {'form': form})
+
+def payroll_delete(request, payroll_id):
+    payroll = get_object_or_404(Payroll, pk=payroll_id)
+    payroll.delete()
+    return redirect('payroll_list')

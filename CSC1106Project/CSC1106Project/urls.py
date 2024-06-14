@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.urls import include, path
+from csc1106app import views as hrms_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),

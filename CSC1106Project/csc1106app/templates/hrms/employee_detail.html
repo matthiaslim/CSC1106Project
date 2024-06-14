@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Detail{% endblock %}
+
+{% block content %}
+<h1>{{ employee.first_name }} {{ employee.last_name }}</h1>
+<table class="table table-bordered">
+    <tr>
+        <th>Email</th>
+        <td>{{ employee.email }}</td>
+    </tr>
+    <tr>
+        <th>Department</th>
+        <td>{{ employee.department }}</td>
+    </tr>
+    <tr>
+        <th>Job Title</th>
+        <td>{{ employee.job_title }}</td>
+    </tr>
+    <tr>
+        <th>Gender</th>
+        <td>{{ employee.gender }}</td>
+    </tr>
+    <tr>
+        <th>Date of Birth</th>
+        <td>{{ employee.date_of_birth }}</td>
+    </tr>
+    <tr>
+        <th>Hire Date</th>
+        <td>{{ employee.hire_date }}</td>
+    </tr>
+    <tr>
+        <th>Contract Expiry Date</th>
+        <td>{{ employee.contract_expiry_date }}</td>
+    </tr>
+    <tr>
+        <th>Role</th>
+        <td>{{ employee.employee_role }}</td>
+    </tr>
+</table>
+<a href="{% url 'employee_update' employee.employee_id %}" class="btn btn-warning">Edit</a>
+<form method="post" action="{% url 'employee_delete' employee.employee_id %}" class="d-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to List</a>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Employee List{% endblock %}
+
+{% block content %}
+<h1>Employee List</h1>
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="q" value="{{ query }}" class="form-control mr-2" placeholder="Search employees...">
+    <select name="sort" class="form-control mr-2">
+        <option value="first_name" {% if sort_by == 'first_name' %}selected{% endif %}>First Name</option>
+        <option value="last_name" {% if sort_by == 'last_name' %}selected{% endif %}>Last Name</option>
+        <option value="email" {% if sort_by == 'email' %}selected{% endif %}>Email</option>
+        <option value="department__department_name" {% if sort_by == 'department__department_name' %}selected{% endif %}>Department</option>
+    </select>
+    <select name="order" class="form-control mr-2">
+        <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<a href="{% url 'employee_create' %}" class="btn btn-primary mb-2">Add Employee</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.employee_id }}</td>
+            <td><a href="{% url 'employee_detail' employee.employee_id %}">{{ employee.first_name }} {{ employee.last_name }}</a></td>
+            <td>{{ employee.email }}</td>
+            <td>
+                {% if employee.department %}
+                    {{ employee.department.department_name }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'employee_update' employee.employee_id %}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="post" action="{% url 'employee_delete' employee.employee_id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

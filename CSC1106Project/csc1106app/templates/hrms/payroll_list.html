@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Payroll List{% endblock %}
+
+{% block content %}
+<h1>Payroll List</h1>
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="q" value="{{ query }}" class="form-control mr-2" placeholder="Search payrolls...">
+    <select name="sort" class="form-control mr-2">
+        <option value="employee__first_name" {% if sort_by == 'employee__first_name' %}selected{% endif %}>Employee First Name</option>
+        <option value="employee__last_name" {% if sort_by == 'employee__last_name' %}selected{% endif %}>Employee Last Name</option>
+        <option value="salary" {% if sort_by == 'salary' %}selected{% endif %}>Salary</option>
+        <option value="net_pay" {% if sort_by == 'net_pay' %}selected{% endif %}>Net Pay</option>
+    </select>
+    <select name="order" class="form-control mr-2">
+        <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<a href="{% url 'payroll_create' %}" class="btn btn-primary mb-2">Add Payroll</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Employee</th>
+            <th>Salary</th>
+            <th>Bonus</th>
+            <th>Benefit</th>
+            <th>Net Pay</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for payroll in payrolls %}
+        <tr>
+            <td>{{ payroll.payroll_id }}</td>
+            <td>{{ payroll.employee.first_name }} {{ payroll.employee.last_name }}</td>
+            <td>{{ payroll.salary }}</td>
+            <td>{{ payroll.bonus }}</td>
+            <td>{{ payroll.benefit }}</td>
+            <td>{{ payroll.net_pay }}</td>
+            <td>
+                <a href="{% url 'payroll_update' payroll.payroll_id %}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="post" action="{% url 'payroll_delete' payroll.payroll_id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
