@@ -5,14 +5,6 @@ from .models import *
 from .forms import *
 from .crud_ops import *
 
-# Main Page View
-def home_page(request):
-    return render(request, 'home_page.html')
-
-# HRMS Home View
-def hrms_main(request):
-    return render(request, 'hrms/hrms_main.html')
-
 # Employee Views
 def employee_list(request):
     query = request.GET.get('q')

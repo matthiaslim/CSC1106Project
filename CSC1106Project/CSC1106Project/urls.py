@@ -20,7 +20,5 @@ from csc1106app import views as hrms_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', hrms_views.home_page, name='home_page'),  # Main page URL
-    path('hrms_main/', hrms_views.hrms_main, name='hrms_main'),  # HRMS home URL
-    path('hrms/', include('hrms.urls')),  # Include HRMS app URLs
+    path('hrms/', include('csc1106app.urls')),  # Include HRMS app URLs
 ]

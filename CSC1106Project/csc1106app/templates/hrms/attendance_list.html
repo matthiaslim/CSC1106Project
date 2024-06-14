@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance List{% endblock %}
+
+{% block content %}
+<h1>Attendance List</h1>
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="q" value="{{ query }}" class="form-control mr-2" placeholder="Search attendances...">
+    <select name="sort" class="form-control mr-2">
+        <option value="attendance_date" {% if sort_by == 'attendance_date' %}selected{% endif %}>Date</option>
+        <option value="employee__first_name" {% if sort_by == 'employee__first_name' %}selected{% endif %}>Employee First Name</option>
+        <option value="employee__last_name" {% if sort_by == 'employee__last_name' %}selected{% endif %}>Employee Last Name</option>
+    </select>
+    <select name="order" class="form-control mr-2">
+        <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<a href="{% url 'attendance_create' %}" class="btn btn-primary mb-2">Add Attendance</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Employee</th>
+            <th>Date</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attendance in attendances %}
+        <tr>
+            <td>{{ attendance.attendance_id }}</td>
+            <td>{{ attendance.employee.first_name }} {{ attendance.employee.last_name }}</td>
+            <td>{{ attendance.attendance_date }}</td>
+            <td>{{ attendance.time_in }}</td>
+            <td>{{ attendance.time_out }}</td>
+            <td>
+                <a href="{% url 'attendance_update' attendance.attendance_id %}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="post" action="{% url 'attendance_delete' attendance.attendance_id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

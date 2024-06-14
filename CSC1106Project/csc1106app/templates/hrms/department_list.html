@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Department List{% endblock %}
+
+{% block content %}
+<h1>Department List</h1>
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="q" value="{{ query }}" class="form-control mr-2" placeholder="Search departments...">
+    <select name="sort" class="form-control mr-2">
+        <option value="department_name" {% if sort_by == 'department_name' %}selected{% endif %}>Department Name</option>
+        <option value="employee__first_name" {% if sort_by == 'employee__first_name' %}selected{% endif %}>Managed By (First Name)</option>
+        <option value="employee__last_name" {% if sort_by == 'employee__last_name' %}selected{% endif %}>Managed By (Last Name)</option>
+    </select>
+    <select name="order" class="form-control mr-2">
+        <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<a href="{% url 'department_create' %}" class="btn btn-primary mb-2">Add Department</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Department Name</th>
+            <th>Managed By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for department in departments %}
+        <tr>
+            <td>{{ department.department_id }}</td>
+            <td><a href="{% url 'department_detail' department.department_id %}">{{ department.department_name }}</a></td>
+            <td>{{ department.employee }}</td>
+            <td>
+                <a href="{% url 'department_update' department.department_id %}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="post" action="{% url 'department_delete' department.department_id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

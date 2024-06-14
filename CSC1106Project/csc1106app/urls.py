@@ -2,8 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # HRMS Home URL
-    path('', views.hrms_main, name='hrms_main'),
 
     # Employee URLs
     path('employees/', views.employee_list, name='employee_list'),
