@@ -67,20 +67,29 @@ def inventory_statistics(request):
 # Customer Views
 @login_required
 def customer_management(request):
+    memberships = Membership.objects.all()
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'}]
-    return render(request, 'customer/customer_management.html', {'breadcrumbs': breadcrumbs, 'page_title': 'Customers'})
+    data =  {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'memberships': memberships}
+    return render(request, 'customer/customer_management.html', data)
 
 
 @login_required
 def customer_details(request, customerID):
+    try:
+        membership = Membership.objects.get(member_id=customerID)
+    except Membership.DoesNotExist:
+        # Handle the case where the customer does not exist
+        membership = None
+
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'},
-                   {'title': f'Customer Details - {customerID}'}]
-    return render(request, 'customer/customer_details.html',
-                  {'breadcrumbs': breadcrumbs, 'page_title': f'Customer Details - {customerID}'})
+                   {'title': f'Customer Details - {membership}'}]
+    data =  {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'membership': membership}
+
+    return render(request, 'customer/customer_details.html', data)
 
 
 @login_required

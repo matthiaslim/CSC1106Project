@@ -20,11 +20,11 @@
                             <p class="fw-bold">Address</p>
                         </div>
                         <div class="col-4">
-                            <p>EmmaWatson@gmail.com</p>
-                            <p>+65 9182 9491</p>
-                            <p>Female</p>
-                            <p>Singapore</p>
-                            <p>13 Yishun Ring Rd #19-15, Singapore 641029</p>
+                            <p>{{membership.email_address}}</p>
+                            <p>{{ membership.phone_number }}</p>
+                            <p>gender not in db :/</p>
+                            <p>{{ membership.country }}</p>
+                            <p>{{ membership.address }}</p>
                         </div>
                         <div class="col-3">
                             <p class="fw-bold">Date Of Birth</p>
@@ -32,9 +32,9 @@
                             <p class="fw-bold">Status</p>
                         </div>
                         <div class="col-3">
-                            <p>15 April 1990</p>
-                            <p>34</p>
-                            <p>Active</p>
+                            <p>dob not in DB</p>
+                            <p>age not in DB</p>
+                            <p>{{ membership.membership_status }}</p>
                         </div>
                     </div>
                 </div>

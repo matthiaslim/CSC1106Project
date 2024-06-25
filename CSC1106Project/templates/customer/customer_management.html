@@ -60,38 +60,34 @@
                 </thead>
                 <tbody>
                 {# TODO: Implement for loop to print table rows according to how many customers there are #}
+                    {% for membership in memberships %}
                     <tr>
-                        <th scope="row"><input class="form-check-input" type="checkbox" value="1" id="flexCheckIndeterminate"></th>
-                        <td> Emma Watson </td>
-                        <td> Blk 123 Woodlands Rd </td>
-                        <td> 91829581 </td>
-                        <td> EmmaWatson@gmail.com </td>
-                        <td> Active </td>
+                        <th scope="row"><input class="form-check-input" type="checkbox" value="{{ membership.member_id }}" id="flexCheckIndeterminate"></th>
+                        <td> {{ membership.first_name }} {{ membership.last_name }}  </td>
+                        <td> {{ membership.address }} </td>
+                        <td> {{ membership.phone_number }} </td>
+                        <td> {{ membership.email_address }} </td>
+                        <td> {{ membership.membership_status }} </td>
                         <td>
                             <button class="btn btn-outline" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
                             <ul class="dropdown-menu">
                                 {# TODO: Embed id into this #}
-                                <li><a class="dropdown-item" href="/customer/edit/1"> Edit </a></li>
+                                <li><a class="dropdown-item" href="/customer/edit/{{ membership.member_id }}"> Edit </a></li>
                                 <li><a class="dropdown-item" href="/customer/delete"> Delete </a></li>
                             </ul>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row"><input class="form-check-input" type="checkbox" value="2" id="flexCheckIndeterminate"></th>
-                        <td> Tom Holland </td>
-                        <td> Blk 152 Chua Chu Kang Rd </td>
-                        <td> 91019281 </td>
-                        <td> Holland@gmail.com </td>
-                        <td> Inactive </td>
-                        <td>
-                            <a class="btn btn-outline"><i class="bi bi-three-dots-vertical"></i></a>
-                        </td>
-                    </tr>
+                    
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+<h2>Customer List</h2>
+<ul>
+
+</ul>
 {% endblock %}
