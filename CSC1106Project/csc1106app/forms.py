@@ -44,3 +44,29 @@ class PayrollForm(forms.ModelForm):
     class Meta:
         model = Payroll
         fields = ['employee', 'salary', 'bonus', 'benefit', 'net_pay']
+
+
+class CreateCustomerForm(forms.Form):
+    first_name = forms.CharField(label="First Name", max_length=100)
+    last_name = forms.CharField(label="Last Name", max_length=100)
+    email_address = forms.EmailField(label="Email", max_length=100)
+    phone_number = forms.IntegerField(label="Phone Number")
+
+    dob = forms.DateField(label="Date of Birth", widget=forms.DateInput(attrs={'type': 'date'}))
+
+    country = forms.ChoiceField(label="Country", choices=[('Singapore', 'Singapore'), ('Malaysia', 'Malaysia'), ('China', 'China')])
+    status = forms.ChoiceField(label="Status", choices=[('Active', 'Active'), ('Inactive', 'Inactive')])
+    age = forms.IntegerField(label="Age", min_value=1, max_value=99)
+    address = forms.CharField(label="Address", max_length=100)
+
+    # def __init__(self, *args, **kwargs):
+    #     super(CreateCustomerForm, self).__init__(*args, **kwargs)
+    #     self.fields['first_name'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['email_address'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['phone_number'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['dob'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['country'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['status'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['age'].widget.attrs.update({'class': 'form-control'})
+    #     self.fields['address'].widget.attrs.update({'class': 'form-control'})

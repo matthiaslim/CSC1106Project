@@ -6,7 +6,7 @@ from .models import *
 from .crud_ops import *
 from .forms import *
 
-
+from datetime import datetime
 
 # Home View
 def index(request):
@@ -94,12 +94,38 @@ def customer_details(request, customerID):
 
 @login_required
 def create_customer(request):
+
+    if request.method == 'POST':
+        form = CreateCustomerForm(request.POST)
+        if form.is_valid():
+            # Process the data in form.cleaned_data
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            email_address = form.cleaned_data.get('email_address')
+            phone_number = form.cleaned_data.get('phone_number')
+            dob = form.cleaned_data.get('dob')
+            country = form.cleaned_data.get('country')
+            status = form.cleaned_data.get('status')
+            age = form.cleaned_data.get('age')
+            address = form.cleaned_data.get('address')
+            # call a func to save the data
+
+            # m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, phone_number=phone_number, dob=dob, country=country, status=status, age=age, address=address)
+            # m1.save()
+            m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, 
+                            phone_number=phone_number, point_expiry_date=dob, member_expiry_date=datetime.now(), 
+                            membership_status=status, points=0, membership_level="Bronze", address=address)
+            m1.save()
+            return redirect('customer_management')
+    else:
+        form = CreateCustomerForm()
+        
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management'},
                    {'title': 'Create Customer'}]
     return render(request, 'customer/create_customer.html',
-                  {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer'})
+                  {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
 
 # Employee Views
 def employee_list(request):
