@@ -4,20 +4,71 @@
 
 {% block content %}
 <h1>Employee List</h1>
+
+<div class="d-flex flex-wrap mb-3">
+    <div class="card mr-3 mb-3" style="width: 150px; text-align: center;">
+        <div class="card-body">
+            <i class="fas fa-users fa-2x"></i>
+            <div class="total-employees-number">{{ total_employees }}</div>
+        </div>
+        <div class="card-footer text-muted">
+            Total Employees
+        </div>
+    </div>
+    <div class="card mr-3 mb-3" style="width: 150px; text-align: center;">
+        <div class="card-body">
+            <i class="fas fa-building fa-2x"></i>
+            <div class="total-employees-number">{{ total_departments }}</div>
+        </div>
+        <div class="card-footer text-muted">
+            Total Departments
+        </div>
+    </div>
+    <div class="card mr-3 mb-3" style="width: 150px; text-align: center;">
+        <div class="card-body">
+            <i class="fas fa-user-plus fa-2x"></i>
+            <div class="total-employees-number">{{ new_hires_this_month }}</div>
+        </div>
+        <div class="card-footer text-muted">
+            New Hires This Month
+        </div>
+    </div>
+</div>
+
 <form method="get" class="form-inline mb-3">
-    <input type="text" name="q" value="{{ query }}" class="form-control mr-2" placeholder="Search employees...">
-    <select name="sort" class="form-control mr-2">
-        <option value="first_name" {% if sort_by == 'first_name' %}selected{% endif %}>First Name</option>
-        <option value="last_name" {% if sort_by == 'last_name' %}selected{% endif %}>Last Name</option>
-        <option value="email" {% if sort_by == 'email' %}selected{% endif %}>Email</option>
-        <option value="department__department_name" {% if sort_by == 'department__department_name' %}selected{% endif %}>Department</option>
-    </select>
-    <select name="order" class="form-control mr-2">
-        <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
-        <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Search</button>
+    <div class="form-group mr-2">
+        <input type="text" name="q" value="{{ query|default_if_none:'' }}" class="form-control custom-input" placeholder="Search">
+    </div>
+    <button type="submit" class="btn btn-primary mr-2">Search</button>
+    
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="filterMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter
+        </button>
+        <div class="dropdown-menu p-3" aria-labelledby="filterMenuButton">
+            <form method="get" class="form">
+                <div class="form-group">
+                    <label for="sort">Sort by:</label>
+                    <select name="sort" class="form-control">
+                        <option value="first_name" {% if sort_by == 'first_name' %}selected{% endif %}>First Name</option>
+                        <option value="last_name" {% if sort_by == 'last_name' %}selected{% endif %}>Last Name</option>
+                        <option value="email" {% if sort_by == 'email' %}selected{% endif %}>Email</option>
+                        <option value="department__department_name" {% if sort_by == 'department__department_name' %}selected{% endif %}>Department</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="order">Order:</label>
+                    <select name="order" class="form-control">
+                        <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending</option>
+                        <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </form>
+        </div>
+    </div>
 </form>
+
 <a href="{% url 'employee_create' %}" class="btn btn-primary mb-2">Add Employee</a>
 <table class="table table-striped">
     <thead>
@@ -53,4 +104,35 @@
         {% endfor %}
     </tbody>
 </table>
+
+<!-- Add Bootstrap CSS and JS if not included in the base template -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+<script>
+    document.querySelector('.dropdown-menu').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+</script>
+
+<style>
+    .total-employees-number {
+        font-size: 2em;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .dropdown-menu form {
+        width: 200px; /* Adjust the width as needed */
+    }
+    .dropdown-menu .form-group {
+        margin-bottom: 15px;
+    }
+    .dropdown-menu .btn {
+        width: 100%; /* Make the button full width */
+    }
+</style>
+
 {% endblock %}

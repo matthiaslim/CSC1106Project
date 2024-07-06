@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 from .models import *
 from .crud_ops import *
 from .forms import *
@@ -98,7 +99,20 @@ def employee_list(request):
     sort_by = request.GET.get('sort', 'first_name')
     order = request.GET.get('order', 'asc')
     employees = search_and_filter_employees(query, sort_by, order)
-    return render(request, 'hrms/employee_list.html', {'employees': employees, 'query': query, 'sort_by': sort_by, 'order': order})
+
+    total_employees = employees.count()
+    total_departments = Department.objects.count()
+    new_hires_this_month = Employee.objects.filter(hire_date__month=datetime.now().month).count()
+
+    return render(request, 'hrms/employee_list.html', {
+        'employees': employees,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order,
+        'total_employees': total_employees,
+        'total_departments': total_departments,
+        'new_hires_this_month': new_hires_this_month
+    })
 
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
@@ -108,7 +122,9 @@ def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
+            employee = form.save(commit=False)
+            employee.user = request.user
+            employee.save()
             return redirect('employee_list')
     else:
         form = EmployeeForm()
@@ -120,15 +136,17 @@ def employee_update(request, employee_id):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect('employee_detail', employee_id=employee.employee_id)
+            return redirect('employee_list')
     else:
         form = EmployeeForm(instance=employee)
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
-    employee.delete()
-    return redirect('employee_list')
+    if request.method == "POST":
+        employee.delete()
+        messages.success(request, 'Employee was deleted successfully.')
+        return redirect('employee_list')
 
 # Department Views
 def department_list(request):
