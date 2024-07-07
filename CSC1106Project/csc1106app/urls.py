@@ -32,6 +32,12 @@ urlpatterns = [
     path('customer/details/<int:customerID>', login_required(views.customer_details), name="customer_details"),
     path('customer/create', login_required(views.create_customer), name="create_customer"),
 
+    # Finance URLs
+    path('finance/sales', views.sales_management, name="sales_management"),
+    path('finance/sales/create', views.create_sales, name="create_sales"),
+    path('finance/orders', views.invoice_management, name="invoice_management"),
+    path('finance/orders/create', views.create_invoice, name="create_invoice"),
+
     # Employee URLs
     path('employees/', views.employee_list, name='employee_list'),
     path('employees/<int:employee_id>/', views.employee_detail, name='employee_detail'),

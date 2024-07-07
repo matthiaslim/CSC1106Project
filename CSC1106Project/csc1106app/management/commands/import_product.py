@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from django.core.management.base import BaseCommand
 
-from csc1106app.models.product import Products
+from csc1106app.models.product import Product
 
 class Command(BaseCommand):
     help = 'Import products data from CSV'
@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
         # Insert data into the database
         for _, row in df.iterrows():
-            Products.objects.create(
+            Product.objects.create(
                 product_name=row['name'],
                 product_category=row['category'],
                 product_sale_price=row['new_price'],

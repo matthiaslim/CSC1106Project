@@ -32,7 +32,7 @@
                 <div class="bg-white rounded shadow p-3">
                     <div class="btn-container d-flex justify-content-start mb-4">
                         <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
-                        <a class="btn btn-primary ms-3" href="/customer/create"><i class="bi bi-person-fill-add"></i>
+                        <a class="btn btn-primary ms-3" href="{% url 'create_customer' %}"><i class="bi bi-person-fill-add"></i>
                             New Customer
                         </a>
                     </div>
@@ -51,7 +51,7 @@
                         </thead>
                         <tbody>
                         {% for membership in memberships %}
-                            <tr data-id="{{ membership.member_id }}">
+                            <tr role="button" data-id="{{ membership.member_id }}">
                                 <th scope="row"><input
                                         class="form-check-input" type="checkbox"
                                         value="{{ membership.member_id }}" id="flexCheckIndeterminate">

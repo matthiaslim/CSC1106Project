@@ -11,3 +11,6 @@ class Product(models.Model):
     product_width = models.IntegerField()
     product_height = models.IntegerField()
     product_length = models.IntegerField()
+
+    def __str__(self):
+        return self.product_name

@@ -1,3 +1,4 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -305,3 +306,29 @@ def payroll_delete(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     payroll.delete()
     return redirect('payroll_list')
+
+# Finance Views
+def sales_management(request):
+    return render(request, 'finance/sales_management.html')
+
+def create_sales(request):
+    return render(request, 'finance/create_sales.html')
+
+def invoice_management(request):
+    return render(request, 'finance/invoice_management.html')
+
+def create_invoice(request):
+    if request.method == 'POST':
+        invoice_form = InvoiceForm(request.POST)
+        formset = InvoiceProductFormSet(request.POST)
+        if invoice_form.is_valid() and formset.is_valid():
+            invoice = invoice_form.save()
+            formset.instance = invoice
+            formset.save()
+            return redirect('invoice_management')
+    else:
+        invoice_form = InvoiceForm()
+        formset = InvoiceProductFormSet()
+
+
+    return render(request, 'finance/create_invoice.html', {'invoice_form': invoice_form, 'formset': formset})

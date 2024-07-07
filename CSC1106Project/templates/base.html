@@ -60,7 +60,7 @@
             </a>
             <div class="collapse {% if 'finance' in request.path %}show{% endif %}" id="collapse-finance">
                 <a class="list-group-item collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
-                   href="{% url 'po_management' %}">Purchase Order</a>
+                   href="{% url 'invoice_management' %}">Purchase Order</a>
                 <a class="list-group-item collapse-item" href="#">Expenses</a>
                 <a class="list-group-item collapse-item {% if request.path == '/finance/sales' %}active{% endif %}"
                    href="{% url 'sales_management' %}">Sales</a>
@@ -110,7 +110,7 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script>
     $(document).ready(function () {
-        var custTable = $('#custTable').DataTable({
+        $('#custTable').DataTable({
             "columnDefs": [
                 {"orderable": false, "targets": [0, 6]} // Disables sorting on the first and last columns
             ],
@@ -120,13 +120,28 @@
         });
 
         $("#custTable tbody").on("click", "tr", function () {
-            var membershipId = $(this).data('id');
-            console.log(membershipId);
-            window.location.href = '/customer/details/' + membershipId;
+            if ($(event.target).closest('input[type="checkbox"], .btn, .dropdown-menu').length === 0) {
+
+                var membershipId = $(this).data('id');
+                console.log(membershipId);
+                window.location.href = '/customer/details/' + membershipId;
+            }
+        });
+
+        $('#poTable').DataTable({
+            "columnDefs": [
+                {"orderable": false, "targets": [0, 6]} // Disables sorting on the first and last columns
+            ],
+            "paging": true, // Enable pagination
+            "pageLength": 10, // Set the number of items per page
+            "pagingType": "simple_numbers"
         });
 
 
     });
 </script>
+{% block extra_script %}
+
+{% endblock %}
 </body>
 </html>
