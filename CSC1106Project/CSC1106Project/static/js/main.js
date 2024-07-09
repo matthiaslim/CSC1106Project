@@ -1,16 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Function to toggle caret icon classes
-    function toggleCaretIcon(collapseElement, caretElement) {
-        collapseElement.addEventListener('show.bs.collapse', function() {
-            caretElement.classList.remove('bi-chevron-right');
-            caretElement.classList.add('bi-chevron-down');
-        });
-
-        collapseElement.addEventListener('hide.bs.collapse', function() {
-            caretElement.classList.remove('bi-chevron-down');
-            caretElement.classList.add('bi-chevron-right');
-        });
-    }
+document.addEventListener('DOMContentLoaded', function () {
 
     // Select all elements with data-bs-toggle attribute
     const collapsibleElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
@@ -22,12 +10,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (collapseId && caretElement) {
             const collapseElement = document.querySelector(collapseId);
             if (collapseElement) {
-                toggleCaretIcon(collapseElement, caretElement);
+
+                // Toggle caret icon classes based on collapse state
+                collapseElement.addEventListener('show.bs.collapse', function () {
+                    caretElement.classList.remove('bi-chevron-right');
+                    caretElement.classList.add('bi-chevron-down');
+                });
+
+                collapseElement.addEventListener('hide.bs.collapse', function () {
+                    caretElement.classList.remove('bi-chevron-down');
+                    caretElement.classList.add('bi-chevron-right');
+                });
 
                 // Prevent collapse from closing when clicking on an item within the dropdown
                 const collapseItems = collapseElement.querySelectorAll('.collapse-item');
                 collapseItems.forEach(item => {
-                    item.addEventListener('click', function(e) {
+                    item.addEventListener('click', function (e) {
                         e.stopPropagation();
                     });
                 });
@@ -47,20 +45,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Mark the clicked item as active and keep parent collapsible open
-    const collapseItems = document.querySelectorAll('.collapse-item');
-    collapseItems.forEach(item => {
-        item.addEventListener('click', function() {
-            collapseItems.forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
+    // Prevent dropdown closing on checkbox click
+    const checkboxes = document.querySelectorAll('.filter-item');
+    checkboxes.forEach(checkbox =>
+        checkbox.addEventListener('click', (event) => event.stopPropagation()));
 
-            const parentCollapse = item.closest('.collapse');
-            if (parentCollapse) {
-                const parentTrigger = document.querySelector(`[href="#${parentCollapse.id}"]`);
-                if (parentTrigger) {
-                    parentTrigger.classList.add('active');
-                    parentCollapse.classList.add('show');
-                }
+
+    // Map category checkboxes to their collapse containers
+    const filterMap = {
+        categoryCheck: document.getElementById('categoryFilter'),
+        sizeCheck: document.getElementById('sizeFilter'),
+        priceCheck: document.getElementById('priceFilter'),
+    };
+
+    checkboxes.forEach(checkbox => {
+        const filterId = checkbox.querySelector('input').id;  // Get checkbox ID
+        const filterContainer = filterMap[filterId];          // Find mapped container
+
+        checkbox.addEventListener('click', () => {
+            const isChecked = checkbox.querySelector('input').checked;
+
+            if (isChecked) {
+                // Show the clicked filter's container
+                filterContainer.classList.add('show');
+            } else {
+                // Hide the clicked filter's container
+                filterContainer.classList.remove('show');
             }
         });
     });

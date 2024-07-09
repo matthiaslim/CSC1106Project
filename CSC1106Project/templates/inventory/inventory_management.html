@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %} Manage Inventory {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Manage Inventory</h1>
+    <a href="{% url 'add_product' %}">
+        <button class="btn btn-primary focus-ring">
+            <i class="bi bi-plus-lg"></i> New Product
+        </button>
+    </a>
+</div>
+<div class="row p-3 my-3 bg-white shadow rounded-3">
+    <div class="col">
+        <table id="inventoryTable" class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Sale Price</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.product_id }}</td>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.product_category }}</td>
+                <td>{{ product.product_quantity }}</td>
+                <td>${{ product.product_sale_price | floatformat:"2" }}</td>
+                <td>{{ product.product_location }}</td>
+                <td>
+                    <a href="{% url 'update_product' product.product_id %}">
+                        <button class="btn btn-sm btn-secondary" title="Update Product">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                    </a>
+                    <a href="{% url 'delete_product' product.product_id %}">
+                        <button class="btn btn-sm btn-danger" title="Delete Product">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Sale Price</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('#inventoryTable').DataTable({});
+</script>
+{% endblock %}

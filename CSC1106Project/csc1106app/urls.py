@@ -24,8 +24,12 @@ urlpatterns = [
     path('login', views.login_user, name="login"),
     path('register', views.register_user, name="register"),
 
+    # Inventory URLs
     path('inventory/management', login_required(views.inventory_management), name="inventory_management"),
+    path('inventory/management/create', login_required(views.add_product), name="add_product"),
     path('inventory/statistics', login_required(views.inventory_statistics), name="inventory_statistics"),
+    path('inventory/update/<int:pk>/', views.update_product, name='update_product'),
+    path('inventory/delete/<int:pk>/', views.delete_product, name='delete_product'),
 
     # Customer URLs
     path('customer/management', login_required(views.customer_management), name="customer_management"),
@@ -64,4 +68,3 @@ urlpatterns = [
     path('payrolls/<int:payroll_id>/update/', views.payroll_update, name='payroll_update'),
     path('payrolls/<int:payroll_id>/delete/', views.payroll_delete, name='payroll_delete'),
 ]
-

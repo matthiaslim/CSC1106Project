@@ -7,7 +7,6 @@ from .crud_ops import *
 from .forms import *
 
 
-
 # Home View
 def index(request):
     return render(request, 'index.html')
@@ -49,19 +48,53 @@ def logout_user(request):
 # Inventory Views
 @login_required
 def inventory_management(request):
-    breadcrumbs = [{'title': 'Home', 'url': '/'},
-                   {'title': 'Inventory'},
-                   {'title': 'Management', 'url': '/inventory/management/'}]
-    return render(request, 'inventory_management.html', {'breadcrumbs': breadcrumbs, 'page_title': 'Inventory'})
+    # Fetch all products initially
+    products = Product.objects.all()
+
+    # Handle filtering based on request parameters
+    product_name = request.GET.get('product_name')
+    product_category = request.GET.get('product_category')
+    product_location = request.GET.get('product_location')
+
+    if product_name:
+        products = products.filter(product_name__icontains=product_name)
+    if product_category:
+        products = products.filter(product_category__icontains=product_category)
+    if product_location:
+        products = products.filter(product_location__icontains=product_location)
+
+    return render(request, 'inventory/inventory_management.html', {'products': products})
 
 
 @login_required
 def inventory_statistics(request):
+    return render(request, 'inventory/inventory_statistics.html')
+
+
+def add_product(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
-                   {'title': 'Statistics', 'url': '/inventory/statistics/'}]
-    return render(request, 'inventory_statistics.html',
-                  {'breadcrumbs': breadcrumbs, 'page_title': 'Inventory Statistics'})
+                   {'title': 'Manage', 'url': '/inventory/management'},
+                   {'title': 'Add Product', 'url': '/inventory/management/create'}, ]
+    return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs})
+
+
+@login_required
+def update_product(request, pk):
+    breadcrumbs = [{'title': 'Home', 'url': '/'},
+                   {'title': 'Inventory'},
+                   {'title': 'Manage', 'url': '/inventory/management'},
+                   {'title': 'Update Product', 'url': '/inventory/management/update/<int:pk>'}, ]
+    product = get_object_or_404(Product, pk=pk)
+    # Handle the update logic here
+    return render(request, 'inventory/update_product.html', {'product': product, 'breadcrumbs': breadcrumbs})
+
+
+@login_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    # Handle the delete logic here
+    return redirect('inventory_management')
 
 
 # Customer Views
@@ -92,17 +125,21 @@ def create_customer(request):
     return render(request, 'customer/create_customer.html',
                   {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer'})
 
+
 # Employee Views
 def employee_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'first_name')
     order = request.GET.get('order', 'asc')
     employees = search_and_filter_employees(query, sort_by, order)
-    return render(request, 'hrms/employee_list.html', {'employees': employees, 'query': query, 'sort_by': sort_by, 'order': order})
+    return render(request, 'hrms/employee_list.html',
+                  {'employees': employees, 'query': query, 'sort_by': sort_by, 'order': order})
+
 
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     return render(request, 'hrms/employee_detail.html', {'employee': employee})
+
 
 def employee_create(request):
     if request.method == "POST":
@@ -113,6 +150,7 @@ def employee_create(request):
     else:
         form = EmployeeForm()
     return render(request, 'hrms/employee_form.html', {'form': form})
+
 
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
@@ -125,10 +163,12 @@ def employee_update(request, employee_id):
         form = EmployeeForm(instance=employee)
     return render(request, 'hrms/employee_form.html', {'form': form})
 
+
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     employee.delete()
     return redirect('employee_list')
+
 
 # Department Views
 def department_list(request):
@@ -136,12 +176,14 @@ def department_list(request):
     sort_by = request.GET.get('sort', 'department_name')
     order = request.GET.get('order', 'asc')
     departments = search_and_filter_departments(query, sort_by, order)
-    return render(request, 'hrms/department_list.html', {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
+    return render(request, 'hrms/department_list.html',
+                  {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     return render(request, 'hrms/department_detail.html', {'department': department})
+
 
 def department_create(request):
     if request.method == "POST":
@@ -152,6 +194,7 @@ def department_create(request):
     else:
         form = DepartmentForm()
     return render(request, 'hrms/department_form.html', {'form': form})
+
 
 def department_update(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
@@ -164,10 +207,12 @@ def department_update(request, department_id):
         form = DepartmentForm(instance=department)
     return render(request, 'hrms/department_form.html', {'form': form})
 
+
 def department_delete(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     department.delete()
     return redirect('department_list')
+
 
 # Attendance Views
 def attendance_list(request):
@@ -175,7 +220,9 @@ def attendance_list(request):
     sort_by = request.GET.get('sort', 'attendance_date')
     order = request.GET.get('order', 'asc')
     attendances = search_and_filter_attendances(query, sort_by, order)
-    return render(request, 'hrms/attendance_list.html', {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
+    return render(request, 'hrms/attendance_list.html',
+                  {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
+
 
 def attendance_create(request):
     if request.method == "POST":
@@ -186,6 +233,7 @@ def attendance_create(request):
     else:
         form = AttendanceForm()
     return render(request, 'hrms/attendance_form.html', {'form': form})
+
 
 def attendance_update(request, attendance_id):
     attendance = get_object_or_404(Attendance, pk=attendance_id)
@@ -198,10 +246,12 @@ def attendance_update(request, attendance_id):
         form = AttendanceForm(instance=attendance)
     return render(request, 'hrms/attendance_form.html', {'form': form})
 
+
 def attendance_delete(request, attendance_id):
     attendance = get_object_or_404(Attendance, pk=attendance_id)
     attendance.delete()
     return redirect('attendance_list')
+
 
 # Leave Views
 def leave_list(request):
@@ -209,7 +259,9 @@ def leave_list(request):
     sort_by = request.GET.get('sort', 'leave_start_date')
     order = request.GET.get('order', 'asc')
     leaves = search_and_filter_leaves(query, sort_by, order)
-    return render(request, 'hrms/leave_list.html', {'leaves': leaves, 'query': query, 'sort_by': sort_by, 'order': order})
+    return render(request, 'hrms/leave_list.html',
+                  {'leaves': leaves, 'query': query, 'sort_by': sort_by, 'order': order})
+
 
 def leave_create(request):
     if request.method == "POST":
@@ -220,6 +272,7 @@ def leave_create(request):
     else:
         form = LeaveForm()
     return render(request, 'hrms/leave_form.html', {'form': form})
+
 
 def leave_update(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
@@ -232,10 +285,12 @@ def leave_update(request, leave_id):
         form = LeaveForm(instance=leave)
     return render(request, 'hrms/leave_form.html', {'form': form})
 
+
 def leave_delete(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
     leave.delete()
     return redirect('leave_list')
+
 
 # Payroll Views
 def payroll_list(request):
@@ -243,7 +298,9 @@ def payroll_list(request):
     sort_by = request.GET.get('sort', 'employee__first_name')
     order = request.GET.get('order', 'asc')
     payrolls = search_and_filter_payrolls(query, sort_by, order)
-    return render(request, 'hrms/payroll_list.html', {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
+    return render(request, 'hrms/payroll_list.html',
+                  {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
+
 
 def payroll_create(request):
     if request.method == "POST":
@@ -255,6 +312,7 @@ def payroll_create(request):
         form = PayrollForm()
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
+
 def payroll_update(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     if request.method == "POST":
@@ -265,6 +323,7 @@ def payroll_update(request, payroll_id):
     else:
         form = PayrollForm(instance=payroll)
     return render(request, 'hrms/payroll_form.html', {'form': form})
+
 
 def payroll_delete(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
