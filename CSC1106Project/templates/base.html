@@ -78,11 +78,11 @@
                 <i class="bi bi-chevron-right collapse-head" id="caret-hrm"></i>
             </a>
             <div class="collapse" id="collapse-hrm">
-                <a class="collapse-item" href="#">Employee</a>
-                <a class="collapse-item" href="#">Department</a>
-                <a class="collapse-item" href="#">Attendance</a>
-                <a class="collapse-item" href="#">Leave</a>
-                <a class="collapse-item" href="#">Payroll</a>
+                <a class="collapse-item" href="{% url 'employee_list' %}">Employee</a>
+                <a class="collapse-item" href="{% url 'department_list' %}">Department</a>
+                <a class="collapse-item" href="{% url 'attendance_list' %}">Attendance</a>
+                <a class="collapse-item" href="{% url 'leave_list' %}">Leave</a>
+                <a class="collapse-item" href="{% url 'payroll_list' %}">Payroll</a>
             </div>
         </div>
     </aside>

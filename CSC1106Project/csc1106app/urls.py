@@ -60,7 +60,6 @@ urlpatterns = [
     path('leaves/', views.leave_list, name='leave_list'),
     path('leaves/create/', views.leave_create, name='leave_create'),
     path('leaves/<int:leave_id>/update/', views.leave_update, name='leave_update'),
-    path('leaves/<int:leave_id>/delete/', views.leave_delete, name='leave_delete'),
 
     # Payroll URLs
     path('payrolls/', views.payroll_list, name='payroll_list'),
