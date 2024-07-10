@@ -50,13 +50,11 @@ urlpatterns = [
     path('attendances/', views.attendance_list, name='attendance_list'),
     path('attendances/create/', views.attendance_create, name='attendance_create'),
     path('attendances/<int:attendance_id>/update/', views.attendance_update, name='attendance_update'),
-    path('attendances/<int:attendance_id>/delete/', views.attendance_delete, name='attendance_delete'),
 
     # Leave URLs
     path('leaves/', views.leave_list, name='leave_list'),
-    path('leaves/create/', views.leave_create, name='leave_create'),
-    path('leaves/<int:leave_id>/update/', views.leave_update, name='leave_update'),
-    path('leaves/<int:leave_id>/delete/', views.leave_delete, name='leave_delete'),
+    path('leaves/create/', views.add_leave, name='leave_create'),
+    path('leaves/<int:leave_id>/update/', views.edit_leave_status, name='leave_update'),
 
     # Payroll URLs
     path('payrolls/', views.payroll_list, name='payroll_list'),

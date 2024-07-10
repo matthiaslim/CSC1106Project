@@ -192,8 +192,22 @@ def attendance_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'attendance_date')
     order = request.GET.get('order', 'asc')
+    
+    if sort_by == 'first_name':
+        sort_by = 'employee__first_name'
+    elif sort_by == 'last_name':
+        sort_by = 'employee__last_name'
+    
     attendances = search_and_filter_attendances(query, sort_by, order)
-    return render(request, 'hrms/attendance_list.html', {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
+    
+    context = {
+        'attendances': attendances,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order
+    }
+    
+    return render(request, 'hrms/attendance_list.html', context)
 
 def attendance_create(request):
     if request.method == "POST":
@@ -216,44 +230,43 @@ def attendance_update(request, attendance_id):
         form = AttendanceForm(instance=attendance)
     return render(request, 'hrms/attendance_form.html', {'form': form})
 
-def attendance_delete(request, attendance_id):
-    attendance = get_object_or_404(Attendance, pk=attendance_id)
-    attendance.delete()
-    return redirect('attendance_list')
-
 # Leave Views
 def leave_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'leave_start_date')
     order = request.GET.get('order', 'asc')
+    
     leaves = search_and_filter_leaves(query, sort_by, order)
-    return render(request, 'hrms/leave_list.html', {'leaves': leaves, 'query': query, 'sort_by': sort_by, 'order': order})
+    
+    context = {
+        'leaves': leaves,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order
+    }
+    
+    return render(request, 'hrms/leave_list.html', context)
 
-def leave_create(request):
-    if request.method == "POST":
-        form = LeaveForm(request.POST)
+def add_leave(request):
+    if request.method == 'POST':
+        form = LeaveAddForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('leave_list')
+            return redirect('leave_list')  # Replace 'leave_list' with your actual URL name
     else:
-        form = LeaveForm()
-    return render(request, 'hrms/leave_form.html', {'form': form})
+        form = LeaveAddForm()
+    return render(request, 'hrms/leave_add.html', {'form': form})
 
-def leave_update(request, leave_id):
+def edit_leave_status(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
-    if request.method == "POST":
-        form = LeaveForm(request.POST, instance=leave)
+    if request.method == 'POST':
+        form = LeaveStatusUpdateForm(request.POST, instance=leave)
         if form.is_valid():
             form.save()
-            return redirect('leave_list')
+            return redirect('leave_list', leave_id=leave.id)  # Replace 'leave_detail' with your actual URL name
     else:
-        form = LeaveForm(instance=leave)
-    return render(request, 'hrms/leave_form.html', {'form': form})
-
-def leave_delete(request, leave_id):
-    leave = get_object_or_404(Leave, pk=leave_id)
-    leave.delete()
-    return redirect('leave_list')
+        form = LeaveStatusUpdateForm(instance=leave)
+    return render(request, 'hrms/leave_edit.html', {'form': form})
 
 # Payroll Views
 def payroll_list(request):

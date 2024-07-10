@@ -41,12 +41,20 @@ class DepartmentForm(forms.ModelForm):
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
-        fields = ['employee', 'attendance_date', 'time_in', 'time_out']
+        fields = ['time_out']
 
-class LeaveForm(forms.ModelForm):
+class LeaveAddForm(forms.ModelForm):
+    leave_start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    leave_end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    
     class Meta:
         model = Leave
         fields = ['employee', 'leave_start_date', 'leave_end_date']
+
+class LeaveStatusUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Leave
+        fields = ['leave_status']
 
 class PayrollForm(forms.ModelForm):
     class Meta:

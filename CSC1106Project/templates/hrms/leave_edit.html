@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Leave Status{% endblock %}
+
+{% block content %}
+<h1>Edit Leave Status</h1>
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+<a href="{% url 'leave_list' %}" class="btn btn-secondary">Back to List</a>
+{% endblock %}
