@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import *
 
+
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
@@ -20,27 +21,71 @@ class CustomAuthenticationForm(AuthenticationForm):
         model = User
         fields = ('email', 'password')
 
+
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth', 'hire_date', 'contract_expiry_date', 'employee_role']
+        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
+                  'hire_date', 'contract_expiry_date', 'employee_role']
+
 
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
         fields = ['department_name', 'employee']
 
+
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
         fields = ['employee', 'attendance_date', 'time_in', 'time_out']
+
 
 class LeaveForm(forms.ModelForm):
     class Meta:
         model = Leave
         fields = ['employee', 'leave_start_date', 'leave_end_date']
 
+
 class PayrollForm(forms.ModelForm):
     class Meta:
         model = Payroll
         fields = ['employee', 'salary', 'bonus', 'benefit', 'net_pay']
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            'product_name',
+            'product_description',
+            'product_category',
+            'product_quantity',
+            'product_sale_price',
+            'product_location',
+            'product_width',
+            'product_height',
+            'product_length',
+            'product_image'
+        ]
+        widgets = {
+            'product_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_description': forms.Textarea(attrs={'class': 'form-control',
+                                                         'rows': 3}),
+            'product_category': forms.Select(attrs={'class': 'form-control'}, choices=[
+                ("Bar Furniture", "Bar Furniture"),
+                ("Beds", "Beds"),
+                ("Bookcases & shelving units", "Bookcases & shelving units"),
+                ("Cabinets & cupboards", "Cabinets & cupboards"),
+                ("Chairs", "Chairs"),
+                ("Nursery furniture", "Nursery furniture"),
+                ("Wardrobes", "Wardrobes")
+            ]),
+            'product_quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_sale_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_location': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_width': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_height': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_length': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_image': forms.TextInput(attrs={'class': 'form-control'}),
+        }

@@ -76,7 +76,14 @@ def add_product(request):
                    {'title': 'Inventory'},
                    {'title': 'Manage', 'url': '/inventory/management'},
                    {'title': 'Add Product', 'url': '/inventory/management/create'}, ]
-    return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs})
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid:
+            form.save()
+            return redirect('inventory/inventory_management.html')
+    else:
+        form = ProductForm()
+    return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs, 'form': form})
 
 
 @login_required

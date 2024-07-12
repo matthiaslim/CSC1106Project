@@ -35,15 +35,13 @@
                 <td>${{ product.product_sale_price | floatformat:"2" }}</td>
                 <td>{{ product.product_location }}</td>
                 <td>
-                    <a href="{% url 'update_product' product.product_id %}">
-                        <button class="btn btn-sm btn-secondary" title="Update Product">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
+                    <a href="{% url 'update_product' product.product_id %}" class="btn btn-sm btn-secondary"
+                       title="Update Product">
+                        <i class="bi bi-pencil-square"></i>
                     </a>
-                    <a href="{% url 'delete_product' product.product_id %}">
-                        <button class="btn btn-sm btn-danger" title="Delete Product">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                    <a href="{% url 'delete_product' product.product_id %}" class="btn btn-sm btn-danger"
+                       title="Delete Product">
+                        <i class="bi bi-trash"></i>
                     </a>
                 </td>
             </tr>
