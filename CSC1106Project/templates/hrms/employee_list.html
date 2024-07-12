@@ -19,7 +19,7 @@
               	<th>ID</th>
             	<th>Name</th>
             	<th>Email</th>
-            	<th>Department</th>
+            	<th>Departments</th>
             	<th>Actions</th>
             </tr>
             </thead>
@@ -27,7 +27,7 @@
             {% for employee in employees%}
             <tr>
                 <td>{{ employee.employee_id }}</td>
-            	<td>{{ employee.first_name }} {{ employee.last_name }}</a></td>
+            	<td>{{ employee.first_name }} {{ employee.last_name }}</td>
             	<td>{{ employee.email }}</td>
             	<td>
              	{% if employee.department %}
@@ -46,13 +46,7 @@
             {% endfor %}
             </tbody>
             <tfoot>
-            <tr>
-                <th>ID</th>
-            	<th>Name</th>
-            	<th>Email</th>
-            	<th>Department</th>
-            	<th>Actions</th>
-            </tr>
+
             </tfoot>
         </table>
     </div>

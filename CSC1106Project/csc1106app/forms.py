@@ -27,6 +27,20 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
+        widgets = {
+            'user': forms.Select(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'department':  forms.Select(attrs={'class': 'form-control'}),
+            'job_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class':'form-control'}),
+            'gender': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control'}),
+            'hire_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'contract_expiry_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'employee_role': forms.TextInput(attrs={'class': 'form-control'}),
+
+        }
 
 
 class DepartmentForm(forms.ModelForm):

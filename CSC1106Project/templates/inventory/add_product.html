@@ -3,52 +3,62 @@
 {% block title %} Add Product {% endblock %}
 
 {% block content %}
-{% include 'breadcrumb.html' %}
-<div class="row p-3 my-3 bg-white shadow rounded-3">
-    <h1>Add Product</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            {{ form.product_name.label_tag }}
-            {{ form.product_name }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_description.label_tag }}
-            {{ form.product_description }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_category.label_tag }}
-            {{ form.product_category }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_quantity.label_tag }}
-            {{ form.product_quantity }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_sale_price.label_tag }}
-            {{ form.product_sale_price }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_location.label_tag }}
-            {{ form.product_location }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_width.label_tag }}
-            {{ form.product_width }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_height.label_tag }}
-            {{ form.product_height }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_length.label_tag }}
-            {{ form.product_length }}
-        </div>
-        <div class="mb-3">
-            {{ form.product_image.label_tag }}
-            {{ form.product_image }}
-        </div>
-        <button type="submit" class="btn btn-primary">Add Product</button>
-    </form>
-</div>
+    {% include 'breadcrumb.html' %}
+    <div class="row p-3 my-3 bg-white shadow rounded-3">
+        <h1>Add Product</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.product_name.label_tag }}
+                {{ form.product_name }}
+            </div>
+            <div class="mb-3">
+                {{ form.product_description.label_tag }}
+                {{ form.product_description }}
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.product_category.label_tag }}
+                    {{ form.product_category }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.product_quantity.label_tag }}
+                    {{ form.product_quantity }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.product_sale_price.label_tag }}
+                    {{ form.product_sale_price }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.product_location.label_tag }}
+                    {{ form.product_location }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.product_width.label_tag }}
+                    {{ form.product_width }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.product_height.label_tag }}
+                    {{ form.product_height }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.product_length.label_tag }}
+                    {{ form.product_length }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.product_image.label_tag }}
+                    {{ form.product_image }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Product</button>
+            <a href="javascript:history.go(-1)" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
 {% endblock %}

@@ -3,13 +3,70 @@
 {% block title %}{% if form.instance.pk %}Edit Employee{% else %}Add Employee{% endif %}{% endblock %}
 
 {% block content %}
-<h1>{% if form.instance.pk %}Edit Employee{% else %}Add Employee{% endif %}</h1>
-<form method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        {{ form.as_p }}
+    {% include 'breadcrumb.html' %}
+    <div class="row p-3 my-1 bg-white shadow rounded-3">
+        <h1>{% if form.instance.pk %}Edit Employee{% else %}Add Employee{% endif %}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.user.label_tag }}
+                {{ form.user }}
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.department.label_tag }}
+                    {{ form.department }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.job_title.label_tag }}
+                    {{ form.job_title }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.gender.label_tag }}
+                    {{ form.gender }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.date_of_birth.label_tag }}
+                    {{ form.date_of_birth }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.hire_date.label_tag }}
+                    {{ form.hire_date }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.contract_expiry_date.label_tag }}
+                    {{ form.contract_expiry_date }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.employee_role.label_tag }}
+                    {{ form.employee_role }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
+            <a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to List</a>
+    
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
-</form>
-<a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to List</a>
+
 {% endblock %}
