@@ -12,9 +12,9 @@ from .models import *
 from .crud_ops import *
 from .forms import *
 import os
+from .decorators import department_required
 from django.core.files.storage import FileSystemStorage
 from CSC1106Project import settings;
-
 
 
 # Home View
@@ -57,6 +57,7 @@ def logout_user(request):
 
 # Inventory Views
 @login_required
+@department_required('Logistics')
 def inventory_management(request):
     # Fetch all products initially
     products = Product.objects.all()
@@ -77,35 +78,36 @@ def inventory_management(request):
 
 
 @login_required
+@department_required('Logistics')
 def inventory_statistics(request):
     return render(request, 'inventory/inventory_statistics.html')
 
 
+@department_required('Logistics')
 def add_product(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
                    {'title': 'Manage', 'url': '/inventory/management'},
                    {'title': 'Add Product', 'url': '/inventory/management/create'}, ]
-    
+
     if request.method == 'POST':
-        form = ProductForm(request.POST,request.FILES)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid:
             if 'product_image' in request.FILES:
                 img = request.FILES['product_image']
-            
-                upload_dir = os.path.join(settings.BASE_DIR, 'CSC1106Project','static', 'img', 'upload')
+
+                upload_dir = os.path.join(settings.BASE_DIR, 'CSC1106Project', 'static', 'img', 'upload')
 
                 if not os.path.exists(upload_dir):
                     os.makedirs(upload_dir)
 
-                file_path = os.path.join(upload_dir,img.name)
-                
+                file_path = os.path.join(upload_dir, img.name)
+
                 with open(file_path, 'wb+') as destination:
                     for chunk in img.chunks():
                         destination.write(chunk)
 
                 print(f"Saved image: {file_path}")  # Debugging statement
-
 
                 form.save()
 
@@ -114,16 +116,20 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs, 'form': form})
 
+
 @login_required
+@department_required('Logistics')
 def get_product(request, pk):
     try:
         product = get_object_or_404(Product, pk=pk)
         product_dict = model_to_dict(product)
-        return JsonResponse({'product': product_dict , 'status' : 200})
+        return JsonResponse({'product': product_dict, 'status': 200})
     except Exception as e:
         return JsonResponse({'error': str(e), 'status': 500})
 
+
 @login_required
+@department_required('Logistics')
 def update_product(request, pk):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
@@ -135,6 +141,7 @@ def update_product(request, pk):
 
 
 @login_required
+@department_required('Logistics')
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     try:
@@ -145,10 +152,9 @@ def delete_product(request, pk):
         return JsonResponse({'status': 400, 'message': 'Bad request.'})
 
 
-
-
 # Customer Views
 @login_required
+@department_required('Customer Relations')
 def customer_management(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
@@ -157,6 +163,7 @@ def customer_management(request):
 
 
 @login_required
+@department_required('Customer Relations')
 def customer_details(request, customerID):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
@@ -167,6 +174,7 @@ def customer_details(request, customerID):
 
 
 @login_required
+@department_required('Customer Relations')
 def create_customer(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
@@ -177,6 +185,7 @@ def create_customer(request):
 
 
 # Employee Views
+@department_required('Human Resource')
 def employee_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'first_name')
@@ -191,11 +200,13 @@ def employee_list(request):
     })
 
 
+@department_required('Human Resource')
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     return render(request, 'hrms/employee_detail.html', {'employee': employee})
 
 
+@department_required('Human Resource')
 def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
@@ -210,6 +221,7 @@ def employee_create(request):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
+@department_required('Human Resource')
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     if request.method == "POST":
@@ -222,6 +234,7 @@ def employee_update(request, employee_id):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
+@department_required('Human Resource')
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     employee.delete()
@@ -229,6 +242,7 @@ def employee_delete(request, employee_id):
 
 
 # Department Views
+@department_required('Human Resource')
 def department_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'department_name')
@@ -238,11 +252,13 @@ def department_list(request):
                   {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
+@department_required('Human Resource')
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     return render(request, 'hrms/department_detail.html', {'department': department})
 
 
+@department_required('Human Resource')
 def department_create(request):
     if request.method == "POST":
         form = DepartmentForm(request.POST)
@@ -254,6 +270,7 @@ def department_create(request):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
+@department_required('Human Resource')
 def department_update(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     if request.method == "POST":
@@ -266,6 +283,7 @@ def department_update(request, department_id):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
+@department_required('Human Resource')
 def department_delete(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     department.delete()
@@ -282,40 +300,42 @@ def attendance_list(request):
     return render(request, 'hrms/attendance_list.html',
                   {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
 
+
 @login_required
 def attendance_create(request):
-        existing_attendance = Attendance.objects.filter(employee=request.user.employee, time_out__isnull=True).exists()
-        if existing_attendance:
-            messages.error(request, 'You have already checked in and have not checked out yet.')
+    existing_attendance = Attendance.objects.filter(employee=request.user.employee, time_out__isnull=True).exists()
+    if existing_attendance:
+        messages.error(request, 'You have already checked in and have not checked out yet.')
+        return redirect('attendance_list')
+
+    if request.method == "POST":
+        image_data = request.POST.get('image-data')
+        if image_data:
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+
+            user_identifier = request.user.email
+
+            data = ContentFile(base64.b64decode(imgstr), name=f'{user_identifier}_checkin.{ext}')
+
+            try:
+                employee = Employee.objects.get(user=request.user)
+            except Employee.DoesNotExist:
+                messages.error(request, 'Employee not found for the logged-in user.')
+                return render(request, 'hrms/attendance_form.html')
+
+            attendance = Attendance(
+                employee=employee,  # Linked via OneToOneField
+                attendance_date=datetime.now().date(),
+                time_in=datetime.now(),
+                image=data
+            )
+            attendance.save()
+            messages.success(request, 'You have successfully checked in.')
             return redirect('attendance_list')
-        
-        if request.method == "POST":
-            image_data = request.POST.get('image-data')
-            if image_data:
-                format, imgstr = image_data.split(';base64,')
-                ext = format.split('/')[-1]
-                
-                user_identifier = request.user.email
-                
-                data = ContentFile(base64.b64decode(imgstr), name=f'{user_identifier}_checkin.{ext}')
 
-                try:
-                    employee = Employee.objects.get(user=request.user)
-                except Employee.DoesNotExist:
-                    messages.error(request, 'Employee not found for the logged-in user.')
-                    return render(request, 'hrms/attendance_form.html')
+    return render(request, 'hrms/attendance_form.html')
 
-                attendance = Attendance(
-                    employee=employee,  # Linked via OneToOneField
-                    attendance_date=datetime.now().date(),
-                    time_in=datetime.now(),
-                    image=data
-                )
-                attendance.save()
-                messages.success(request, 'You have successfully checked in.')
-                return redirect('attendance_list')
-    
-        return render(request, 'hrms/attendance_form.html')
 
 @login_required
 def attendance_check_out(request):
@@ -328,10 +348,12 @@ def attendance_check_out(request):
         messages.error(request, 'No check-in record found for today.')
     return redirect('home')
 
+
 @login_required
 def attendance_detail(request, attendance_id):
     attendance = get_object_or_404(Attendance, pk=attendance_id)
     return render(request, 'hrms/attendance_detail.html', {'attendance': attendance})
+
 
 @login_required
 def attendance_update(request, attendance_id):
@@ -344,6 +366,7 @@ def attendance_update(request, attendance_id):
     else:
         form = AttendanceForm(instance=attendance)
     return render(request, 'hrms/attendance_update.html', {'form': form})
+
 
 # Leave Views
 def leave_list(request):
@@ -385,6 +408,7 @@ def leave_delete(request, leave_id):
 
 
 # Payroll Views
+@department_required('Human Resource')
 def payroll_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'employee__first_name')
@@ -394,6 +418,7 @@ def payroll_list(request):
                   {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
+@department_required('Human Resource')
 def payroll_create(request):
     if request.method == "POST":
         form = PayrollForm(request.POST)
@@ -405,6 +430,7 @@ def payroll_create(request):
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
 
+@department_required('Human Resource')
 def payroll_update(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     if request.method == "POST":
@@ -417,6 +443,7 @@ def payroll_update(request, payroll_id):
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
 
+@department_required('Human Resource')
 def payroll_delete(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     payroll.delete()
