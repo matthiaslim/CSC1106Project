@@ -7,3 +7,6 @@ class Transaction(models.Model):
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     membership_id = models.ForeignKey(Membership, on_delete=models.CASCADE)
     points_earned = models.IntegerField()
+
+    def __str__(self):
+        return self.transaction_id

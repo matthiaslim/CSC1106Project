@@ -6,3 +6,6 @@ class Leave(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     leave_start_date = models.DateField()
     leave_end_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.leave_id} {self.employee}"

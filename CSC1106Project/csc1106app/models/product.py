@@ -13,3 +13,6 @@ class Product(models.Model):
     product_height = models.IntegerField()
     product_length = models.IntegerField()
     product_image = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"{self.product_name}"

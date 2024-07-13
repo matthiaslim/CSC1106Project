@@ -13,3 +13,6 @@ class Membership(models.Model):
     point_expiry_date = models.DateField()
     member_expiry_date = models.DateField()
     membership_status = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

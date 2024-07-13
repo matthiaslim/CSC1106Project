@@ -8,3 +8,6 @@ class Payroll(models.Model):
     bonus = models.IntegerField()
     benefit = models.CharField(max_length=255)
     net_pay = models.IntegerField()
+
+    def __str__(self):
+        return self.payroll_id

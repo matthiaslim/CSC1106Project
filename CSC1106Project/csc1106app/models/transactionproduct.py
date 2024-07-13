@@ -8,3 +8,6 @@ class TransactionProduct(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     transaction_quantity = models.IntegerField()
     transaction_price_per_unit = models.FloatField()
+
+    def __str__(self):
+        return self.transaction_product_id

@@ -5,5 +5,5 @@ class Department(models.Model):
     department_name = models.CharField(max_length=100)
     employee = models.ForeignKey('Employee', on_delete=models.SET_NULL, null = True, blank=True, related_name='departments_managed')
 
-    def str(self):
-        return self.department_name
+    def __str__(self):
+        return f"{self.department_name}"
