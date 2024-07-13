@@ -89,7 +89,7 @@ def add_product(request):
             if 'product_image' in request.FILES:
                 img = request.FILES['product_image']
             
-                upload_dir = os.path.join(settings.BASE_DIR, 'static', 'img', 'upload')
+                upload_dir = os.path.join(settings.BASE_DIR, 'CSC1106Project','static', 'img', 'upload')
 
                 if not os.path.exists(upload_dir):
                     os.makedirs(upload_dir)
