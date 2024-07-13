@@ -25,19 +25,33 @@ class CustomAuthenticationForm(AuthenticationForm):
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
+        fields = ['first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
+        
+        GENDER_CHOICES = [
+            ('', 'Select a gender'),
+            ('male', 'Male'),
+            ('female', 'Female'),
+            ('other', 'Other'),
+        ]
+
+        JOB_TITLE_CHOICES = [
+            ('', 'Select a title'),
+            ('manager', 'Manager'),
+            ('employee', 'Employee'),
+            ('hr', 'HR'),
+        ]
+
         widgets = {
-            'user': forms.Select(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'department':  forms.Select(attrs={'class': 'form-control'}),
-            'job_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'job_title': forms.Select(choices=JOB_TITLE_CHOICES, attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class':'form-control'}),
-            'gender': forms.TextInput(attrs={'class': 'form-control'}),
-            'date_of_birth': forms.DateInput(attrs={'class': 'form-control'}),
-            'hire_date': forms.DateInput(attrs={'class': 'form-control'}),
-            'contract_expiry_date': forms.DateInput(attrs={'class': 'form-control'}),
+            'gender': forms.Select(choices=GENDER_CHOICES, attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'hire_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'contract_expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'employee_role': forms.TextInput(attrs={'class': 'form-control'}),
 
         }

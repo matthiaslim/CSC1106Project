@@ -178,8 +178,13 @@ def employee_list(request):
     sort_by = request.GET.get('sort', 'first_name')
     order = request.GET.get('order', 'asc')
     employees = search_and_filter_employees(query, sort_by, order)
-    return render(request, 'hrms/employee_list.html',
-                  {'employees': employees, 'query': query, 'sort_by': sort_by, 'order': order})
+
+    return render(request, 'hrms/employee_list.html', {
+        'employees': employees,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order,
+    })
 
 
 def employee_detail(request, employee_id):
@@ -191,7 +196,9 @@ def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
+            employee = form.save(commit=False) 
+            employee.user = request.user
+            employee.save()
             return redirect('employee_list')
     else:
         form = EmployeeForm()

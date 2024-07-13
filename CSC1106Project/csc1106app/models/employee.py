@@ -17,5 +17,5 @@ class Employee(models.Model):
     contract_expiry_date = models.DateField(null=True, blank=True)
     employee_role = models.CharField(max_length=50)
 
-    def str(self):
+    def __str__(self):
         return f"{self.first_name} {self.last_name}"
