@@ -1,3 +1,5 @@
+from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -5,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .crud_ops import *
 from .forms import *
+import os
+from django.core.files.storage import FileSystemStorage
+from CSC1106Project import settings;
+
 
 
 # Home View
@@ -76,15 +82,42 @@ def add_product(request):
                    {'title': 'Inventory'},
                    {'title': 'Manage', 'url': '/inventory/management'},
                    {'title': 'Add Product', 'url': '/inventory/management/create'}, ]
+    
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST,request.FILES)
         if form.is_valid:
-            form.save()
-            return redirect('inventory/inventory_management.html')
+            if 'product_image' in request.FILES:
+                img = request.FILES['product_image']
+            
+                upload_dir = os.path.join(settings.BASE_DIR, 'static', 'img', 'upload')
+
+                if not os.path.exists(upload_dir):
+                    os.makedirs(upload_dir)
+
+                file_path = os.path.join(upload_dir,img.name)
+                
+                with open(file_path, 'wb+') as destination:
+                    for chunk in img.chunks():
+                        destination.write(chunk)
+
+                print(f"Saved image: {file_path}")  # Debugging statement
+
+
+                form.save()
+
+            return redirect('inventory_management')
     else:
         form = ProductForm()
     return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs, 'form': form})
 
+@login_required
+def get_product(request, pk):
+    try:
+        product = get_object_or_404(Product, pk=pk)
+        product_dict = model_to_dict(product)
+        return JsonResponse({'product': product_dict , 'status' : 200})
+    except Exception as e:
+        return JsonResponse({'error': str(e), 'status': 500})
 
 @login_required
 def update_product(request, pk):
@@ -100,8 +133,14 @@ def update_product(request, pk):
 @login_required
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    # Handle the delete logic here
-    return redirect('inventory_management')
+    try:
+        if request.method == 'DELETE':
+            product.delete()
+        return JsonResponse({'status': 200, 'message': 'Product deleted successfully.'})
+    except:
+        return JsonResponse({'status': 400, 'message': 'Bad request.'})
+
+
 
 
 # Customer Views

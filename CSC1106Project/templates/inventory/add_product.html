@@ -6,7 +6,7 @@
     {% include 'breadcrumb.html' %}
     <div class="row p-3 my-3 bg-white shadow rounded-3">
         <h1>Add Product</h1>
-        <form method="post">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
                 {{ form.product_name.label_tag }}
@@ -53,7 +53,13 @@
                 </div>
                 <div class="mb-3 col">
                     {{ form.product_image.label_tag }}
-                    {{ form.product_image }}
+                    <input type="file" onchange="validateFileType(this)" name="product_image" class="form-control" maxlength="255" id="id_product_image" accept=".png, .jpg, .jpeg">
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col"></div>
+                <div class="mb-3 col">
+                    Preview Image:  <img src="" id="preview_img"> 
                 </div>
             </div>
 
@@ -61,4 +67,29 @@
             <a href="javascript:history.go(-1)" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    function validateFileType(input){
+    var fileName = document.getElementById("id_product_image").value;
+    var idxDot = fileName.lastIndexOf(".") + 1;
+    var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#preview_img').attr('src', e.target.result).width(150).height(150);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }else{
+            alert("Only jpg/jpeg and png files are allowed!");
+        }   
+    }   
+</script>
+
+
 {% endblock %}

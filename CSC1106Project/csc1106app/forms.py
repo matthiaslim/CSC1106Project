@@ -101,5 +101,5 @@ class ProductForm(forms.ModelForm):
             'product_width': forms.NumberInput(attrs={'class': 'form-control'}),
             'product_height': forms.NumberInput(attrs={'class': 'form-control'}),
             'product_length': forms.NumberInput(attrs={'class': 'form-control'}),
-            'product_image': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_image': forms.FileInput(attrs={'class': 'form-control'}),
         }
