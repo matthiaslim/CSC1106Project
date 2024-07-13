@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit Attendance{% else %}Add Attendance{% endif %}{% endblock %}
+
+{% block content %}
+    {% include 'breadcrumb.html' %}
+    <div class="row p-3 my-1 bg-white shadow rounded-3">
+        <h1>{% if form.instance.pk %}Edit Attendance{% else %}Add Attendance{% endif %}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="mb-3 col">
+                    {{ form.time_out.label_tag }}
+                    {{ form.time_out }}
+                </div>
+            </div> <!-- Closing div for the row -->
+            <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
+            <a href="{% url 'attendance_list' %}" class="btn btn-secondary">Back to List</a>
+        </form>
+    </div>
+{% endblock %}

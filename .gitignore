@@ -161,3 +161,4 @@ cython_debug/
 CSC1106Project/static/
 
 .env
+CSC1106Project/media/attendance_images/

@@ -1,15 +1,49 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}{% if form.instance.pk %}Edit Attendance{% else %}Add Attendance{% endif %}{% endblock %}
+{% block title %}Employee Check In{% endblock %}
 
 {% block content %}
-<h1>{% if form.instance.pk %}Edit Attendance{% else %}Add Attendance{% endif %}</h1>
-<form method="post">
-    {% csrf_token %}
-    <div class="form-group">
-        {{ form.as_p }}
+<div class="container mt-5">
+    <h1>Employee Check In</h1>
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <div id="camera">
+        <video id="video" width="640" height="480" autoplay></video>
+        <button id="snap" class="btn btn-primary mt-3">Capture</button>
+        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+        <form id="checkin-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" id="image-data" name="image-data">
+            <button type="submit" class="btn btn-success mt-3">Check In</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
-</form>
-<a href="{% url 'home' %}" class="btn btn-secondary">Back to List</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Access the camera and display the video stream
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const snap = document.getElementById('snap');
+    const imageDataInput = document.getElementById('image-data');
+    const context = canvas.getContext('2d');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(err => {
+            console.error('Error accessing camera: ', err);
+        });
+
+    snap.addEventListener('click', (event) => {
+        event.preventDefault();
+        context.drawImage(video, 0, 0, 640, 480);
+        const imageData = canvas.toDataURL('image/png');
+        imageDataInput.value = imageData;
+        canvas.style.display = 'block';
+    });
+</script>
 {% endblock %}

@@ -1,3 +1,5 @@
+import base64
+from django.core.files.base import ContentFile
 from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -5,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from datetime import datetime
 from .models import *
 from .crud_ops import *
 from .forms import *
@@ -270,6 +273,7 @@ def department_delete(request, department_id):
 
 
 # Attendance Views
+@login_required
 def attendance_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'attendance_date')
@@ -278,18 +282,58 @@ def attendance_list(request):
     return render(request, 'hrms/attendance_list.html',
                   {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
 
-
+@login_required
 def attendance_create(request):
-    if request.method == "POST":
-        form = AttendanceForm(request.POST)
-        if form.is_valid():
-            form.save()
+        existing_attendance = Attendance.objects.filter(employee=request.user.employee, time_out__isnull=True).exists()
+        if existing_attendance:
+            messages.error(request, 'You have already checked in and have not checked out yet.')
             return redirect('attendance_list')
-    else:
-        form = AttendanceForm()
-    return render(request, 'hrms/attendance_form.html', {'form': form})
+        
+        if request.method == "POST":
+            image_data = request.POST.get('image-data')
+            if image_data:
+                format, imgstr = image_data.split(';base64,')
+                ext = format.split('/')[-1]
+                
+                user_identifier = request.user.email
+                
+                data = ContentFile(base64.b64decode(imgstr), name=f'{user_identifier}_checkin.{ext}')
 
+                try:
+                    employee = Employee.objects.get(user=request.user)
+                except Employee.DoesNotExist:
+                    messages.error(request, 'Employee not found for the logged-in user.')
+                    return render(request, 'hrms/attendance_form.html')
 
+                attendance = Attendance(
+                    employee=employee,  # Linked via OneToOneField
+                    attendance_date=datetime.now().date(),
+                    time_in=datetime.now(),
+                    image=data
+                )
+                attendance.save()
+                messages.success(request, 'You have successfully checked in.')
+                return redirect('attendance_list')
+    
+        return render(request, 'hrms/attendance_form.html')
+
+@login_required
+def attendance_check_out(request):
+    try:
+        attendance = Attendance.objects.filter(employee=request.user.employee, time_out__isnull=True).latest('time_in')
+        attendance.time_out = datetime.now()
+        attendance.save()
+        messages.success(request, 'You have successfully checked out.')
+    except Attendance.DoesNotExist:
+        messages.error(request, 'No check-in record found for today.')
+    return redirect('home')
+
+@login_required
+def attendance_detail(request, attendance_id):
+    attendance = get_object_or_404(Attendance, pk=attendance_id)
+    return render(request, 'hrms/attendance_detail.html', {'attendance': attendance})
+
+@login_required
 def attendance_update(request, attendance_id):
     attendance = get_object_or_404(Attendance, pk=attendance_id)
     if request.method == "POST":
@@ -299,14 +343,7 @@ def attendance_update(request, attendance_id):
             return redirect('attendance_list')
     else:
         form = AttendanceForm(instance=attendance)
-    return render(request, 'hrms/attendance_form.html', {'form': form})
-
-
-def attendance_delete(request, attendance_id):
-    attendance = get_object_or_404(Attendance, pk=attendance_id)
-    attendance.delete()
-    return redirect('attendance_list')
-
+    return render(request, 'hrms/attendance_update.html', {'form': form})
 
 # Leave Views
 def leave_list(request):

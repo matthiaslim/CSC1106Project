@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', login_required(views.index), name="home"),
@@ -54,8 +56,9 @@ urlpatterns = [
     # Attendance URLs
     path('attendances/', views.attendance_list, name='attendance_list'),
     path('attendances/create/', views.attendance_create, name='attendance_create'),
+    path('attendances/<int:attendance_id>/', views.attendance_detail, name='attendance_detail'),
     path('attendances/<int:attendance_id>/update/', views.attendance_update, name='attendance_update'),
-    path('attendances/<int:attendance_id>/delete/', views.attendance_delete, name='attendance_delete'),
+    path('attendances/check-out/', views.attendance_check_out, name='attendance_check_out'),
 
     # Leave URLs
     path('leaves/', views.leave_list, name='leave_list'),
@@ -67,4 +70,4 @@ urlpatterns = [
     path('payrolls/create/', views.payroll_create, name='payroll_create'),
     path('payrolls/<int:payroll_id>/update/', views.payroll_update, name='payroll_update'),
     path('payrolls/<int:payroll_id>/delete/', views.payroll_delete, name='payroll_delete'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

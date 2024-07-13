@@ -66,7 +66,7 @@ class DepartmentForm(forms.ModelForm):
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
-        fields = ['employee', 'attendance_date', 'time_in', 'time_out']
+        fields = ['time_out']
 
 
 class LeaveForm(forms.ModelForm):

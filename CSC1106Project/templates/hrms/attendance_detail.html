@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Attendance Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Attendance ID: {{ attendance.attendance_id }}</h5>
+            <p class="card-text"><strong>Employee:</strong> {{ attendance.employee.first_name }} {{ attendance.employee.last_name }}</p>
+            <p class="card-text"><strong>Date:</strong> {{ attendance.attendance_date }}</p>
+            <p class="card-text"><strong>Time In:</strong> {{ attendance.time_in }}</p>
+            <p class="card-text"><strong>Time Out:</strong> {{ attendance.time_out }}</p>
+            {% if attendance.image %}
+            <p class="card-text"><strong>Image:</strong></p>
+            <img src="{{ attendance.image.url }}" alt="Attendance Image" class="img-fluid">
+            {% else %}
+            <p class="card-text">No image available</p>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{% url 'attendance_list' %}" class="btn btn-secondary mt-3">Back to List</a>
+</div>
+{% endblock %}
