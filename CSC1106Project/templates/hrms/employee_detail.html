@@ -38,10 +38,10 @@
         <td>{{ employee.employee_role }}</td>
     </tr>
 </table>
-<a href="{% url 'employee_update' employee.employee_id %}" class="btn btn-warning">Edit</a>
+<a href="{% url 'employee_update' employee.employee_id %}" class="btn btn-warning">Edit Details</a>
 <form method="post" action="{% url 'employee_delete' employee.employee_id %}" class="d-inline">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="submit" class="btn btn-danger">Delete Employee</button>
 </form>
 <a href="{% url 'employee_list' %}" class="btn btn-secondary">Back to List</a>
 
