@@ -8,7 +8,7 @@
         </div>
         <div class="modal-body">
             <input type="hidden" id="product_id"/>
-           <img id="product_image" src=""  style="width:300px; height:300px;"> 
+           <img id="product_image" src=""  style="width:100%;">
            <div>
             Description:
             <span id="product_description"> Long ass message</span>
@@ -19,7 +19,7 @@
            </div>
            <div>
             <div> Product Sale Price:
-                <span id="product_sale_price"></span>
+                <span>$</span><span id="product_sale_price"></span>
             </div> 
             Quantity:
             <span id="product_quantity"></span>
@@ -31,10 +31,10 @@
             </span>
            </div>
 
-           <div> Dimensions:
-            <span id="product_length"></span> x
-            <span id="product_width"></span> x
-            <span id="product_height"></span>
+           <div> Dimensions(cm):
+            <span id="product_length"></span><span>(L) x</span>
+            <span id="product_width"></span><span>(W) x</span>
+            <span id="product_height"></span><span>(H)</span>
            </div>
         </div>
         <div class="modal-footer">

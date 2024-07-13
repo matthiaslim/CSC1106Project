@@ -3,79 +3,71 @@
 {% load static %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1>Manage Inventory</h1>
-  <a href="{% url 'add_product' %}">
-    <button class="btn btn-primary focus-ring">
-      <i class="bi bi-plus-lg"></i> New Product
-    </button>
-  </a>
-</div>
-<div class="row p-3 my-3 bg-white shadow rounded-3">
-  <div class="col">
-    <table id="inventoryTable" class="table table-striped table-hover">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Sale Price</th>
-          <th>Location</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-        <tr>
-          <td>{{ product.product_id }}</td>
-          <td>{{ product.product_name }}</td>
-          <td>{{ product.product_category }}</td>
-          <td>{{ product.product_quantity }}</td>
-          <td>${{ product.product_sale_price | floatformat:"2" }}</td>
-          <td>{{ product.product_location }}</td>
-          <td style="width:125px;">
-            <a onclick="openProductView('{{ product.product_id }}')" data-toggle="modal" data-target="#productViewModal" class="btn btn-sm btn-primary" title="Update Product">            
-                <i class="bi bi-eye-fill"></i>
-            </a>
-            <a href="{% url 'update_product' product.product_id %}" class="btn btn-sm btn-secondary" title="Update Product">            
-              <i class="bi bi-pencil-square"></i>
-            </a>
-            <a onclick="deleteProduct('{{product.product_id}}','{{product.product_name}}')"class="btn btn-sm btn-danger" title="Delete Product">
-              {% csrf_token %}
-                <i class="bi bi-trash"></i>
-            </a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-      <tfoot>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Quantity</th>
-          <th>Sale Price</th>
-          <th>Location</th>
-          <th>Actions</th>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Manage Inventory</h1>
+        <a href="{% url 'add_product' %}">
+            <button class="btn btn-primary focus-ring">
+                <i class="bi bi-plus-lg"></i> New Product
+            </button>
+        </a>
+    </div>
+    <div class="row p-3 my-3 bg-white shadow rounded-3">
+        <div class="col">
+            <table id="inventoryTable" class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Sale Price</th>
+                    <th>Location</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.product_id }}</td>
+                        <td>{{ product.product_name }}</td>
+                        <td>{{ product.product_category }}</td>
+                        <td>{{ product.product_quantity }}</td>
+                        <td>${{ product.product_sale_price | floatformat:"2" }}</td>
+                        <td>{{ product.product_location }}</td>
+                        <td style="width:125px;">
+                            <a onclick="openProductView('{{ product.product_id }}')" data-toggle="modal"
+                               data-target="#productViewModal" class="btn btn-sm btn-primary" title="Update Product">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                            <a href="{% url 'update_product' product.product_id %}" class="btn btn-sm btn-secondary"
+                               title="Update Product">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a onclick="deleteProduct('{{ product.product_id }}','{{ product.product_name }}')"
+                               class="btn btn-sm btn-danger" title="Delete Product">
+                                {% csrf_token %}
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-{% include  './modal/add_bootstrap_modal.html' %}
-{% endblock %} 
+    {% include  './modal/add_bootstrap_modal.html' %}
+{% endblock %}
 
 {% block scripts %}
 
-<script>
-  $("#inventoryTable").DataTable({});
-</script>
+    <script>
+        $("#inventoryTable").DataTable({});
+    </script>
 
-<script src="{% static 'js/inventory.js'  %}"></script>
+    <script src="{% static 'js/inventory.js' %}"></script>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 {% endblock %}
