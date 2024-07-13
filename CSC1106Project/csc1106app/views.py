@@ -260,7 +260,7 @@ def department_update(request, department_id):
         form = DepartmentForm(request.POST, instance=department)
         if form.is_valid():
             form.save()
-            return redirect('department_detail', department_id=department.id)
+            return redirect('department_detail', department_id=department.department_id)
     else:
         form = DepartmentForm(instance=department)
     return render(request, 'hrms/department_form.html', {'form': form})
