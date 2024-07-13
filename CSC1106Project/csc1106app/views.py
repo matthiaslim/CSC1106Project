@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 from .models import *
 from .crud_ops import *
 from .forms import *
@@ -196,10 +197,11 @@ def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            employee = form.save(commit=False) 
-            employee.user = request.user
-            employee.save()
-            return redirect('employee_list')
+            try:
+                form.save()
+                return redirect('employee_list')
+            except IntegrityError:
+                form.add_error(None, "An employee with this user already exists.")
     else:
         form = EmployeeForm()
     return render(request, 'hrms/employee_form.html', {'form': form})

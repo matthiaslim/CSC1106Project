@@ -25,7 +25,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
+        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
         
         GENDER_CHOICES = [
@@ -43,6 +43,7 @@ class EmployeeForm(forms.ModelForm):
         ]
 
         widgets = {
+            'user': forms.Select(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'department':  forms.Select(attrs={'class': 'form-control'}),
@@ -53,7 +54,6 @@ class EmployeeForm(forms.ModelForm):
             'hire_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'contract_expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'employee_role': forms.TextInput(attrs={'class': 'form-control'}),
-
         }
 
 

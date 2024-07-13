@@ -5,7 +5,7 @@ from .department import Department
 
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null = True, blank=True, related_name='employees')
