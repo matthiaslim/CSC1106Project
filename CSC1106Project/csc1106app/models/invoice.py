@@ -7,3 +7,6 @@ class Invoice(models.Model):
     employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
     invoice_date = models.DateField()
     status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.invoice_id

@@ -10,3 +10,6 @@ class InvoiceProduct(models.Model):
     invoice_quantity = models.IntegerField()
     invoice_price_per_unit = models.FloatField()
     payment_terms = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.invoice_product_id
