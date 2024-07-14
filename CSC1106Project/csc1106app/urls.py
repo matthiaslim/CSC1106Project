@@ -31,6 +31,8 @@ urlpatterns = [
     path('customer/management', login_required(views.customer_management), name="customer_management"),
     path('customer/details/<int:customerID>', login_required(views.customer_details), name="customer_details"),
     path('customer/create', login_required(views.create_customer), name="create_customer"),
+    path('customer/update/<int:customerID>', login_required(views.update_customer), name="update_customer"),
+    path('customer/delete/<int:customerID>', login_required(views.delete_customer), name="delete_customer"),
 
     # Employee URLs
     path('employees/', views.employee_list, name='employee_list'),

@@ -59,11 +59,9 @@
                 <i class="bi bi-chevron-right collapse-head" id="caret-finance"></i>
             </a>
             <div class="collapse {% if 'finance' in request.path %}show{% endif %}" id="collapse-finance">
-                <a class="list-group-item collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
-                   href="{% url 'po_management' %}">Purchase Order</a>
+
                 <a class="list-group-item collapse-item" href="#">Expenses</a>
-                <a class="list-group-item collapse-item {% if request.path == '/finance/sales' %}active{% endif %}"
-                   href="{% url 'sales_management' %}">Sales</a>
+
             </div>
             <a data-bs-toggle="collapse" href="#collapse-crm" role="button" aria-expanded="false"
                aria-controls="collapse-crm">
@@ -120,10 +118,14 @@
         });
 
         $("#custTable tbody").on("click", "tr", function () {
-            var membershipId = $(this).data('id');
-            console.log(membershipId);
-            window.location.href = '/customer/details/' + membershipId;
+            if ($(event.target).closest('input[type="checkbox"], .btn, .dropdown-menu').length === 0) {
+
+                var membershipId = $(this).data('id');
+                console.log(membershipId);
+                window.location.href = '/customer/details/' + membershipId;
+            }
         });
+
 
 
     });

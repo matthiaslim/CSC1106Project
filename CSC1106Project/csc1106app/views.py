@@ -7,6 +7,7 @@ from .crud_ops import *
 from .forms import *
 
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 # Home View
 def index(request):
@@ -103,18 +104,20 @@ def create_customer(request):
             last_name = form.cleaned_data.get('last_name')
             email_address = form.cleaned_data.get('email_address')
             phone_number = form.cleaned_data.get('phone_number')
-            dob = form.cleaned_data.get('dob')
+            date_of_birth = form.cleaned_data.get('date_of_birth')
             country = form.cleaned_data.get('country')
-            status = form.cleaned_data.get('status')
-            age = form.cleaned_data.get('age')
+            membership_status = form.cleaned_data.get('membership_status')
+            gender = form.cleaned_data.get('gender')
             address = form.cleaned_data.get('address')
             # call a func to save the data
 
             # m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, phone_number=phone_number, dob=dob, country=country, status=status, age=age, address=address)
             # m1.save()
+            expiry_date = datetime.now() + relativedelta(years=1)
             m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, 
-                            phone_number=phone_number, point_expiry_date=dob, member_expiry_date=datetime.now(), 
-                            membership_status=status, points=0, membership_level="Bronze", address=address)
+                            phone_number=phone_number, points_expiry_date=expiry_date, member_expiry_date=expiry_date, 
+                            membership_status=membership_status, points=0, membership_level="Bronze", address=address,
+                            country=country, date_of_birth=date_of_birth, gender=gender)
             m1.save()
             return redirect('customer_management')
     else:
@@ -126,6 +129,50 @@ def create_customer(request):
                    {'title': 'Create Customer'}]
     return render(request, 'customer/create_customer.html',
                   {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
+
+@login_required
+def update_customer(request, customerID):
+
+    membership = Membership.objects.get(member_id=customerID)
+
+    if request.method == 'POST':
+        form = CreateCustomerForm(request.POST)
+        if form.is_valid():
+
+            membership.first_name = form.cleaned_data.get('first_name')
+            membership.last_name = form.cleaned_data.get('last_name')
+            membership.email_address = form.cleaned_data.get('email_address')
+            membership.phone_number = form.cleaned_data.get('phone_number')
+            membership.date_of_birth = form.cleaned_data.get('date_of_birth')
+            membership.country = form.cleaned_data.get('country')
+            membership.membership_status = form.cleaned_data.get('membership_status')
+            membership.gender = form.cleaned_data.get('gender')
+            membership.address = form.cleaned_data.get('address')
+            membership.save()
+            
+            return redirect('customer_management')
+    else:
+
+        form = CreateCustomerForm(instance=membership)
+        
+    breadcrumbs = [{'title': 'Home', 'url': '/'},
+                   {'title': 'Customer'},
+                   {'title': 'Management', 'url': '/customer/management'},
+                   {'title': 'Create Customer'}]
+    return render(request, 'customer/update_customer.html',
+                  {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
+
+                  
+@login_required
+def delete_customer(request, customerID):
+    try:
+        membership = Membership.objects.get(member_id=customerID)
+        membership.delete()
+    except Membership.DoesNotExist:
+        # Handle the case where the customer does not exist
+        membership = None
+
+    return redirect('customer_management')
 
 # Employee Views
 def employee_list(request):
