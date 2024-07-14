@@ -1,6 +1,5 @@
 import base64
 from django.core.files.base import ContentFile
-from django.forms import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -11,11 +10,7 @@ from datetime import datetime
 from .models import *
 from .crud_ops import *
 from .forms import *
-import os
 from .decorators import department_required
-from django.core.files.storage import FileSystemStorage
-from CSC1106Project import settings;
-
 
 # Home View
 def index(request):
@@ -93,23 +88,8 @@ def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid:
-            if 'product_image' in request.FILES:
-                img = request.FILES['product_image']
 
-                upload_dir = os.path.join(settings.BASE_DIR, 'CSC1106Project', 'static', 'img', 'upload')
-
-                if not os.path.exists(upload_dir):
-                    os.makedirs(upload_dir)
-
-                file_path = os.path.join(upload_dir, img.name)
-
-                with open(file_path, 'wb+') as destination:
-                    for chunk in img.chunks():
-                        destination.write(chunk)
-
-                print(f"Saved image: {file_path}")  # Debugging statement
-
-                form.save()
+            form.save()
 
             return redirect('inventory_management')
     else:
@@ -120,15 +100,33 @@ def add_product(request):
 @login_required
 @department_required('Logistics')
 def get_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+  
+
     try:
-        product = get_object_or_404(Product, pk=pk)
-        product_dict = model_to_dict(product)
+        product_image_url = product.product_image.url if product.product_image else None
+    
+        # Add or replace the product_image_url in the dictionary
+        product_dict = {
+            'product_id' : product.product_id,
+            'product_name': product.product_name,
+            'product_description': product.product_description,
+            'product_category': product.product_category,
+            'product_quantity' : product.product_quantity,
+            'product_sale_price': product.product_sale_price,
+            'product_location' : product.product_location,
+            'product_width': product.product_width,
+            'product_height' : product.product_height,
+           'product_length' : product.product_length,
+            'product_image' : product_image_url 
+        }
+
         return JsonResponse({'product': product_dict, 'status': 200})
     except Exception as e:
         return JsonResponse({'error': str(e), 'status': 500})
 
 
-@login_required
+@login_required 
 @department_required('Logistics')
 def update_product(request, pk):
     breadcrumbs = [{'title': 'Home', 'url': '/'},

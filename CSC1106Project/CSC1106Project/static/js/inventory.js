@@ -1,37 +1,38 @@
 function openProductView(productId){
+   
     $.ajax({
         url: `get/${productId}`,
         method: 'GET',
         success: function(data) {
+
             if (data.status == 200) {
                 var product = data.product;
     
                 for (var itemName in product) {
                     if (product.hasOwnProperty(itemName)) {
-                        baseUrl = "/static/img/upload/";
                         var element = document.getElementById(itemName);
-    
+                      
                         // Check if element exists before updating
                         if (element) {
                             // Update element content based on its type
                             if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea' || element.tagName.toLowerCase() === 'select') {
                                 element.value = product[itemName];
                             } else if (element.tagName.toLowerCase() === 'img') {
-                                element.src = baseUrl + product[itemName];
+                                element.src = product[itemName];
                             } else {
                                 element.textContent = product[itemName];
                             }
                         } 
                     }
                 }
+                $('#productViewModal').modal('show');   
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            // Handle error
+            alert('Error: ' + errorThrown);
         }
     });
 
-    $('#productViewModal').modal('show');   
 }
 
 function deleteProduct(productID, productName) {
