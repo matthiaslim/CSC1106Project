@@ -185,7 +185,7 @@ def create_customer(request):
 
 
 # Employee Views
-@department_required('Human Resource')
+#department_required('Human Resource')
 def employee_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'first_name')
@@ -200,13 +200,13 @@ def employee_list(request):
     })
 
 
-@department_required('Human Resource')
+#department_required('Human Resource')
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     return render(request, 'hrms/employee_detail.html', {'employee': employee})
 
 
-@department_required('Human Resource')
+#department_required('Human Resource')
 def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
@@ -221,7 +221,7 @@ def employee_create(request):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
-@department_required('Human Resource')
+#department_required('Human Resource')
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     if request.method == "POST":
@@ -234,7 +234,7 @@ def employee_update(request, employee_id):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
-@department_required('Human Resource')
+#@department_required('Human Resource')
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     employee.delete()

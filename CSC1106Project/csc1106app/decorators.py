@@ -9,7 +9,7 @@ def department_required(*department_names):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
             employee = Employee.objects.filter(user=request.user).first()
-            if employee.department.department_name == 'Chairperson' or employee.department.department_name in department_names:
+            if employee.department.department_name == 'Chairman' or employee.department.department_name in department_names:
                 return view_func(request, *args, **kwargs)
             return render(request, 'base.html', {'permission_denied': True})
 
