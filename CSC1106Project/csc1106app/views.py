@@ -1,4 +1,5 @@
 from django.forms import inlineformset_factory
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -312,7 +313,23 @@ def sales_management(request):
     return render(request, 'finance/sales_management.html')
 
 def create_sales(request):
-    return render(request, 'finance/create_sales.html')
+    if request.method == 'POST':
+        sales_form = SalesForm(request.POST)
+        formset = SalesProductFormSet(request.POST, request.FILES)
+        print(formset.errors)
+        if sales_form.is_valid() and formset.is_valid():
+            sales = sales_form.save()
+            formset.instance = sales
+            formset.save()
+            return redirect('sales_management')
+    else:
+        sales_form = SalesForm()
+        formset = SalesProductFormSet()
+
+    for form in formset.forms:
+        form.set_initial_price()
+
+    return render(request, 'finance/create_sales.html', {'sales_form': sales_form , 'formset': formset})
 
 def invoice_management(request):
     return render(request, 'finance/invoice_management.html')
@@ -332,3 +349,10 @@ def create_invoice(request):
 
 
     return render(request, 'finance/create_invoice.html', {'invoice_form': invoice_form, 'formset': formset})
+
+def get_product_price(request, product_id):
+    try:
+        product = Product.objects.get(pk=product_id)
+        return JsonResponse({'price': product.product_sale_price})
+    except Product.DoesNotExist:
+        return JsonResponse({'error': 'Product not found'}, status=404)

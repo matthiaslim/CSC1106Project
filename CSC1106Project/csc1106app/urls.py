@@ -37,7 +37,7 @@ urlpatterns = [
     path('finance/sales/create', views.create_sales, name="create_sales"),
     path('finance/orders', views.invoice_management, name="invoice_management"),
     path('finance/orders/create', views.create_invoice, name="create_invoice"),
-
+    path('get-product-price/<int:product_id>/', views.get_product_price, name='get-product-price'),
     # Employee URLs
     path('employees/', views.employee_list, name='employee_list'),
     path('employees/<int:employee_id>/', views.employee_detail, name='employee_detail'),
