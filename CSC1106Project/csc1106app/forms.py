@@ -69,10 +69,37 @@ class AttendanceForm(forms.ModelForm):
         fields = ['time_out']
 
 
-class LeaveForm(forms.ModelForm):
+class LeaveAddForm(forms.ModelForm):
     class Meta:
         model = Leave
-        fields = ['employee', 'leave_start_date', 'leave_end_date']
+        fields = ['employee', 'leave_start_date', 'leave_end_date', 'leave_type']
+
+        LEAVE_TYPE = [
+                ('Annual', 'Annual'),
+                ('Medical', 'Medical'),
+            ]
+
+        widgets = {
+                'leave_start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+                'leave_end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+                'leave_type': forms.Select(choices=LEAVE_TYPE, attrs={'class': 'form-control'}),
+            }
+
+class LeaveStatusUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Leave
+        fields = ['leave_status', 'remark']
+
+        STATUS_CHOICES = [
+            ('Pending', 'Pending'),
+            ('Approved', 'Approved'),
+            ('Denied', 'Denied'),
+        ]
+
+        widgets = {
+            'leave_status': forms.Select(choices=STATUS_CHOICES, attrs={'class': 'form-control'}),
+            'remark': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 class PayrollForm(forms.ModelForm):

@@ -1,0 +1,1 @@
+default_app_config = 'csc1106.apps.Csc1106Config'

@@ -369,38 +369,104 @@ def attendance_update(request, attendance_id):
 
 
 # Leave Views
+@login_required
 def leave_list(request):
+
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'leave_start_date')
     order = request.GET.get('order', 'asc')
-    leaves = search_and_filter_leaves(query, sort_by, order)
-    return render(request, 'hrms/leave_list.html',
-                  {'leaves': leaves, 'query': query, 'sort_by': sort_by, 'order': order})
+    
+    logged_in_employee = get_object_or_404(Employee, user=request.user)
+    employee_leaves = Leave.objects.filter(employee=logged_in_employee)
+    
+    leave_balance, created = LeaveBalance.objects.get_or_create(employee=logged_in_employee)
+    
+    leaves = Leave.objects.all()
+    
+    if query:
+        leaves = leaves.filter(
+            Q(employee__first_name__icontains=query) | 
+            Q(employee__last_name__icontains=query) |
+            Q(leave_start_date__icontains=query) |
+            Q(leave_end_date__icontains=query) |
+            Q(leave_status__icontains=query)
+        )
+    
+    if order == 'desc':
+        sort_by = f'-{sort_by}'
+    leaves = leaves.order_by(sort_by)
+    
+    context = {
+        'leaves': leaves,
+        'employee_leaves': employee_leaves,
+        'leave_balance': leave_balance,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order
+    }
+    
+    return render(request, 'hrms/leave_list.html', context)
 
-
-def leave_create(request):
-    if request.method == "POST":
-        form = LeaveForm(request.POST)
+@login_required
+def add_leave(request):
+    logged_in_employee = get_object_or_404(Employee, user=request.user)
+    leave_balance, created = LeaveBalance.objects.get_or_create(employee=logged_in_employee)
+    
+    if request.method == 'POST':
+        print("POST request received")  
+        print("POST data:", request.POST)  
+        form = LeaveAddForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('leave_list')
+            leave = form.save(commit=False)
+            leave.employee = logged_in_employee
+            leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1 
+            
+            if leave_days <= 0:
+                form.add_error(None, 'End date must be after start date.')
+            else:
+                if leave.leave_type == 'Annual':
+                    if leave_days > leave_balance.annual_leave_balance:
+                        form.add_error(None, 'Not enough annual leave balance.')
+                    else:
+                        leave_balance.annual_leave_balance -= leave_days
+                        leave_balance.save()
+                        leave.save()
+                        print("Annual leave balance updated:", leave_balance.annual_leave_balance) 
+                        return redirect('leave_list')
+                
+                elif leave.leave_type == 'Medical':
+                    if leave_days > leave_balance.medical_leave_balance:
+                        form.add_error(None, 'Not enough medical leave balance.')
+                    else:
+                        leave_balance.medical_leave_balance -= leave_days
+                        leave_balance.save()
+                        leave.save()
+                        print("Medical leave balance updated:", leave_balance.medical_leave_balance)  
+                        return redirect('leave_list')
+        else:
+            print("Form is not valid")
+            print(form.errors) 
     else:
-        form = LeaveForm()
-    return render(request, 'hrms/leave_form.html', {'form': form})
+        form = LeaveAddForm()
+    
+    return render(request, 'hrms/leave_add.html', {'form': form})
 
 
-def leave_update(request, leave_id):
+
+@login_required
+@department_required('Human Resource')
+def edit_leave_status(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
-    if request.method == "POST":
-        form = LeaveForm(request.POST, instance=leave)
+    if request.method == 'POST':
+        form = LeaveStatusUpdateForm(request.POST, instance=leave)
         if form.is_valid():
             form.save()
             return redirect('leave_list')
     else:
-        form = LeaveForm(instance=leave)
-    return render(request, 'hrms/leave_form.html', {'form': form})
+        form = LeaveStatusUpdateForm(instance=leave)
+    return render(request, 'hrms/leave_edit.html', {'form': form})
 
-
+@login_required
 def leave_delete(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
     leave.delete()
