@@ -9,7 +9,6 @@
         <div class="card-body">
             <h5 class="card-title">Attendance ID: {{ attendance.attendance_id }}</h5>
             <p class="card-text"><strong>Employee:</strong> {{ attendance.employee.first_name }} {{ attendance.employee.last_name }}</p>
-            <p class="card-text"><strong>Date:</strong> {{ attendance.attendance_date }}</p>
             <p class="card-text"><strong>Time In:</strong> {{ attendance.time_in }}</p>
             <p class="card-text"><strong>Time Out:</strong> {{ attendance.time_out }}</p>
             {% if attendance.image %}
