@@ -44,34 +44,4 @@ document.addEventListener('DOMContentLoaded', function () {
             collapseElement.classList.add('show');
         }
     }
-
-    // Prevent dropdown closing on checkbox click
-    const checkboxes = document.querySelectorAll('.filter-item');
-    checkboxes.forEach(checkbox =>
-        checkbox.addEventListener('click', (event) => event.stopPropagation()));
-
-
-    // Map category checkboxes to their collapse containers
-    const filterMap = {
-        categoryCheck: document.getElementById('categoryFilter'),
-        sizeCheck: document.getElementById('sizeFilter'),
-        priceCheck: document.getElementById('priceFilter'),
-    };
-
-    checkboxes.forEach(checkbox => {
-        const filterId = checkbox.querySelector('input').id;  // Get checkbox ID
-        const filterContainer = filterMap[filterId];          // Find mapped container
-
-        checkbox.addEventListener('click', () => {
-            const isChecked = checkbox.querySelector('input').checked;
-
-            if (isChecked) {
-                // Show the clicked filter's container
-                filterContainer.classList.add('show');
-            } else {
-                // Hide the clicked filter's container
-                filterContainer.classList.remove('show');
-            }
-        });
-    });
 });

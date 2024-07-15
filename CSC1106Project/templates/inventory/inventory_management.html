@@ -62,7 +62,11 @@
 {% block scripts %}
 
     <script>
-        $("#inventoryTable").DataTable({});
+        $("#inventoryTable").DataTable({
+            "columnDefs": [
+                {"orderable": false, "targets": [-1]} // Disable sorting on the last column
+            ]
+        });
     </script>
 
     <script src="{% static 'js/inventory.js' %}"></script>
