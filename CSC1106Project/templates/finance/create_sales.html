@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid my-4 cust-container p-5 bg-white rounded shadow">
+        <h3>New sales order</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="w-50">
+                {{ sales_form.employee_id.label_tag }}
+                {{ sales_form.employee_id }}
+                {{ sales_form.membership_id.label_tag }}
+                {{ sales_form.membership_id }}
+                {{ sales_form.transaction_date.label_tag }}
+                {{ sales_form.transaction_date }}
+                {{ sales_form.points_earned.label_tag }}
+                {{ sales_form.points_earned }}
+            </div>
+            <table id="transactionProductTable" class="table rounded my-5">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price Per Unit</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                    <tr class="form-row">
+                        <td>{{ form.product_id }}</td>
+                        <td>{{ form.transaction_quantity }}</td>
+                        <td>{{ form.transaction_price_per_unit }}</td>
+                        <!-- Add more fields as needed -->
+                        <td>
+                            <button type="button" class="remove-row btn btn-danger">Remove</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr id="form-template" style="display: none;">
+                    <td>{{ formset.empty_form.product_id }}</td>
+                    <td>{{ formset.empty_form.transaction_quantity }}</td>
+                    <td>{{ formset.empty_form.transaction_price_per_unit }}</td>
+                    <!-- Add more fields as needed -->
+                    <td>
+                        <button type="button" class="remove-row btn btn-danger">Remove</button>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot align="center">
+                <tr>
+                    <td colspan="5">
+                        <button id="add-more" class="btn btn-outline-secondary"><i class="bi bi-plus"></i>
+                            Add new product
+                        </button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+            <button type="submit" class="btn btn-primary">Create Invoice</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            let tableBody = document.querySelector("#transactionProductTable tbody");
+            let templateRow = document.querySelector("#form-template");
+            let addButton = document.getElementById("add-more");
+            let totalForms = document.getElementById("id_transactionproduct_set-TOTAL_FORMS");
+
+            addButton.addEventListener("click", function () {
+                let clone = templateRow.cloneNode(true);
+                clone.removeAttribute("id");
+                clone.style.display = "";
+                clone.classList.add('form-row'); // Ensure the cloned row has the form-row class
+                let formRegex = RegExp('id_transactionproduct_set-__prefix__-', 'g');
+                let nameRegex = RegExp('transactionproduct_set-__prefix__', 'g');
+                let newFormIndex = totalForms.value;
+                clone.innerHTML = clone.innerHTML.replace(formRegex, `id_transactionproduct_set-${newFormIndex}-`).replace(nameRegex, `transactionproduct_set-${newFormIndex}`);
+                tableBody.insertBefore(clone, tableBody.lastElementChild);
+                totalForms.value = parseInt(totalForms.value) + 1;
+            });
+
+            tableBody.addEventListener("click", function (e) {
+                if (e.target.classList.contains("remove-row")) {
+                    e.target.closest("tr").remove();
+                    totalForms.value = parseInt(totalForms.value) - 1;
+                }
+            });
+
+            {#const productSelects = document.querySelectorAll('.product-select');#}
+            {##}
+            {#productSelects.forEach(select => {#}
+            {#    select.addEventListener('change', function () {#}
+            {#        const productId = this.value;#}
+            {#        const priceInput = this.closest('.form-row').querySelector('.price-per-unit');#}
+            {##}
+            {#        fetch(`/get-product-price/${productId}/`)#}
+            {#            .then(response => response.json())#}
+            {#            .then(data => {#}
+            {#                if (data.price) {#}
+            {#                    priceInput.value = data.price;#}
+            {#                    console.log('Price updated to: ', priceInput.value); // Log the updated price#}
+            {#                } else {#}
+            {#                    console.error('Product price not found');#}
+            {#                }#}
+            {#            })#}
+            {#            .catch(error => console.error('Error fetching product price:', error));#}
+            {#    });#}
+            {# });#}
+
+            document.querySelector("#transactionProductTable").addEventListener('change', function (e) {
+                if (e.target.classList.contains('product-select')) {
+                    const productId = e.target.value;
+                    // Ensure the closest '.form-row' exists before proceeding
+                    const formRow = e.target.closest('.form-row');
+                    if (formRow) {
+                        const priceInput = formRow.querySelector('.price-per-unit');
+                        if (priceInput) {
+                            fetch(`/get-product-price/${productId}/`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.price) {
+                                        priceInput.value = data.price;
+                                    } else {
+                                        console.error('Product price not found');
+                                    }
+                                })
+                                .catch(error => console.error('Error fetching product price:', error));
+                        } else {
+                            console.error('Price input not found');
+                        }
+                    } else {
+                        console.error('Form row not found');
+                    }
+                }
+            });
+
+
+        });
+
+
+    </script>
+{% endblock %}

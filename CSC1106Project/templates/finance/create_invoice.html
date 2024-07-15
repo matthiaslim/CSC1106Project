@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid my-4 cust-container p-5 bg-white rounded shadow">
+        <h3>New Purchase Order</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="w-50">
+                {{ invoice_form.employee_id.label_tag }}
+                {{ invoice_form.employee_id }}
+                {{ invoice_form.invoice_date.label_tag }}
+                {{ invoice_form.invoice_date }}
+                {{ invoice_form.status.label_tag }}
+                {{ invoice_form.status }}
+            </div>
+            <table id="invoiceProductTable" class="table rounded my-5">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price Per Unit</th>
+                    <th>Payment Terms</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                    <tr class="form-row">
+                        <td>{{ form.product_id }}</td>
+                        <td>{{ form.invoice_quantity }}</td>
+                        <td>{{ form.invoice_price_per_unit }}</td>
+                        <td>{{ form.payment_terms }}</td>
+                        <!-- Add more fields as needed -->
+                        <td>
+                            <button type="button" class="remove-row btn btn-danger">Remove</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr id="form-template" style="display: none;">
+                    <td>{{ formset.empty_form.product_id }}</td>
+                    <td>{{ formset.empty_form.invoice_quantity }}</td>
+                    <td>{{ formset.empty_form.invoice_price_per_unit }}</td>
+                    <td>{{ formset.empty_form.payment_terms }}</td>
+                    <!-- Add more fields as needed -->
+                    <td>
+                        <button type="button" class="remove-row btn btn-danger">Remove</button>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot align="center">
+                <tr>
+                    <td colspan="5">
+                        <button id="add-more" class="btn btn-outline-secondary"><i class="bi bi-plus"></i>
+                            Add new product
+                        </button>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+            <button type="submit" class="btn btn-primary">Create Invoice</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            let tableBody = document.querySelector("#invoiceProductTable tbody");
+            let templateRow = document.querySelector("#form-template");
+            let addButton = document.getElementById("add-more");
+            let totalForms = document.getElementById("id_invoiceproduct_set-TOTAL_FORMS");
+
+            addButton.addEventListener("click", function () {
+                let clone = templateRow.cloneNode(true);
+                clone.removeAttribute("id");
+                clone.style.display = "";
+                let formRegex = RegExp('id_invoiceproduct_set-__prefix__-', 'g');
+                let nameRegex = RegExp('invoiceproduct_set-__prefix__', 'g');
+                let newFormIndex = totalForms.value;
+                clone.innerHTML = clone.innerHTML.replace(formRegex, `id_invoiceproduct_set-${newFormIndex}-`).replace(nameRegex, `invoiceproduct_set-${newFormIndex}`);
+                tableBody.insertBefore(clone, tableBody.lastElementChild);
+                totalForms.value = parseInt(totalForms.value) + 1;
+            });
+
+            tableBody.addEventListener("click", function (e) {
+                if (e.target.classList.contains("remove-row")) {
+                    e.target.closest("tr").remove();
+                    totalForms.value = parseInt(totalForms.value) - 1;
+                }
+            });
+
+            tableBody.addEventListener('change', function (e) {
+                if (e.target && e.target.name.includes('product_id')) {
+                    const productSelect = e.target;
+                    const selectedOption = productSelect.options[productSelect.selectedIndex];
+                    console.log(productSelect);
+                    const price = selectedOption.getAttribute('data-price');
+                    // Find the corresponding price input by replacing 'product_id' with 'invoice_price_per_unit' in the name attribute
+                    const priceInputName = productSelect.name.replace('product_id', 'invoice_price_per_unit');
+                    const priceInput = document.querySelector(`[name="${priceInputName}"]`);
+                    if (priceInput) {
+                        priceInput.value = price;
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

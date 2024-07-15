@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid my-4 cust-container px-5">
+        <div class="row mb-4 bg-white rounded shadow py-3">
+            <p>Sales Summary</p>
+            <div class="col-4">
+                <p>Total Sales</p>
+                <h3>$691.53</h3>
+            </div>
+            <div class="col-4">
+                <p>Products Sold</p>
+                <h3>30 Products</h3>
+            </div>
+            <div class="col-4">
+                <p>Pending Payments</p>
+                <h3>$691.53</h3>
+                <p>10 Orders</p>
+            </div>
+        </div>
+        <div class="row mb-4 py-3">
+            <div class="col mb-4 px-0">
+                <div class="bg-white rounded shadow p-3">
+                    <div class="btn-container d-flex justify-content-start mb-4">
+                        <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
+                        <a class="btn btn-primary ms-3" href="{% url 'create_sales' %}"><i class="bi bi-person-fill-add"></i>
+                            New Sales Order
+                        </a>
+                    </div>
+                    <table id="poTable" class="table table-hover">
+                        <thead>
+                        <tr>
+                            {# invoice id, invoice date, status, employee #}
+                            <th>Invoice ID</th>
+                            <td>Date</td>
+                            <td>Status</td>
+                            <td>Employee</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {# Add in the data from the database #}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
