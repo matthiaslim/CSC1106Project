@@ -226,7 +226,7 @@ def employee_update(request, employee_id):
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect('employee_detail', employee_id=employee.employee_id)
+            return redirect('employee_list')
     else:
         form = EmployeeForm(instance=employee)
     return render(request, 'hrms/employee_form.html', {'form': form})
@@ -235,8 +235,10 @@ def employee_update(request, employee_id):
 #@department_required('Human Resource')
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
-    employee.delete()
-    return redirect('employee_list')
+    if request.method == "POST":
+        employee.delete()
+        messages.success(request, 'Employee was deleted successfully.')
+        return redirect('employee_list')
 
 
 # Department Views
@@ -294,6 +296,12 @@ def attendance_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'attendance_date')
     order = request.GET.get('order', 'asc')
+    
+    if sort_by == 'first_name':
+        sort_by = 'employee__first_name'
+    elif sort_by == 'last_name':
+        sort_by = 'employee__last_name'
+    
     attendances = search_and_filter_attendances(query, sort_by, order)
     return render(request, 'hrms/attendance_list.html',
                   {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
@@ -459,7 +467,7 @@ def edit_leave_status(request, leave_id):
         form = LeaveStatusUpdateForm(request.POST, instance=leave)
         if form.is_valid():
             form.save()
-            return redirect('leave_list')
+            return redirect('leave_list', leave_id=leave.id)  # Replace 'leave_detail' with your actual URL name
     else:
         form = LeaveStatusUpdateForm(instance=leave)
     return render(request, 'hrms/leave_edit.html', {'form': form})

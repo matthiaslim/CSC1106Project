@@ -114,6 +114,14 @@
     </div>
 </div>
 {% endblock %}
+{% block scripts %}
+<script>
+    $('#leaveTable').DataTable({});
+    document.querySelector('.dropdown-menu').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+</script>
+{% endblock %}
 
 {% block scripts %}
 <script>
@@ -121,3 +129,20 @@
     $('#yourLeaveTable').DataTable({});
 </script>
 {% endblock %}
+
+<style>
+    .total-employees-number {
+        font-size: 2em;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .dropdown-menu form {
+        width: 200px; /* Adjust the width as needed */
+    }
+    .dropdown-menu .form-group {
+        margin-bottom: 15px;
+    }
+    .dropdown-menu .btn {
+        width: 100%; /* Make the button full width */
+    }
+</style>

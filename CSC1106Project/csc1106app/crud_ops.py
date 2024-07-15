@@ -34,7 +34,7 @@ def search_and_filter_departments(query=None, sort_by='department_name', order='
     departments = departments.order_by(sort_by)
     return departments
 
-def search_and_filter_attendances(query=None, sort_by='first_name', order='asc'):
+def search_and_filter_attendances(query=None, sort_by='employee__first_name', order='asc'):
     if order == 'desc':
         sort_by = f'-{sort_by}'
     
@@ -44,13 +44,13 @@ def search_and_filter_attendances(query=None, sort_by='first_name', order='asc')
         attendances = attendances.filter(
             Q(employee__first_name__icontains=query) |
             Q(employee__last_name__icontains=query) |
-            Q(attendance__date__icontains=query)
+            Q(attendance_date__icontains=query)
         )
     
     attendances = attendances.order_by(sort_by)
     return attendances
 
-def search_and_filter_leaves(query=None, sort_by='first_name', order='asc'):
+def search_and_filter_leaves(query=None, sort_by='leave_start_date', order='asc'):
     if order == 'desc':
         sort_by = f'-{sort_by}'
     
@@ -61,11 +61,12 @@ def search_and_filter_leaves(query=None, sort_by='first_name', order='asc'):
             Q(employee__first_name__icontains=query) |
             Q(employee__last_name__icontains=query) |
             Q(leave_start_date__icontains=query) |
-            Q(leave_end_date__icontains=query) 
+            Q(leave_end_date__icontains=query)
         )
     
     leaves = leaves.order_by(sort_by)
     return leaves
+
 
 def search_and_filter_payrolls(query=None, sort_by='first_name', order='asc'):
     if order == 'desc':

@@ -23,6 +23,10 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class EmployeeForm(forms.ModelForm):
+    date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
+    hire_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
+    contract_expiry_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
+
     class Meta:
         model = Employee
         fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
