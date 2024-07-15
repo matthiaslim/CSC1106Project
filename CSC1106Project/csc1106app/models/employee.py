@@ -10,7 +10,6 @@ class Employee(models.Model):
     last_name = models.CharField(max_length=50)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null = True, blank=True, related_name='employees')
     job_title = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
     gender = models.CharField(max_length=10)
     date_of_birth = models.DateField()
     hire_date = models.DateField()

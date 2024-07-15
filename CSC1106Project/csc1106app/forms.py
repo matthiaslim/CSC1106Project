@@ -5,7 +5,6 @@ from django.forms import inlineformset_factory, Select
 
 from .models import *
 
-
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
@@ -38,7 +37,7 @@ class EmployeeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
-        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
+        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
 
         GENDER_CHOICES = [
