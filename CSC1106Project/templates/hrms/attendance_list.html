@@ -13,7 +13,6 @@
             <tr>
               	<th>ID</th>
             	<th>Employee</th>
-            	<th>Date</th>
             	<th>Time In</th>
             	<th>Time Out</th>
             	<th>Actions</th>
@@ -22,12 +21,15 @@
             <tbody>
             {% for attendance in attendances %}
             <tr>
-                <td><a href="{% url 'attendance_detail' attendance.attendance_id %}">{{ attendance.attendance_id }}</a></td>
+                <td>{{ attendance.attendance_id }}</td>
                 <td>{{ attendance.employee.first_name }} {{ attendance.employee.last_name }}</td>
-            	<td>{{ attendance.attendance_date }}</td>
             	<td>{{ attendance.time_in }}</td>
             	<td>{{ attendance.time_out }}</td>
                 <td>
+                    <a href="{% url 'attendance_detail' attendance.attendance_id %}">
+                        <button class="btn btn-sm btn-primary" title="View Details">
+                            <i class="bi bi-eye"></i>
+                        </button>
                     <a href="{% url 'attendance_update' attendance.attendance_id %}">
                         <button class="btn btn-sm btn-secondary" title="Update Time Out">
                             <i class="bi bi-pencil-square"></i>
@@ -41,7 +43,6 @@
             <tr>
                 <th>ID</th>
             	<th>Employee</th>
-            	<th>Date</th>
             	<th>Time In</th>
             	<th>Time Out</th>
             	<th>Actions</th>
@@ -62,20 +63,3 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
-<style>
-    .total-employees-number {
-        font-size: 2em;
-        font-weight: bold;
-        margin-top: 10px;
-    }
-    .dropdown-menu form {
-        width: 200px; /* Adjust the width as needed */
-    }
-    .dropdown-menu .form-group {
-        margin-bottom: 15px;
-    }
-    .dropdown-menu .btn {
-        width: 100%; /* Make the button full width */
-    }
-</style>

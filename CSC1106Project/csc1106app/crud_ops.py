@@ -43,8 +43,7 @@ def search_and_filter_attendances(query=None, sort_by='employee__first_name', or
     if query:
         attendances = attendances.filter(
             Q(employee__first_name__icontains=query) |
-            Q(employee__last_name__icontains=query) |
-            Q(attendance_date__icontains=query)
+            Q(employee__last_name__icontains=query)
         )
     
     attendances = attendances.order_by(sort_by)

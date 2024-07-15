@@ -389,7 +389,7 @@ def department_delete(request, department_id):
 @login_required
 def attendance_list(request):
     query = request.GET.get('q')
-    sort_by = request.GET.get('sort', 'attendance_date')
+    sort_by = request.GET.get('sort', 'attendance_id')
     order = request.GET.get('order', 'asc')
 
     if sort_by == 'first_name':
