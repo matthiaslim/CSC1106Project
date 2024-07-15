@@ -1,6 +1,6 @@
 # decorators.py
 from functools import wraps
-from datetime import date, datetime
+from datetime import date
 from django.shortcuts import render, get_object_or_404
 from .models import Employee
 from .models import Attendance
@@ -32,11 +32,11 @@ def user_check_in_status(request):
 
         if (employee is not None):
             employee_id = employee.employee_id
-            userExists = Attendance.objects.filter(employee_id=employee_id, time_in__date=today).exists()
+
             userClockIn = Attendance.objects.filter(employee_id=employee_id, time_in__date=today).first()
-            if (userExists):
-                if (userClockIn != None):
-                    is_checked_in = True
+
+            if (userClockIn is not None):
+                is_checked_in = True
 
                 if (userClockIn.time_out is not None):
                     if (userClockIn.time_out.date() == today):
