@@ -16,6 +16,7 @@ class Employee(models.Model):
     hire_date = models.DateField()
     contract_expiry_date = models.DateField(null=True, blank=True)
     employee_role = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='employee_images/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
