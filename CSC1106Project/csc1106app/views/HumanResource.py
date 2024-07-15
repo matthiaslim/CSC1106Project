@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from ..crud_ops import search_and_filter_attendances, search_and_filter_departments, search_and_filter_employees, search_and_filter_payrolls
-from ..forms import AttendanceForm, DepartmentForm, EmployeeForm, LeaveAddForm, LeaveStatusUpdateForm, PayrollForm
+from ..forms import AttendanceForm, DepartmentForm, EmployeeForm, LeaveAddForm, LeaveStatusUpdateForm, PayrollForm, CustomUserCreationForm
 from ..models.attendance import Attendance
 from ..models.department import Department
 from ..models.employee import Employee
@@ -45,15 +45,24 @@ def employee_detail(request, employee_id):
 def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
-        if form.is_valid():
+        user_form = CustomUserCreationForm(request.POST)
+        if form.is_valid() and user_form.is_valid():
             try:
-                form.save()
+                user = user_form.save()
+                
+                employee = form.save(commit=False)
+                employee.user = user
+                employee.save()
+                
                 return redirect('employee_list')
             except IntegrityError:
                 form.add_error(None, "An employee with this user already exists.")
+            
     else:
+        user_form = CustomUserCreationForm()
         form = EmployeeForm()
-    return render(request, 'hrms/employee_form.html', {'form': form})
+
+    return render(request, 'hrms/employee_form.html', {'form': form, 'user_form' : user_form})
 
 
 # @department_required('Human Resource')

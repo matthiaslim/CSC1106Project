@@ -78,16 +78,16 @@ def onboard(request):
         form = ChangePasswordForm(request.user)
     return render(request, 'onboard.html', {'form': form})
 
-def register_user(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')  # Redirect to a home page or another page after signup
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+# def register_user(request):
+#     if request.method == 'POST':
+#         form = CustomUserCreationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return redirect('home')  # Redirect to a home page or another page after signup
+#     else:
+#         form = CustomUserCreationForm()
+#     return render(request, 'signup.html', {'form': form})
 
 
 def logout_user(request):

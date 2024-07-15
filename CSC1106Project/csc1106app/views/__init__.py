@@ -1,4 +1,4 @@
-from .authentication import (index,login_user,logout_user,register_user,settings, onboard)
+from .authentication import (index,login_user,logout_user,settings, onboard)
 
 from .Logistics import (inventory_management,add_product,get_product,update_product,delete_product)
 
@@ -16,7 +16,6 @@ __all__ = [
     'index',
     'login_user',
     'logout_user',
-    'register_user',
     'onboard',
     'settings',
     'inventory_management',

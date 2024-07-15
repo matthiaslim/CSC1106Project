@@ -8,12 +8,11 @@ from .models import *
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('email', 'name')
+        fields = ('email',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
-        self.fields['name'].widget.attrs.update({'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
 
@@ -37,7 +36,7 @@ class EmployeeForm(forms.ModelForm):
 
     class Meta:
         model = Employee
-        fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'gender', 'date_of_birth',
+        fields = ['first_name', 'last_name', 'department', 'job_title', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
 
         GENDER_CHOICES = [
@@ -55,7 +54,6 @@ class EmployeeForm(forms.ModelForm):
         ]
 
         widgets = {
-            'user': forms.Select(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'department': forms.Select(attrs={'class': 'form-control'}),
