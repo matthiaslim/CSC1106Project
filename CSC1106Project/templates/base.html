@@ -91,37 +91,44 @@
     <div class="navbar-content-wrapper">
         <nav class="navbar navbar-expand-lg px-5">
             <h4 class="mb-0"> {% block includes %} {{ page_title }} {% endblock includes %} </h4>
-            
+
             <div class="ms-auto">
                 <ul class="navbar-nav">
-                    
-                    {% if not is_checked_out and is_checked_in %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'attendance_check_out' %}">
-                            <button class="btn btn-danger focus-ring">
-                                <i class="bi bi-box-arrow-right"></i> Employee Check Out
-                            </button>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Welcome, {{ user_data.first_name }} {{ user_data.last_name }}
                         </a>
-                    </li>
-                    {% endif %}
+                        <ul class="dropdown-menu">
+                            {% if not is_checked_out and is_checked_in %}
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger" href="{% url 'attendance_check_out' %}">
+                                        <i class="bi bi-person-x-fill"></i> Employee Check Out
+                                    </a>
+                                </li>
+                            {% endif %}
 
-                    {% if not is_checked_in  %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'attendance_create' %}">
-                            <button class="btn btn-primary focus-ring">
-                                <i class="bi bi-plus-lg"></i> Employee Check In
-                            </button>
-                        </a>
-                    </li>
-                    
-                    {% endif %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">
-                            <button class="btn btn-danger focus-ring">
-                                <i class="bi bi-plus-lg"></i> Log out
-                            </button>
-                        </a>
+                            {% if not is_checked_in %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'attendance_create' %}">
+                                        <i class="bi bi-person-plus-fill"></i> Employee Check In
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a href="{% url 'settings' %}"
+                                   class="nav-link">
+                                    <i class="bi bi-gear-fill"></i>
+                                    Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    Log out
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>

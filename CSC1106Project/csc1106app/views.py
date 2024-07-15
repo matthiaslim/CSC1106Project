@@ -1,8 +1,10 @@
 import base64
+
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.files.base import ContentFile
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -13,9 +15,24 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
+
 # Home View
 def index(request):
     return render(request, 'index.html')
+
+
+def settings(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('home')
+    else:
+        form = ChangePasswordForm(request.user)
+
+
+    return render(request, 'settings.html', {'form': form})
 
 
 # Login View

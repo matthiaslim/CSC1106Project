@@ -69,8 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'csc1106app.decorators.user_check_in_status'
-
+                'csc1106app.decorators.user_check_in_status',
             ],
         },
     },

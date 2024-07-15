@@ -38,7 +38,10 @@ def user_check_in_status(request):
                 if (userClockIn != None):
                     is_checked_in = True
 
-                if (userClockIn.time_out.date() == today):
-                    is_checked_out = True
+                if (userClockIn.time_out is not None):
+                    if (userClockIn.time_out.date() == today):
+                        is_checked_out = True
+
+        return {'is_checked_in': is_checked_in, 'is_checked_out': is_checked_out, 'user_data': employee}
 
     return {'is_checked_in': is_checked_in, 'is_checked_out': is_checked_out}

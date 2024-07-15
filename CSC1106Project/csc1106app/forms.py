@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory, Select
 
@@ -24,6 +24,12 @@ class CustomAuthenticationForm(AuthenticationForm):
         model = User
         fields = ('email', 'password')
 
+class ChangePasswordForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
 
 class EmployeeForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
