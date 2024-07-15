@@ -148,3 +148,33 @@ class ProductForm(forms.ModelForm):
             'product_length': forms.NumberInput(attrs={'class': 'form-control'}),
             'product_image': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+
+class CreateCustomerForm(forms.ModelForm):
+    class Meta:
+        model = Membership
+        fields = ['first_name', 'last_name', 'email_address', 'phone_number', 'date_of_birth', 'country', 'membership_status', 'gender', 'address']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'country': forms.Select(),
+            'membership_status': forms.Select(),
+            'gender': forms.Select(),
+        }
+        labels = {
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'email_address': 'Email',
+            'phone_number': 'Phone Number',
+            'date_of_birth': 'Date of Birth',
+            'country': 'Country',
+            'membership_status': 'Status',
+            'gender': 'Gender',
+            'address': 'Address',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(CreateCustomerForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].max_length = 100
+        self.fields['last_name'].max_length = 100
+        self.fields['email_address'].max_length = 100
+        self.fields['address'].max_length = 100

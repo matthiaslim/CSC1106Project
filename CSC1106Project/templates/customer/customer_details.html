@@ -16,25 +16,21 @@
                             <p class="fw-bold">Email</p>
                             <p class="fw-bold">Telephone</p>
                             <p class="fw-bold">Gender</p>
-                            <p class="fw-bold">Country</p>
                             <p class="fw-bold">Address</p>
                         </div>
                         <div class="col-4">
-                            <p>EmmaWatson@gmail.com</p>
-                            <p>+65 9182 9491</p>
-                            <p>Female</p>
-                            <p>Singapore</p>
-                            <p>13 Yishun Ring Rd #19-15, Singapore 641029</p>
+                            <p>{{membership.email_address}}</p>
+                            <p>{{ membership.phone_number }}</p>
+                            <p>{{ membership.gender }}</p>
+                            <p>{{ membership.address }}</p>
                         </div>
                         <div class="col-3">
                             <p class="fw-bold">Date Of Birth</p>
-                            <p class="fw-bold">Age</p>
-                            <p class="fw-bold">Status</p>
+                            <p class="fw-bold">Country</p>
                         </div>
                         <div class="col-3">
-                            <p>15 April 1990</p>
-                            <p>34</p>
-                            <p>Active</p>
+                            <p>{{ membership.date_of_birth }}</p>
+                            <p>{{ membership.country }}</p>
                         </div>
                     </div>
                 </div>
@@ -44,6 +40,22 @@
                     <div class="p-3">
                         <p class="fw-bold">Membership</p>
                         <hr class="solid" />
+                        <div class="row mt-5">
+                            <div class="col-5">
+                                <p class="fw-bold">Status</p>
+                                <p class="fw-bold">Membership Tier</p>
+                                <p class="fw-bold">Total Points</p>
+                                <p class="fw-bold">Points Expiry Date</p>
+                                <p class="fw-bold">Membership Expiry Date</p>
+                            </div>
+                            <div class="col-3">
+                                <p>{{membership.membership_status}}</p>
+                                <p>{{ membership.membership_level }}</p>
+                                <p>{{ membership.points }}</p>
+                                <p>{{ membership.points_expiry_date }}</p>
+                                <p>{{ membership.member_expiry_date }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row bg-white shadow rounded">
