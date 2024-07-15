@@ -1,20 +1,17 @@
 import base64
 from django.core.files.base import ContentFile
 from django.http import JsonResponse
-from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from datetime import datetime
-from .models import *
 from .crud_ops import *
 from .forms import *
 from .decorators import department_required
-
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+
 
 # Home View
 def index(request):
@@ -92,7 +89,6 @@ def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid:
-
             form.save()
 
             return redirect('inventory_management')
@@ -105,24 +101,23 @@ def add_product(request):
 @department_required('Logistics')
 def get_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-  
 
     try:
         product_image_url = product.product_image.url if product.product_image else None
-    
+
         # Add or replace the product_image_url in the dictionary
         product_dict = {
-            'product_id' : product.product_id,
+            'product_id': product.product_id,
             'product_name': product.product_name,
             'product_description': product.product_description,
             'product_category': product.product_category,
-            'product_quantity' : product.product_quantity,
+            'product_quantity': product.product_quantity,
             'product_sale_price': product.product_sale_price,
-            'product_location' : product.product_location,
+            'product_location': product.product_location,
             'product_width': product.product_width,
-            'product_height' : product.product_height,
-           'product_length' : product.product_length,
-            'product_image' : product_image_url 
+            'product_height': product.product_height,
+            'product_length': product.product_length,
+            'product_image': product_image_url
         }
 
         return JsonResponse({'product': product_dict, 'status': 200})
@@ -130,7 +125,7 @@ def get_product(request, pk):
         return JsonResponse({'error': str(e), 'status': 500})
 
 
-@login_required 
+@login_required
 @department_required('Logistics')
 def update_product(request, pk):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
@@ -162,7 +157,7 @@ def customer_management(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'}]
-    data =  {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'memberships': memberships}
+    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'memberships': memberships}
     return render(request, 'customer/customer_management.html', data)
 
 
@@ -179,7 +174,7 @@ def customer_details(request, customerID):
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'},
                    {'title': f'Customer Details - {membership}'}]
-    data =  {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'membership': membership}
+    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'membership': membership}
 
     return render(request, 'customer/customer_details.html', data)
 
@@ -187,7 +182,6 @@ def customer_details(request, customerID):
 @login_required
 @department_required('Customer Relations')
 def create_customer(request):
-
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
         if form.is_valid():
@@ -206,15 +200,15 @@ def create_customer(request):
             # m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, phone_number=phone_number, dob=dob, country=country, status=status, age=age, address=address)
             # m1.save()
             expiry_date = datetime.now() + relativedelta(years=1)
-            m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, 
-                            phone_number=phone_number, points_expiry_date=expiry_date, member_expiry_date=expiry_date, 
+            m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address,
+                            phone_number=phone_number, points_expiry_date=expiry_date, member_expiry_date=expiry_date,
                             membership_status=membership_status, points=0, membership_level="Bronze", address=address,
                             country=country, date_of_birth=date_of_birth, gender=gender)
             m1.save()
             return redirect('customer_management')
     else:
         form = CreateCustomerForm()
-        
+
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management'},
@@ -222,15 +216,14 @@ def create_customer(request):
     return render(request, 'customer/create_customer.html',
                   {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
 
+
 @login_required
 def update_customer(request, customerID):
-
     membership = Membership.objects.get(member_id=customerID)
 
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
         if form.is_valid():
-
             membership.first_name = form.cleaned_data.get('first_name')
             membership.last_name = form.cleaned_data.get('last_name')
             membership.email_address = form.cleaned_data.get('email_address')
@@ -241,12 +234,12 @@ def update_customer(request, customerID):
             membership.gender = form.cleaned_data.get('gender')
             membership.address = form.cleaned_data.get('address')
             membership.save()
-            
+
             return redirect('customer_management')
     else:
 
         form = CreateCustomerForm(instance=membership)
-        
+
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management'},
@@ -254,7 +247,7 @@ def update_customer(request, customerID):
     return render(request, 'customer/update_customer.html',
                   {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
 
-                  
+
 @login_required
 def delete_customer(request, customerID):
     try:
@@ -266,8 +259,9 @@ def delete_customer(request, customerID):
 
     return redirect('customer_management')
 
+
 # Employee Views
-#department_required('Human Resource')
+# department_required('Human Resource')
 def employee_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'first_name')
@@ -282,13 +276,13 @@ def employee_list(request):
     })
 
 
-#department_required('Human Resource')
+# department_required('Human Resource')
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     return render(request, 'hrms/employee_detail.html', {'employee': employee})
 
 
-#department_required('Human Resource')
+# department_required('Human Resource')
 def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
@@ -303,7 +297,7 @@ def employee_create(request):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
-#department_required('Human Resource')
+# department_required('Human Resource')
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     if request.method == "POST":
@@ -316,7 +310,7 @@ def employee_update(request, employee_id):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
-#@department_required('Human Resource')
+# @department_required('Human Resource')
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     if request.method == "POST":
@@ -380,12 +374,12 @@ def attendance_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'attendance_date')
     order = request.GET.get('order', 'asc')
-    
+
     if sort_by == 'first_name':
         sort_by = 'employee__first_name'
     elif sort_by == 'last_name':
         sort_by = 'employee__last_name'
-    
+
     attendances = search_and_filter_attendances(query, sort_by, order)
     return render(request, 'hrms/attendance_list.html',
                   {'attendances': attendances, 'query': query, 'sort_by': sort_by, 'order': order})
@@ -461,31 +455,30 @@ def attendance_update(request, attendance_id):
 # Leave Views
 @login_required
 def leave_list(request):
-
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'leave_start_date')
     order = request.GET.get('order', 'asc')
-    
+
     logged_in_employee = get_object_or_404(Employee, user=request.user)
     employee_leaves = Leave.objects.filter(employee=logged_in_employee)
-    
+
     leave_balance, created = LeaveBalance.objects.get_or_create(employee=logged_in_employee)
-    
+
     leaves = Leave.objects.all()
-    
+
     if query:
         leaves = leaves.filter(
-            Q(employee__first_name__icontains=query) | 
+            Q(employee__first_name__icontains=query) |
             Q(employee__last_name__icontains=query) |
             Q(leave_start_date__icontains=query) |
             Q(leave_end_date__icontains=query) |
             Q(leave_status__icontains=query)
         )
-    
+
     if order == 'desc':
         sort_by = f'-{sort_by}'
     leaves = leaves.order_by(sort_by)
-    
+
     context = {
         'leaves': leaves,
         'employee_leaves': employee_leaves,
@@ -494,23 +487,24 @@ def leave_list(request):
         'sort_by': sort_by,
         'order': order
     }
-    
+
     return render(request, 'hrms/leave_list.html', context)
+
 
 @login_required
 def add_leave(request):
     logged_in_employee = get_object_or_404(Employee, user=request.user)
     leave_balance, created = LeaveBalance.objects.get_or_create(employee=logged_in_employee)
-    
+
     if request.method == 'POST':
-        print("POST request received")  
-        print("POST data:", request.POST)  
+        print("POST request received")
+        print("POST data:", request.POST)
         form = LeaveAddForm(request.POST)
         if form.is_valid():
             leave = form.save(commit=False)
             leave.employee = logged_in_employee
-            leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1 
-            
+            leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1
+
             if leave_days <= 0:
                 form.add_error(None, 'End date must be after start date.')
             else:
@@ -521,9 +515,9 @@ def add_leave(request):
                         leave_balance.annual_leave_balance -= leave_days
                         leave_balance.save()
                         leave.save()
-                        print("Annual leave balance updated:", leave_balance.annual_leave_balance) 
+                        print("Annual leave balance updated:", leave_balance.annual_leave_balance)
                         return redirect('leave_list')
-                
+
                 elif leave.leave_type == 'Medical':
                     if leave_days > leave_balance.medical_leave_balance:
                         form.add_error(None, 'Not enough medical leave balance.')
@@ -531,16 +525,15 @@ def add_leave(request):
                         leave_balance.medical_leave_balance -= leave_days
                         leave_balance.save()
                         leave.save()
-                        print("Medical leave balance updated:", leave_balance.medical_leave_balance)  
+                        print("Medical leave balance updated:", leave_balance.medical_leave_balance)
                         return redirect('leave_list')
         else:
             print("Form is not valid")
-            print(form.errors) 
+            print(form.errors)
     else:
         form = LeaveAddForm()
-    
-    return render(request, 'hrms/leave_add.html', {'form': form})
 
+    return render(request, 'hrms/leave_add.html', {'form': form})
 
 
 @login_required
@@ -555,6 +548,7 @@ def edit_leave_status(request, leave_id):
     else:
         form = LeaveStatusUpdateForm(instance=leave)
     return render(request, 'hrms/leave_edit.html', {'form': form})
+
 
 @login_required
 def leave_delete(request, leave_id):
@@ -605,9 +599,11 @@ def payroll_delete(request, payroll_id):
     payroll.delete()
     return redirect('payroll_list')
 
+
 # Finance Views
 def sales_management(request):
     return render(request, 'finance/sales_management.html')
+
 
 def create_sales(request):
     if request.method == 'POST':
@@ -626,10 +622,12 @@ def create_sales(request):
     for form in formset.forms:
         form.set_initial_price()
 
-    return render(request, 'finance/create_sales.html', {'sales_form': sales_form , 'formset': formset})
+    return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
+
 
 def invoice_management(request):
     return render(request, 'finance/invoice_management.html')
+
 
 def create_invoice(request):
     if request.method == 'POST':
@@ -644,8 +642,8 @@ def create_invoice(request):
         invoice_form = InvoiceForm()
         formset = InvoiceProductFormSet()
 
-
     return render(request, 'finance/create_invoice.html', {'invoice_form': invoice_form, 'formset': formset})
+
 
 def get_product_price(request, product_id):
     try:

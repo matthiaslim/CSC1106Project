@@ -34,7 +34,7 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = ['user', 'first_name', 'last_name', 'department', 'job_title', 'email', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
-        
+
         GENDER_CHOICES = [
             ('', 'Select a gender'),
             ('male', 'Male'),
@@ -53,9 +53,9 @@ class EmployeeForm(forms.ModelForm):
             'user': forms.Select(attrs={'class': 'form-control'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'department':  forms.Select(attrs={'class': 'form-control'}),
+            'department': forms.Select(attrs={'class': 'form-control'}),
             'job_title': forms.Select(choices=JOB_TITLE_CHOICES, attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class':'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'gender': forms.Select(choices=GENDER_CHOICES, attrs={'class': 'form-control'}),
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'hire_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -82,15 +82,16 @@ class LeaveAddForm(forms.ModelForm):
         fields = ['employee', 'leave_start_date', 'leave_end_date', 'leave_type']
 
         LEAVE_TYPE = [
-                ('Annual', 'Annual'),
-                ('Medical', 'Medical'),
-            ]
+            ('Annual', 'Annual'),
+            ('Medical', 'Medical'),
+        ]
 
         widgets = {
-                'leave_start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-                'leave_end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-                'leave_type': forms.Select(choices=LEAVE_TYPE, attrs={'class': 'form-control'}),
-            }
+            'leave_start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'leave_end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'leave_type': forms.Select(choices=LEAVE_TYPE, attrs={'class': 'form-control'}),
+        }
+
 
 class LeaveStatusUpdateForm(forms.ModelForm):
     class Meta:
@@ -156,7 +157,8 @@ class ProductForm(forms.ModelForm):
 class CreateCustomerForm(forms.ModelForm):
     class Meta:
         model = Membership
-        fields = ['first_name', 'last_name', 'email_address', 'phone_number', 'date_of_birth', 'country', 'membership_status', 'gender', 'address']
+        fields = ['first_name', 'last_name', 'email_address', 'phone_number', 'date_of_birth', 'country',
+                  'membership_status', 'gender', 'address']
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'country': forms.Select(),
@@ -239,14 +241,9 @@ class InvoiceProductForm(forms.ModelForm):
         ('cash', 'Cash'),
         ('cheque', 'Cheque')
     ]
-    products = Product.objects.all()
-    product_items = [(product.product_id, (product.product_name, product.product_sale_price)) for product in
-                     products]
 
-    # product_id = forms.ModelChoiceField(queryset=Product.objects.none(), label="Product", to_field_name="product_id")
     payment_terms = forms.ChoiceField(choices=PAYMENT_CHOICES, initial='card', label="Status",
                                       widget=forms.Select(attrs={'class': 'form-select'}))
-    product_id = forms.ChoiceField(choices=product_items, widget=CustomSelect)
     invoice_price_per_unit = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'disabled': True}))
 
     class Meta:
@@ -256,8 +253,17 @@ class InvoiceProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Fetch the products and generate the product items list dynamically
+        products = Product.objects.all()
+        product_items = [(product.product_id, f"{product.product_name} - ${product.product_sale_price}") for product in
+                         products]
+
+        # Set the product_id field dynamically
+        self.fields['product_id'] = forms.ChoiceField(choices=product_items,
+                                                      widget=CustomSelect(attrs={'class': 'form-control'}))
+
+        # Add class to invoice_quantity field
         self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-control'})
-        # self.fields['invoice_price_per_unit'].widget.attrs.update({'class': 'form-control'})
 
 
 InvoiceProductFormSet = inlineformset_factory(
@@ -307,29 +313,48 @@ class SelectWOA(Select):
 
 
 class SalesProductForm(forms.ModelForm):
-    products = Product.objects.all()
-    product_items = [(product.product_id, {'label': product.product_name, 'data-price': product.product_sale_price}) for product in
-                     products]
+    PAYMENT_CHOICES = [
+        ('card', 'Card'),
+        ('cash', 'Cash'),
+        ('cheque', 'Cheque')
+    ]
 
-    product_id = forms.ModelChoiceField(queryset=Product.objects.all(), label="Product", to_field_name="product_id",
-                                        widget=forms.Select(attrs={'class': 'form-select'}))
-    # product_id = forms.ChoiceField(choices=product_items, widget=CustomSelect)
-    # product_id = forms.ChoiceField(
-    #     label="Product",
-    #     choices=product_items,
-    #     widget=SelectWOA)
+    payment_terms = forms.ChoiceField(choices=PAYMENT_CHOICES, initial='card', label="Payment Terms",
+                                      widget=forms.Select(attrs={'class': 'form-select'}))
+
     transaction_price_per_unit = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control disabled', 'readonly': True}))
 
     class Meta:
         model = TransactionProduct
-        fields = ['product_id', 'transaction_quantity', 'transaction_price_per_unit']
+        fields = ['product_id', 'transaction_quantity', 'transaction_price_per_unit', 'payment_terms']
+
+    def __init__(self, *args, **kwargs):
+        super(SalesProductForm, self).__init__(*args, **kwargs)
+
+        # Dynamically populate the product choices
+        products = Product.objects.all()
+        product_items = [(product.product_id, f"{product.product_name} - ${product.product_sale_price}") for product in
+                         products]
+
+        self.fields['product_id'] = forms.ChoiceField(
+            choices=product_items,
+            label="Product",
+            widget=forms.Select(attrs={'class': 'form-select product-select'})
+        )
+
+        self.fields['transaction_quantity'].widget.attrs.update({'class': 'form-control'})
+        self.fields['transaction_price_per_unit'].widget.attrs.update(
+            {'class': 'form-control price-per-unit', 'readonly': True}
+        )
+        self.fields['payment_terms'].widget.attrs.update({'class': 'form-select'})
+
+        self.set_initial_price()
 
     def set_initial_price(self):
-        # If the form has an initial value for 'product_id', use it to set the initial price
         if self.is_bound and 'product_id' in self.data:
             try:
-                product_id = int(self.data.get(self.prefix + '-product_id'))
+                product_id = int(self.data.get('product_id'))
                 product = Product.objects.get(pk=product_id)
                 self.fields['transaction_price_per_unit'].initial = product.product_sale_price
             except (ValueError, Product.DoesNotExist):
@@ -339,33 +364,24 @@ class SalesProductForm(forms.ModelForm):
             product = Product.objects.get(pk=product_id)
             self.fields['transaction_price_per_unit'].initial = product.product_sale_price
 
-        def clean(self):
-            cleaned_data = super().clean()
-            product_id = cleaned_data.get("product_id")
+    def clean(self):
+        cleaned_data = super().clean()
+        product_id = cleaned_data.get("product_id")
 
-            try:
-                # Attempt to fetch the Product instance based on the provided ID
-                product_instance = Product.objects.get(pk=product_id)
-                # Set the Product instance to the 'product_id' field in cleaned_data
-                cleaned_data['product_id'] = product_instance
-            except Product.DoesNotExist:
-                # If no Product instance is found, raise a validation error
-                raise ValidationError({"product_id": "Invalid product ID. Product does not exist."})
+        try:
+            product_instance = Product.objects.get(pk=product_id)
+            cleaned_data['product_id'] = product_instance
+        except Product.DoesNotExist:
+            raise ValidationError({"product_id": "Invalid product ID. Product does not exist."})
 
-            return cleaned_data
-
-    def __init__(self, *args, **kwargs):
-        super(SalesProductForm, self).__init__(*args, **kwargs)
-
-        self.fields['product_id'].widget.attrs.update({'class': 'form-control product-select'})
-        self.fields['transaction_quantity'].widget.attrs.update({'class': 'form-control'})
-        self.fields['transaction_price_per_unit'].widget.attrs.update({'class': 'form-control price-per-unit', 'readonly': True})
-        self.set_initial_price()
+        return cleaned_data
 
 
 SalesProductFormSet = inlineformset_factory(
     Transaction,
     TransactionProduct,
     form=SalesProductForm,
-    fields=('product_id', 'transaction_quantity', 'transaction_price_per_unit'), extra=1, can_delete=True
+    fields=('product_id', 'transaction_quantity', 'transaction_price_per_unit', 'payment_terms'),
+    extra=1,
+    can_delete=True
 )
