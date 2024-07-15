@@ -24,7 +24,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', login_required(views.index), name="home"),
     path('login', views.login_user, name="login"),
-    path('register', views.register_user, name="register"),
     path('logout', login_required(views.logout_user), name="logout"),
     path('settings', login_required(views.settings), name="settings"),
     path('onboard', login_required(views.onboard), name="onboard"),

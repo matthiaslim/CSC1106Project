@@ -8,19 +8,27 @@
         <h1>{% if form.instance.pk %}Edit Employee{% else %}Add Employee{% endif %}</h1>
         <form method="post">
             {% csrf_token %}
-            <div class="mb-3">
-                {{ form.user.label_tag }}
-                {{ form.user }}
+            <div class="row"> 
+                <div class="mb-3 col">
+                    {{ user_form.email.label_tag }}
+                    {{ user_form.email }}
+                </div>
+                <div class="mb-3 col">
+                    {{ form.job_title.label_tag }}
+                    {{ form.job_title }}
+                </div>
             </div>
             <div class="row">
+               
                 <div class="mb-3 col">
                     {{ form.first_name.label_tag }}
                     {{ form.first_name }}
-                </div>
+                </div>  
                 <div class="mb-3 col">
                     {{ form.last_name.label_tag }}
                     {{ form.last_name }}
                 </div>
+              
 
             </div>
             <div class="row">
@@ -29,18 +37,18 @@
                     {{ form.department }}
                 </div>
                 <div class="mb-3 col">
-                    {{ form.job_title.label_tag }}
-                    {{ form.job_title }}
+                    {{ form.gender.label_tag }}
+                    {{ form.gender }}
                 </div>
             </div>
             <div class="row">
                 <div class="mb-3 col">
-                    {{ form.email.label_tag }}
-                    {{ form.email }}
+                    {{ user_form.password1.label_tag }}
+                    {{ user_form.password1 }}
                 </div>
                 <div class="mb-3 col">
-                    {{ form.gender.label_tag }}
-                    {{ form.gender }}
+                    {{ user_form.password2.label_tag }}
+                    {{ user_form.password2 }}
                 </div>
             </div>
             <div class="row">
