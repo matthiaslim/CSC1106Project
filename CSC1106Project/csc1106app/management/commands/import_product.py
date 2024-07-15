@@ -4,12 +4,19 @@ from django.core.management.base import BaseCommand
 from csc1106app.models.product import Product
 from csc1106app.models.department import Department
 
+from csc1106app.models import User
+
+
 class Command(BaseCommand):
     help = 'Import products data from CSV'
 
     def handle(self, *args, **kwargs):
         file_path = 'modified.csv'  # Update with your actual CSV file path
         df = pd.read_csv(file_path)
+        count_product = 0
+        count_product_exist = 0
+        count_department = 0
+        count_department_exist = 0
 
         # Insert data into the database
         for _, row in df.iterrows():
@@ -26,8 +33,9 @@ class Command(BaseCommand):
                     product_width=row['width'],
                     product_quantity=row['quantity'],
                 )
-                self.stdout.write(self.style.SUCCESS(f'Product {row["name"]} created successfully'))
+                count_product += 1
             else:
+                count_product_exist += 1
                 self.stdout.write(self.style.WARNING(f'Product {row["name"]} already exists'))
 
         departments_avail = ['Chairman', 'Human Resource', 'Finance', 'Customer Relation', 'Logistics']
@@ -37,8 +45,22 @@ class Command(BaseCommand):
                 Department.objects.create(
                     department_name=i
                 )
-                self.stdout.write(self.style.SUCCESS(f'Department {i} created successfully'))
+                count_department += 1
             else:
+                count_department_exist += 1
                 self.stdout.write(self.style.WARNING(f'Department {i} already exists'))
 
+        # Create a superuser
+        username = 'admin'
+        email = 'admin@example.com'
+        password = 'admin123'
+
+        if not User.objects.filter(email=email).exists():
+            User.objects.create_superuser(email=email, password=password)
+            self.stdout.write(self.style.SUCCESS(f'Superuser {email} created successfully'))
+        else:
+            self.stdout.write(self.style.WARNING(f'Superuser {email} already exists'))
+
         self.stdout.write(self.style.SUCCESS('Data imported successfully'))
+        self.stdout.write(self.style.SUCCESS(f'Total product added {count_product}, No. of products exist: {count_product_exist}'))
+        self.stdout.write(self.style.SUCCESS(f'Total product added {count_department}, No. of products exist: {count_department_exist}'))
