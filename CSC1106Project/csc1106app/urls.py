@@ -40,13 +40,24 @@ urlpatterns = [
     path('customer/management', login_required(views.customer_management), name="customer_management"),
     path('customer/details/<int:customerID>', login_required(views.customer_details), name="customer_details"),
     path('customer/create', login_required(views.create_customer), name="create_customer"),
+    path('customer/update/<int:customerID>', login_required(views.update_customer),
+       name="update_customer"),
+    path('customer/delete/<int:customerID>', login_required(views.delete_customer),
+       name="delete_customer"),
 
-    # Employee URLs
+                  # Employee URLs
     path('employees/', views.employee_list, name='employee_list'),
     path('employees/<int:employee_id>/', views.employee_detail, name='employee_detail'),
     path('employees/create/', views.employee_create, name='employee_create'),
     path('employees/<int:employee_id>/update/', views.employee_update, name='employee_update'),
     path('employees/<int:employee_id>/delete/', views.employee_delete, name='employee_delete'),
+
+    # Finance URLs
+    path('finance/sales', views.sales_management, name="sales_management"),
+    path('finance/sales/create', views.create_sales, name="create_sales"),
+    path('finance/orders', views.invoice_management, name="invoice_management"),
+    path('finance/orders/create', views.create_invoice, name="create_invoice"),
+    path('get-product-price/<int:product_id>/', views.get_product_price, name='get-product-price'),
 
     # Department URLs
     path('departments/', views.department_list, name='department_list'),
