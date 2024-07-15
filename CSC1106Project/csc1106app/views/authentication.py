@@ -37,7 +37,11 @@ def login_user(request):
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
             if user is not None:
+                employee = Employee.objects.get(user=user)
                 login(request, user)
+                if not employee.onboarded:
+                    return redirect('onboard')
+
                 return redirect('home')  # Redirect to a home page or another page after login
     else:
         form = CustomAuthenticationForm()
@@ -61,6 +65,7 @@ def onboard(request):
             try:
                 employee = Employee.objects.get(user=request.user)
                 employee.image = data
+                employee.onboarded = True
                 user = form.save()
                 update_session_auth_hash(request, user)
                 employee.save()
