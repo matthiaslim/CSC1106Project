@@ -70,7 +70,7 @@ def logout_user(request):
 
 # Inventory Views
 @login_required
-@department_required('Logistics')
+# @department_required('Logistics')
 def inventory_management(request):
     # Fetch all products initially
     products = Product.objects.all()
@@ -91,12 +91,12 @@ def inventory_management(request):
 
 
 @login_required
-@department_required('Logistics')
+# @department_required('Logistics')
 def inventory_statistics(request):
     return render(request, 'inventory/inventory_statistics.html')
 
 
-@department_required('Logistics')
+# @department_required('Logistics')
 def add_product(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
@@ -115,7 +115,7 @@ def add_product(request):
 
 
 @login_required
-@department_required('Logistics')
+# @department_required('Logistics')
 def get_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
@@ -143,7 +143,7 @@ def get_product(request, pk):
 
 
 @login_required
-@department_required('Logistics')
+# @department_required('Logistics')
 def update_product(request, pk):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
@@ -155,7 +155,7 @@ def update_product(request, pk):
 
 
 @login_required
-@department_required('Logistics')
+# @department_required('Logistics')
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     try:
@@ -168,7 +168,7 @@ def delete_product(request, pk):
 
 # Customer Views
 @login_required
-@department_required('Customer Relations')
+# @department_required('Customer Relations')
 def customer_management(request):
     memberships = Membership.objects.all()
     breadcrumbs = [{'title': 'Home', 'url': '/'},
@@ -179,7 +179,7 @@ def customer_management(request):
 
 
 @login_required
-@department_required('Customer Relations')
+# @department_required('Customer Relations')
 def customer_details(request, customerID):
     try:
         membership = Membership.objects.get(member_id=customerID)
@@ -197,7 +197,7 @@ def customer_details(request, customerID):
 
 
 @login_required
-@department_required('Customer Relations')
+# @department_required('Customer Relations')
 def create_customer(request):
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
@@ -337,7 +337,7 @@ def employee_delete(request, employee_id):
 
 
 # Department Views
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def department_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'department_name')
@@ -347,13 +347,13 @@ def department_list(request):
                   {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     return render(request, 'hrms/department_detail.html', {'department': department})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def department_create(request):
     if request.method == "POST":
         form = DepartmentForm(request.POST)
@@ -365,7 +365,7 @@ def department_create(request):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def department_update(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     if request.method == "POST":
@@ -378,7 +378,7 @@ def department_update(request, department_id):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def department_delete(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     department.delete()
@@ -554,7 +554,7 @@ def add_leave(request):
 
 
 @login_required
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def edit_leave_status(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
     if request.method == 'POST':
@@ -575,7 +575,7 @@ def leave_delete(request, leave_id):
 
 
 # Payroll Views
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def payroll_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'employee__first_name')
@@ -585,7 +585,7 @@ def payroll_list(request):
                   {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def payroll_create(request):
     if request.method == "POST":
         form = PayrollForm(request.POST)
@@ -597,7 +597,7 @@ def payroll_create(request):
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def payroll_update(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     if request.method == "POST":
@@ -610,7 +610,7 @@ def payroll_update(request, payroll_id):
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
 
-@department_required('Human Resource')
+# @department_required('Human Resource')
 def payroll_delete(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     payroll.delete()
