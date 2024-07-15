@@ -34,9 +34,11 @@
             <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
                 <div><i class="bi bi-house"></i> Home</div>
             </a>
+
+            <!-- Inventory Links -->
             <a data-bs-toggle="collapse" href="#collapse-inventory" role="button"
                aria-expanded="{% if 'inventory' in request.path %}true{% else %}false{% endif %}"
-               aria-controls="collapse-inventory" class="{% if 'inventory' in request.path %}active{% endif %}">
+               aria-controls="collapse-inventory">
                 <div>
                     <i class="bi bi-box-seam"></i> Inventory
                 </div>
@@ -45,10 +47,11 @@
             <div class="collapse {% if 'inventory' in request.path %}show{% endif %}" id="collapse-inventory">
                 <a class="collapse-item {% if request.path == '/inventory/management' %}active{% endif %}"
                    href="{% url 'inventory_management' %}">Manage</a>
-                <a class="collapse-item {% if request.path == '/inventory/statistics' %}active{% endif %}"
-                   href="{% url 'inventory_statistics' %}">Statistics</a>
             </div>
-            <a data-bs-toggle="collapse" href="#collapse-finance" role="button" aria-expanded="false"
+
+            <!-- Finance Links -->
+            <a data-bs-toggle="collapse" href="#collapse-finance" role="button"
+               aria-expanded="{% if 'finance' in request.path %}true{% else %}false{% endif %}"
                aria-controls="collapse-finance">
                 <div>
                     <i class="bi bi-wallet"></i> Finance
@@ -56,35 +59,46 @@
                 <i class="bi bi-chevron-right collapse-head" id="caret-finance"></i>
             </a>
             <div class="collapse {% if 'finance' in request.path %}show{% endif %}" id="collapse-finance">
-                <a class="list-group-item collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
+                <a class="collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
                    href="{% url 'invoice_management' %}">Purchase Order</a>
-                <a class="list-group-item collapse-item" href="#">Expenses</a>
-
+                <a class="collapse-item" href="#">Expenses</a>
             </div>
-            <a data-bs-toggle="collapse" href="#collapse-crm" role="button" aria-expanded="false"
+
+            <!-- Customer Links -->
+            <a data-bs-toggle="collapse" href="#collapse-crm" role="button"
+               aria-expanded="{% if 'customer' in request.path %}true{% else %}false{% endif %}"
                aria-controls="collapse-crm">
                 <div>
                     <i class="bi bi-person-circle"></i> Customer Relations
                 </div>
                 <i class="bi bi-chevron-right collapse-head" id="caret-crm"></i>
             </a>
-            <div class="collapse" id="collapse-crm">
-                <a class="collapse-item" href="/customer/management">Customers</a>
+            <div class="collapse {% if 'customer' in request.path %}show{% endif %}" id="collapse-crm">
+                <a class="collapse-item {% if request.path == '/customer/management' %}active{% endif %}"
+                   href="{% url 'customer_management' %}">Customers</a>
                 <a class="collapse-item" href="#">Support</a>
             </div>
-            <a data-bs-toggle="collapse" href="#collapse-hrm" role="button" aria-expanded="false"
+
+            <!-- HR Links -->
+            <a data-bs-toggle="collapse" href="#collapse-hrm" role="button"
+               aria-expanded="{% if 'hr' in request.path %}true{% else %}false{% endif %}"
                aria-controls="collapse-hrm">
                 <div>
                     <i class="bi bi-person-badge"></i> Human Resource
                 </div>
                 <i class="bi bi-chevron-right collapse-head" id="caret-hrm"></i>
             </a>
-            <div class="collapse" id="collapse-hrm">
-                <a class="collapse-item" href="{% url 'employee_list' %}">Employee</a>
-                <a class="collapse-item" href="{% url 'department_list' %}">Department</a>
-                <a class="collapse-item" href="{% url 'attendance_list' %}">Attendance</a>
-                <a class="collapse-item" href="{% url 'leave_list' %}">Leave</a>
-                <a class="collapse-item" href="{% url 'payroll_list' %}">Payroll</a>
+            <div class="collapse {% if 'hr' in request.path %}show{% endif %}" id="collapse-hrm">
+                <a class="collapse-item {% if request.path == '/hr/employees/' %}active{% endif %}"
+                   href="{% url 'employee_list' %}">Employee</a>
+                <a class="collapse-item {% if request.path == '/hr/departments/' %}active{% endif %}"
+                   href="{% url 'department_list' %}">Department</a>
+                <a class="collapse-item {% if request.path == '/hr/attendances/' %}active{% endif %}"
+                   href="{% url 'attendance_list' %}">Attendance</a>
+                <a class="collapse-item {% if request.path == '/hr/leaves/' %}active{% endif %}"
+                   href="{% url 'leave_list' %}">Leave</a>
+                <a class="collapse-item {% if request.path == '/hr/payrolls/' %}active{% endif %}"
+                   href="{% url 'payroll_list' %}">Payroll</a>
             </div>
         </div>
     </aside>
@@ -101,19 +115,19 @@
                         </a>
                         <ul class="dropdown-menu">
                             {% if not is_checked_out and is_checked_in %}
-                                <li class="nav-item">
-                                    <a class="nav-link text-danger" href="{% url 'attendance_check_out' %}">
-                                        <i class="bi bi-person-x-fill"></i> Employee Check Out
-                                    </a>
-                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="{% url 'attendance_check_out' %}">
+                                    <i class="bi bi-person-x-fill"></i> Employee Check Out
+                                </a>
+                            </li>
                             {% endif %}
 
                             {% if not is_checked_in %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'attendance_create' %}">
-                                        <i class="bi bi-person-plus-fill"></i> Employee Check In
-                                    </a>
-                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'attendance_create' %}">
+                                    <i class="bi bi-person-plus-fill"></i> Employee Check In
+                                </a>
+                            </li>
                             {% endif %}
                             <li class="nav-item">
                                 <a href="{% url 'settings' %}"
@@ -137,14 +151,14 @@
         </nav>
         <section class="page-content-wrapper">
             {% if messages %}
-                <div class="container mt-3">
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {% endfor %}
+            </div>
             {% endif %}
             {% block content %}
             {% endblock %}
@@ -171,10 +185,14 @@
 
 <script>
     window.onload = function () {
-        {% if permission_denied %}
-            var modal = new bootstrap.Modal(document.getElementById('permissionModal'));
-            modal.show();
-        {% endif %}
+        {%
+            if permission_denied %
+        }
+        var modal = new bootstrap.Modal(document.getElementById('permissionModal'));
+        modal.show();
+        {%
+            endif %
+        }
     };
 </script>
 
