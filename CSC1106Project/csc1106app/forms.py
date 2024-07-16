@@ -80,9 +80,12 @@ class AttendanceForm(forms.ModelForm):
 
 
 class LeaveAddForm(forms.ModelForm):
+    employee_name = forms.CharField(label='Employee Name', required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
+    employee_id = forms.IntegerField(widget=forms.HiddenInput())
+
     class Meta:
         model = Leave
-        fields = ['employee', 'leave_start_date', 'leave_end_date', 'leave_type']
+        fields = ['employee_name', 'employee_id', 'leave_start_date', 'leave_end_date', 'leave_type']
 
         LEAVE_TYPE = [
             ('Annual', 'Annual'),
@@ -95,11 +98,21 @@ class LeaveAddForm(forms.ModelForm):
             'leave_type': forms.Select(choices=LEAVE_TYPE, attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        if 'employee' in initial:
+            employee_instance = initial['employee']
+            if employee_instance:
+                initial['employee_name'] = f"{employee_instance.first_name} {employee_instance.last_name}"
+                initial['employee_id'] = employee_instance.id
+        super().__init__(*args, **kwargs)
+        self.initial = initial
+
 
 class LeaveStatusUpdateForm(forms.ModelForm):
     class Meta:
         model = Leave
-        fields = ['leave_status', 'remark']
+        fields = ['leave_id','leave_status', 'remark']
 
         STATUS_CHOICES = [
             ('Pending', 'Pending'),

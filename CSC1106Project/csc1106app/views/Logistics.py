@@ -9,7 +9,7 @@ from ..decorators import department_required
 
 # Inventory Views
 @login_required
-# @department_required('Logistics')
+@department_required('Logistics')
 def inventory_management(request):
     # Fetch all products initially
     products = Product.objects.all()
@@ -28,7 +28,8 @@ def inventory_management(request):
 
     return render(request, 'inventory/inventory_management.html', {'products': products})
 
-# @department_required('Logistics')
+@login_required
+@department_required('Logistics')
 def add_product(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
@@ -47,7 +48,7 @@ def add_product(request):
 
 
 @login_required
-# @department_required('Logistics')
+@department_required('Logistics')
 def get_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
@@ -75,7 +76,7 @@ def get_product(request, pk):
 
 
 @login_required
-# @department_required('Logistics')
+@department_required('Logistics')
 def update_product(request, pk):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Inventory'},
@@ -87,7 +88,7 @@ def update_product(request, pk):
 
 
 @login_required
-# @department_required('Logistics')
+@department_required('Logistics')
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     try:

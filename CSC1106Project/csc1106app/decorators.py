@@ -23,10 +23,10 @@ def department_required(*department_names):
 def user_check_in_status(request):
     is_checked_in = False
     is_checked_out = False
+    employee = None
 
     if request.user.is_authenticated:
         user = request.user.id
-
         employee = Employee.objects.filter(user=user).first()
         today = date.today()
 
@@ -42,6 +42,4 @@ def user_check_in_status(request):
                     if (userClockIn.time_out.date() == today):
                         is_checked_out = True
 
-        return {'is_checked_in': is_checked_in, 'is_checked_out': is_checked_out, 'user_data': employee}
-
-    return {'is_checked_in': is_checked_in, 'is_checked_out': is_checked_out}
+    return {'is_checked_in': is_checked_in, 'is_checked_out': is_checked_out, 'user_data': employee}

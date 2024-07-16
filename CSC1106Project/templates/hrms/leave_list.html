@@ -23,56 +23,62 @@
 </div>
 
 <div class="row p-3 my-3 bg-white shadow rounded-3">
-    <div class="col">
-        <h2>All Leaves</h2>
-        <table id="leaveTable" class="table table-striped table-hover">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Employee</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-                <th>Type</th>
-                <th>Remark</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for leave in leaves %}
-            <tr>
-                <td>{{ leave.leave_id }}</td>
-                <td>{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
-                <td>{{ leave.leave_start_date }}</td>
-                <td>{{ leave.leave_end_date }}</td>
-                <td>{{ leave.leave_status }}</td>
-                <td>{{ leave.leave_type }}</td>
-                <td>{{ leave.remark }}</td>
-                <td>
-                    <a href="{% url 'leave_update' leave.leave_id %}">
-                        <button class="btn btn-sm btn-secondary" title="Update Status">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-            <tfoot>
-            <tr>
-                <th>ID</th>
-                <th>Employee</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-                <th>Type</th>
-                <th>Remark</th>
-                <th>Actions</th>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>
+    {% if not user_data or user_data.department.department_name == "Chairman" %}
+        {% if user_data.department.department_name == "HR" or user_data.department.department_name == "Chairman" %}
+            <div class="col">
+                <h2>All Leaves</h2>
+                <table id="leaveTable" class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                        <th>Remark</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for leave in leaves %}
+                    <tr>
+                        <td>{{ leave.leave_id }}</td>
+                        <td>{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
+                        <td>{{ leave.leave_start_date }}</td>
+                        <td>{{ leave.leave_end_date }}</td>
+                        <td>{{ leave.leave_status }}</td>
+                        <td>{{ leave.leave_type }}</td>
+                        <td>{{ leave.remark }}</td>
+                        <td>
+                            {% if leave.leave_status == 'pending' or leave.leave_status == "Pending" %}
+                            <a href="{% url 'leave_update' leave.leave_id %}">
+                                <button class="btn btn-sm btn-secondary" title="Update Status">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                        <th>Remark</th>
+                        <th>Actions</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
 
 <div class="row p-3 my-3 bg-white shadow rounded-3">
     <div class="col">

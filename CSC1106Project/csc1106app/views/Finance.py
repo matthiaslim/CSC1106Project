@@ -8,10 +8,13 @@ from ..decorators import department_required
 
 
 # Finance Views
+@login_required
+@department_required("Finance")
 def sales_management(request):
     return render(request, 'finance/sales_management.html')
 
-
+@login_required
+@department_required("Finance")
 def create_sales(request):
     if request.method == 'POST':
         sales_form = SalesForm(request.POST)
@@ -31,11 +34,13 @@ def create_sales(request):
 
     return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
 
-
+@login_required
+@department_required("Finance")
 def invoice_management(request):
     return render(request, 'finance/invoice_management.html')
 
-
+@login_required
+@department_required("Finance")
 def create_invoice(request):
     if request.method == 'POST':
         invoice_form = InvoiceForm(request.POST)
@@ -51,7 +56,8 @@ def create_invoice(request):
 
     return render(request, 'finance/create_invoice.html', {'invoice_form': invoice_form, 'formset': formset})
 
-
+@login_required
+@department_required("Finance")
 def get_product_price(request, product_id):
     try:
         product = Product.objects.get(pk=product_id)
