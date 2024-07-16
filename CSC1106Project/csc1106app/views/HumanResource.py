@@ -332,10 +332,14 @@ def edit_leave_status(request, leave_id):
                 # add back to the stuff 
                 leaveBalanceObj = get_object_or_404(LeaveBalance, employee = leave.employee)
                 
-                if leave.leave_type == "Annual":
-                    leaveBalanceObj.annual_leave_balance += leave_days
-                else:
-                    leaveBalanceObj.medical_leave_balance += leave_days
+                dict_status = {
+                    "Annual": "annual_leave_balance",
+                    "Medical": "medical_leave_balance"
+                }
+                label_status = dict_status.get(leave.leave_type)
+
+                if label_status: 
+                    setattr(leaveBalanceObj, label_status, getattr(leaveBalanceObj, label_status) + leave_days)
 
                 leaveBalanceObj.save()
                 
