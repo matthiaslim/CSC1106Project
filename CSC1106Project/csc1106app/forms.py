@@ -202,25 +202,19 @@ class CreateCustomerForm(forms.ModelForm):
 
 
 class InvoiceForm(forms.ModelForm):
-    STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected')
-    ]
-
-    employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
-    status = forms.ChoiceField(choices=STATUS_CHOICES, initial='pending', label="Status",
-                               widget=forms.Select(attrs={'class': 'form-select'}))
     invoice_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-
+    payment_due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    payment_terms = forms.ChoiceField(label="Payment terms", widget=forms.Select(attrs={'class': 'form-select'}))
+    status = forms.ChoiceField(label="Status", widget=forms.Select(attrs={'class': 'form-select'}))
+    employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
+    
     class Meta:
         model = Invoice
-        fields = ['employee_id', 'invoice_date', 'status']
+        fields = ['invoice_date', 'payment_due_date', 'payment_terms', 'status', 'employee_id']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['employee_id'].widget.attrs.update({'class': 'form-select'})
-
 
 class CustomSelect(Select):
     def __init__(self, attrs=None, choices=(), prices=None):
@@ -252,19 +246,9 @@ class CustomSelect(Select):
 
 
 class InvoiceProductForm(forms.ModelForm):
-    PAYMENT_CHOICES = [
-        ('card', 'Card'),
-        ('cash', 'Cash'),
-        ('cheque', 'Cheque')
-    ]
-
-    payment_terms = forms.ChoiceField(choices=PAYMENT_CHOICES, initial='card', label="Status",
-                                      widget=forms.Select(attrs={'class': 'form-select'}))
-    invoice_price_per_unit = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'disabled': True}))
-
     class Meta:
         model = InvoiceProduct
-        fields = ['product_id', 'invoice_quantity', 'invoice_price_per_unit', 'payment_terms']
+        fields = ['product_id', 'invoice_quantity', 'invoice_price_per_unit']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -275,17 +259,18 @@ class InvoiceProductForm(forms.ModelForm):
                          products]
 
         # Set the product_id field dynamically
-        self.fields['product_id'] = forms.ChoiceField(choices=product_items,
-                                                      widget=CustomSelect(attrs={'class': 'form-control'}))
+        self.fields['product_id'] = forms.ModelChoiceField(queryset=Product.objects.all(),
+                                                      widget=forms.Select(attrs={'class': 'form-control'}))
 
         # Add class to invoice_quantity field
         self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-control'})
+        self.fields['invoice_price_per_unit'].widget.attrs.update({'class': 'form-control'})
 
 
 InvoiceProductFormSet = inlineformset_factory(
     Invoice, InvoiceProduct,
     form=InvoiceProductForm,
-    fields=('product_id', 'invoice_quantity', 'invoice_price_per_unit', 'payment_terms'), extra=1, can_delete=True)
+    fields=('product_id', 'invoice_quantity', 'invoice_price_per_unit'), extra=1, can_delete=True)
 
 
 class SalesForm(forms.ModelForm):
@@ -293,10 +278,11 @@ class SalesForm(forms.ModelForm):
     employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
     transaction_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
     points_earned = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    payment_terms = forms.ChoiceField(label="Payment Terms", widget=forms.Select(attrs={'class': 'form-select'}))
 
     class Meta:
         model = Transaction
-        fields = ['membership_id', 'employee_id', 'transaction_date', 'points_earned']
+        fields = ['membership_id', 'employee_id', 'transaction_date', 'points_earned', 'payment_terms']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -304,6 +290,7 @@ class SalesForm(forms.ModelForm):
         self.fields['membership_id'].widget.attrs.update({'class': 'form-select'})
         self.fields['employee_id'].widget.attrs.update({'class': 'form-select'})
         self.fields['points_earned'].widget.attrs.update({'class': 'form-select'})
+        self.fields['payment_terms'].widget.attrs.update({'class': 'form-select'})
 
 
 class SelectWOA(Select):

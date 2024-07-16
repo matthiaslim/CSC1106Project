@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from ..forms import InvoiceForm, InvoiceProductFormSet, SalesForm, SalesProductFormSet
+from ..filters import InvoiceFilter
 from ..models.product import Product
 from ..crud_ops import *
 from ..decorators import department_required
@@ -11,7 +12,18 @@ from ..decorators import department_required
 @login_required
 @department_required("Finance")
 def sales_management(request):
-    return render(request, 'finance/sales_management.html')
+    sales = Transaction.objects.all().prefetch_related('transactionproduct_set')
+    for transaction in sales:
+        transaction.total_value = sum(item.transaction_quantity * item.transaction_price_per_unit for item in transaction.transactionproduct_set.all())
+    
+    total_sum = sum(transaction.total_value for transaction in sales)
+    total_transaction_count = len(sales)
+
+    return render(request, 'finance/sales_management.html', {
+        'sales': sales,
+        'total_sum': total_sum,
+        'total_invoice_count': total_transaction_count
+    })
 
 @login_required
 @department_required("Finance")
@@ -37,7 +49,22 @@ def create_sales(request):
 @login_required
 @department_required("Finance")
 def invoice_management(request):
-    return render(request, 'finance/invoice_management.html')
+    invoices = Invoice.objects.all().prefetch_related('invoiceproduct_set')
+
+    for invoice in invoices:
+        invoice.total_value = sum(item.invoice_quantity * item.invoice_price_per_unit for item in invoice.invoiceproduct_set.all())
+
+    invoice_filter = InvoiceFilter(request.GET, queryset=invoices)  
+
+    total_sum = sum(invoice.total_value for invoice in invoices)
+    total_invoice_count = len(invoices)
+
+    return render(request, 'finance/invoice_management.html', {
+        'form': invoice_filter.form,
+        'invoices': invoice_filter.qs,
+        'total_sum': total_sum,
+        'total_invoice_count': total_invoice_count
+    }) 
 
 @login_required
 @department_required("Finance")
