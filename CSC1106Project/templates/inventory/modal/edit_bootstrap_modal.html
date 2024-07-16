@@ -1,23 +1,68 @@
 <!-- Modal -->
 <div class="modal fade" id="editProductViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5>Product Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form> 
-            <input type="hidden" id="edit_product_id"/>
-            <input type="text" id="edit_product_name">
-
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Submit</button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Product Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form method="post" enctype="multipart/form-data" id="editProductForm" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Render each field with label_tag and the field itself -->
+                <div class="mb-3">
+                    {{ form.product_name.label_tag }}
+                    {{ form.product_name }}
+                </div>
+                <div class="mb-3">
+                    {{ form.product_image.label_tag }}
+                    {{ form.product_image }}
+                    <small class="form-text text-muted">Accepted formats: .png, .jpg, .jpeg</small>
+                </div>
+                <div class="row">
+                    <label>Current Image Preview</label>
+                    <img id="preview_img">
+                </div>
+                <div class="mb-3">
+                    {{ form.product_description.label_tag }}
+                    {{ form.product_description }}
+                </div>
+                <div class="mb-3">
+                    {{ form.product_category.label_tag }}
+                    {{ form.product_category }}
+                </div>
+                <div class="row">
+                    <div class="col mb-3">
+                        {{ form.product_sale_price.label_tag }}
+                        {{ form.product_sale_price }}
+                    </div>
+                    <div class="col mb-3">
+                        {{ form.product_location.label_tag }}
+                        {{ form.product_location }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        {{ form.product_length.label_tag }}(L)
+                        {{ form.product_length }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.product_width.label_tag }}(W)
+                        {{ form.product_width }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        {{ form.product_height.label_tag }}(H)
+                        {{ form.product_height }}
+                    </div>
+                </div>
+                <input type="hidden" id="edit_product_id" class="form-control"/>
+            </div>
+            <div class="modal-footer">
+                <button id="submitEditProduct" type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
           </form>
         </div>
-        <div class="modal-footer">
-          
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>

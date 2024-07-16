@@ -1,11 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ..forms import ProductForm
+from ..forms import ProductForm,editProductForm
 from ..models.product import Product
 from ..crud_ops import *
 from ..decorators import department_required
-
+import json
 
 # Inventory Views
 @login_required
@@ -26,7 +26,8 @@ def inventory_management(request):
     if product_location:
         products = products.filter(product_location__icontains=product_location)
 
-    return render(request, 'inventory/inventory_management.html', {'products': products})
+
+    return render(request, 'inventory/inventory_management.html', {'products': products })
 
 @login_required
 @department_required('Logistics')
@@ -69,7 +70,7 @@ def get_product(request, pk):
             'product_length': product.product_length,
             'product_image': product_image_url
         }
-        print(product_dict)
+
         return JsonResponse({'product': product_dict, 'status': 200})
     except Exception as e:
         return JsonResponse({'error': str(e), 'status': 500})
@@ -78,13 +79,11 @@ def get_product(request, pk):
 @login_required
 @department_required('Logistics')
 def update_product(request, pk):
-    breadcrumbs = [{'title': 'Home', 'url': '/'},
-                   {'title': 'Inventory'},
-                   {'title': 'Manage', 'url': '/inventory/management'},
-                   {'title': 'Update Product', 'url': '/inventory/management/update/<int:pk>'}, ]
     product = get_object_or_404(Product, pk=pk)
-    # Handle the update logic here
-    return render(request, 'inventory/update_product.html', {'product': product, 'breadcrumbs': breadcrumbs})
+    form = editProductForm(instance=product) 
+
+
+    return render(request, 'edit_bootstrap_modal.html', {"form" : form})
 
 
 @login_required
@@ -97,4 +96,3 @@ def delete_product(request, pk):
         return JsonResponse({'status': 200, 'message': 'Product deleted successfully.'})
     except:
         return JsonResponse({'status': 400, 'message': 'Bad request.'})
-
