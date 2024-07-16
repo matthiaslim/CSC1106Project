@@ -1,10 +1,8 @@
 function openProductView(productId){
-   
     $.ajax({
         url: `get/${productId}`,
         method: 'GET',
         success: function(data) {
-
             if (data.status == 200) {
                 var product = data.product;
     
@@ -54,4 +52,15 @@ function deleteProduct(productID, productName) {
             }
         });
     } 
+}
+
+function editProductView(productID){
+    $('#edit_product_id').val(productID);
+    $('#editProductViewModal').modal('show');   
+
+    
+}
+
+function submitEditProduct(){
+    
 }
