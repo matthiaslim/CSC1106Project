@@ -5,11 +5,11 @@
 {% block content %}
     {# TODO: Replace with actual values #}
     <div class="container-fluid px-4">
-        <div class="row gx-5 ">
-            <div class="col-7 bg-white shadow rounded">
-                <div class="p-3">
-                    <h2>Emma Watson</h2>
-                    <p>Membership ID: m-125944</p>
+        <div class="row gx-5">
+            <div class="col-7">
+                <div class="p-3 bg-white shadow rounded">
+                    <h2>{{ membership.first_name }} {{ membership.last_name }}</h2>
+                    <p>Membership ID: {{ membership.member_id }}</p>
 
                     <div class="row mt-5">
                         <div class="col-2">
@@ -19,7 +19,7 @@
                             <p class="fw-bold">Address</p>
                         </div>
                         <div class="col-4">
-                            <p>{{membership.email_address}}</p>
+                            <p>{{ membership.email_address }}</p>
                             <p>{{ membership.phone_number }}</p>
                             <p>{{ membership.gender }}</p>
                             <p>{{ membership.address }}</p>
@@ -36,35 +36,70 @@
                 </div>
             </div>
             <div class="col-5">
-                <div class="row bg-white shadow rounded">
-                    <div class="p-3">
-                        <p class="fw-bold">Membership</p>
-                        <hr class="solid" />
-                        <div class="row mt-5">
-                            <div class="col-5">
-                                <p class="fw-bold">Status</p>
-                                <p class="fw-bold">Membership Tier</p>
-                                <p class="fw-bold">Total Points</p>
-                                <p class="fw-bold">Points Expiry Date</p>
-                                <p class="fw-bold">Membership Expiry Date</p>
-                            </div>
-                            <div class="col-3">
-                                <p>{{membership.membership_status}}</p>
-                                <p>{{ membership.membership_level }}</p>
-                                <p>{{ membership.points }}</p>
-                                <p>{{ membership.points_expiry_date }}</p>
-                                <p>{{ membership.member_expiry_date }}</p>
-                            </div>
+                <div class="p-3 bg-white shadow rounded">
+                    <p class="fw-bold">Membership</p>
+                    <hr class="solid"/>
+                    <div class="row mt-5">
+                        <div class="col-5">
+                            <p class="fw-bold">Status</p>
+                            <p class="fw-bold">Membership Tier</p>
+                            <p class="fw-bold">Total Points</p>
+                            <p class="fw-bold">Points Expiry Date</p>
+                            <p class="fw-bold">Membership Expiry Date</p>
                         </div>
-                    </div>
-                </div>
-                <div class="row bg-white shadow rounded">
-                    <div class="p-3">
-                        <p class="fw-bold">Orders</p>
-                        <hr class="solid" />
+                        <div class="col-3">
+                            <p>{{ membership.membership_status }}</p>
+                            <p>{{ membership.membership_level }}</p>
+                            <p>{{ membership.points }}</p>
+                            <p>{{ membership.points_expiry_date }}</p>
+                            <p>{{ membership.member_expiry_date }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row gx-5 mt-3">
+            <div class="col">
+                <div class="p-3 bg-white shadow rounded">
+                    <p class="fw-bold">Orders</p>
+                    <hr class="solid"/>
+                    <table id="custSalesTable" class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Points Earned</th>
+                            <th>Transaction Date</th>
+                            <th>Employee</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for sale in member_sales %}
+                            <tr>
+                                <th>{{ sale.transaction_id }}</th>
+                                <th>{{ sale.points_earned }}</th>
+                                <th>{{ sale.transaction_date }}</th>
+                                <th>{{ sale.employee_id.first_name }} {{ sale.employee_id.last_name }}</th>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#custSalesTable').DataTable({
+                "columnDefs": [
+                    {"orderable": false, "targets": [0]} // Disables sorting on the first and last columns
+                ],
+                "paging": true, // Enable pagination
+                "pageLength": 10, // Set the number of items per page
+                "pagingType": "simple_numbers"
+            });
+        });
+    </script>
 {% endblock %}

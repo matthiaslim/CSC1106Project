@@ -10,4 +10,4 @@ class Transaction(models.Model):
     transaction_date = models.DateField()
 
     def __str__(self):
-        return self.transaction_id
+        return str(self.transaction_id)

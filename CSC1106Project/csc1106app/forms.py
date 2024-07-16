@@ -329,21 +329,13 @@ class SelectWOA(Select):
 
 
 class SalesProductForm(forms.ModelForm):
-    PAYMENT_CHOICES = [
-        ('card', 'Card'),
-        ('cash', 'Cash'),
-        ('cheque', 'Cheque')
-    ]
-
-    payment_terms = forms.ChoiceField(choices=PAYMENT_CHOICES, initial='card', label="Payment Terms",
-                                      widget=forms.Select(attrs={'class': 'form-select'}))
 
     transaction_price_per_unit = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control disabled', 'readonly': True}))
 
     class Meta:
         model = TransactionProduct
-        fields = ['product_id', 'transaction_quantity', 'transaction_price_per_unit', 'payment_terms']
+        fields = ['product_id', 'transaction_quantity', 'transaction_price_per_unit']
 
     def __init__(self, *args, **kwargs):
         super(SalesProductForm, self).__init__(*args, **kwargs)
@@ -363,8 +355,6 @@ class SalesProductForm(forms.ModelForm):
         self.fields['transaction_price_per_unit'].widget.attrs.update(
             {'class': 'form-control price-per-unit', 'readonly': True}
         )
-        self.fields['payment_terms'].widget.attrs.update({'class': 'form-select'})
-
         self.set_initial_price()
 
     def set_initial_price(self):
@@ -397,7 +387,7 @@ SalesProductFormSet = inlineformset_factory(
     Transaction,
     TransactionProduct,
     form=SalesProductForm,
-    fields=('product_id', 'transaction_quantity', 'transaction_price_per_unit', 'payment_terms'),
+    fields=('product_id', 'transaction_quantity', 'transaction_price_per_unit'),
     extra=1,
     can_delete=True
 )
