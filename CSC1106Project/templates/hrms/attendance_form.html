@@ -8,16 +8,19 @@
     {% if error %}
     <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
-    <div id="camera">
-        <video id="video" width="640" height="480" autoplay></video>
-        <button id="snap" class="btn btn-primary mt-3">Capture</button>
-        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+        <div style="display: flex;" id="camera">
+            <video id="video" width="480" height="480" autoplay></video>
+            <canvas id="canvas" width="640" height="480" style="display:none; margin-left:10px;"></canvas>
+    </div>
+    <div style="display:flex;"> 
+    <button id="snap" class="btn btn-primary mt-3">Capture</button>
         <form id="checkin-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" id="image-data" name="image-data">
-            <button type="submit" class="btn btn-success mt-3">Check In</button>
+            <button id="submitPhoto" style="margin-left:10px;"type="submit" class="btn btn-success mt-3 submit">Check In</button>
         </form>
     </div>
+
 </div>
 {% endblock %}
 
@@ -29,6 +32,7 @@
     const snap = document.getElementById('snap');
     const imageDataInput = document.getElementById('image-data');
     const context = canvas.getContext('2d');
+    const submit = document.getElementById('submitPhoto');
 
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => {
@@ -45,5 +49,43 @@
         imageDataInput.value = imageData;
         canvas.style.display = 'block';
     });
+
+    function isCanvasBlackorBlank(){
+        const pixelData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        let isBlank = true;
+        let isBlack = true;
+        for (let i = 0; i < pixelData.length; i += 4) {
+            const r = pixelData[i];
+            const g = pixelData[i + 1];
+            const b = pixelData[i + 2];
+            const a = pixelData[i + 3];
+            // Check if the pixel is neither fully transparent nor black
+            if (a !== 0) {
+                isBlank = false;
+            }
+            if (r !== 0 || g !== 0 || b !== 0) {
+                isBlack = false;
+            }
+            // If we find a pixel that is neither transparent nor black, we can return early
+            if (!isBlank && !isBlack) {
+                return false;
+            }
+        }
+        return isBlank || isBlack;
+    }
+
+
+    submit.addEventListener('click', (event) => {
+        if (context && isCanvasBlackorBlank()){
+        
+            event.preventDefault();
+            alert("You havent taken a photo, please take a photo to check in");
+        
+
+        } else {
+            console.error('Canvas context could not be retrieved.');
+        }
+    });
+
 </script>
 {% endblock %}

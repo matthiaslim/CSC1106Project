@@ -20,7 +20,7 @@ from django.db.models import Q
 
 
 # Employee Views
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def employee_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'first_name')
@@ -35,13 +35,13 @@ def employee_list(request):
     })
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     return render(request, 'hrms/employee_detail.html', {'employee': employee})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
@@ -65,7 +65,7 @@ def employee_create(request):
     return render(request, 'hrms/employee_form.html', {'form': form, 'user_form' : user_form})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     if request.method == "POST":
@@ -78,7 +78,7 @@ def employee_update(request, employee_id):
     return render(request, 'hrms/employee_form.html', {'form': form})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     if request.method == "POST":
@@ -88,7 +88,7 @@ def employee_delete(request, employee_id):
 
 
 # Department Views
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def department_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'department_name')
@@ -98,13 +98,13 @@ def department_list(request):
                   {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     return render(request, 'hrms/department_detail.html', {'department': department})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def department_create(request):
     if request.method == "POST":
         form = DepartmentForm(request.POST)
@@ -116,7 +116,7 @@ def department_create(request):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def department_update(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     if request.method == "POST":
@@ -129,7 +129,7 @@ def department_update(request, department_id):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def department_delete(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     department.delete()
@@ -273,46 +273,74 @@ def add_leave(request):
             leave.employee = logged_in_employee
             leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1
 
-            if leave_days <= 0:
-                form.add_error(None, 'End date must be after start date.')
-            else:
-                if leave.leave_type == 'Annual':
-                    if leave_days > leave_balance.annual_leave_balance:
-                        form.add_error(None, 'Not enough annual leave balance.')
-                    else:
-                        leave_balance.annual_leave_balance -= leave_days
-                        leave_balance.save()
-                        leave.save()
-                        print("Annual leave balance updated:", leave_balance.annual_leave_balance)
-                        return redirect('leave_list')
+            leave_date_exists = Leave.objects.filter(
+                    leave_start_date__gte=leave.leave_start_date,
+                    leave_end_date__lte=leave.leave_end_date
+                ).exists()
+            
+            if (not leave_date_exists):
+                if leave_days <= 0:
+                    form.add_error(None, 'End date must be after start date.')
+                else:
+                    if leave.leave_type == 'Annual':
+                        if leave_days > leave_balance.annual_leave_balance:
+                            form.add_error(None, 'Not enough annual leave balance.')
+                        else:
+                            leave_balance.annual_leave_balance -= leave_days
+                            leave_balance.save()
+                            leave.save()
+                            print("Annual leave balance updated:", leave_balance.annual_leave_balance)
+                            return redirect('leave_list')
 
-                elif leave.leave_type == 'Medical':
-                    if leave_days > leave_balance.medical_leave_balance:
-                        form.add_error(None, 'Not enough medical leave balance.')
-                    else:
-                        leave_balance.medical_leave_balance -= leave_days
-                        leave_balance.save()
-                        leave.save()
-                        print("Medical leave balance updated:", leave_balance.medical_leave_balance)
-                        return redirect('leave_list')
+                    elif leave.leave_type == 'Medical':
+                        if leave_days > leave_balance.medical_leave_balance:
+                            form.add_error(None, 'Not enough medical leave balance.')
+                        else:
+                            leave_balance.medical_leave_balance -= leave_days
+                            leave_balance.save()
+                            leave.save()
+                            print("Medical leave balance updated:", leave_balance.medical_leave_balance)
+                            return redirect('leave_list')
+            else: 
+                return redirect('leave_list')
         else:
             print("Form is not valid")
             print(form.errors)
     else:
-        form = LeaveAddForm()
+        employeeData = request.user.employee
+
+        initial_data = {"employee_name" : f"{employeeData.first_name} {employeeData.last_name}",
+                        "employee_id" : employeeData.employee_id}
+
+        form = LeaveAddForm(initial=initial_data)
 
     return render(request, 'hrms/leave_add.html', {'form': form})
 
 
 @login_required
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def edit_leave_status(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
     if request.method == 'POST':
         form = LeaveStatusUpdateForm(request.POST, instance=leave)
         if form.is_valid():
+
+            leave_status = request.POST.get('leave_status')
+            if (leave_status == 'Denied'):
+                leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1
+
+                # add back to the stuff 
+                leaveBalanceObj = get_object_or_404(LeaveBalance, employee = leave.employee)
+                
+                if leave.leave_type == "Annual":
+                    leaveBalanceObj.annual_leave_balance += leave_days
+                else:
+                    leaveBalanceObj.medical_leave_balance += leave_days
+
+                leaveBalanceObj.save()
+                
             form.save()
-            return redirect('leave_list', leave_id=leave.id)  # Replace 'leave_detail' with your actual URL name
+            return redirect('leave_list')  # Replace 'leave_detail' with your actual URL name
     else:
         form = LeaveStatusUpdateForm(instance=leave)
     return render(request, 'hrms/leave_edit.html', {'form': form})
@@ -326,7 +354,7 @@ def leave_delete(request, leave_id):
 
 
 # Payroll Views
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def payroll_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'employee__first_name')
@@ -336,7 +364,7 @@ def payroll_list(request):
                   {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def payroll_create(request):
     if request.method == "POST":
         form = PayrollForm(request.POST)
@@ -348,7 +376,7 @@ def payroll_create(request):
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def payroll_update(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     if request.method == "POST":
@@ -361,7 +389,7 @@ def payroll_update(request, payroll_id):
     return render(request, 'hrms/payroll_form.html', {'form': form})
 
 
-# @department_required('Human Resource')
+@department_required('Human Resource')
 def payroll_delete(request, payroll_id):
     payroll = get_object_or_404(Payroll, pk=payroll_id)
     payroll.delete()

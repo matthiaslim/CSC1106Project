@@ -6,7 +6,7 @@ class Leave(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     leave_start_date = models.DateField()
     leave_end_date = models.DateField()
-    leave_status = models.CharField(max_length=10, default = "pending")
+    leave_status = models.CharField(max_length=10, default = "Pending")
     remark = models.TextField(blank = True, null = True)
     leave_type = models.CharField(max_length=10, default = "annual")
 
