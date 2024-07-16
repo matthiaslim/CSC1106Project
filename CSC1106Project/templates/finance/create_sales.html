@@ -16,6 +16,7 @@
                 {{ sales_form.payment_terms }}
                 {{ sales_form.points_earned.label_tag }}
                 {{ sales_form.points_earned }}
+                <small class="text-muted"> Points will be updated as products are added </small>
             </div>
             <table id="transactionProductTable" class="table rounded my-5">
                 <thead>
@@ -52,7 +53,7 @@
                 <tfoot align="center">
                 <tr>
                     <td colspan="5">
-                        <button id="add-more" class="btn btn-outline-secondary"><i class="bi bi-plus"></i>
+                        <button id="add-more" type="button" class="btn btn-outline-secondary"><i class="bi bi-plus"></i>
                             Add new product
                         </button>
                     </td>
@@ -92,27 +93,6 @@
                 }
             });
 
-            {#const productSelects = document.querySelectorAll('.product-select');#}
-            {##}
-            {#productSelects.forEach(select => {#}
-            {#    select.addEventListener('change', function () {#}
-            {#        const productId = this.value;#}
-            {#        const priceInput = this.closest('.form-row').querySelector('.price-per-unit');#}
-            {##}
-            {#        fetch(`/get-product-price/${productId}/`)#}
-            {#            .then(response => response.json())#}
-            {#            .then(data => {#}
-            {#                if (data.price) {#}
-            {#                    priceInput.value = data.price;#}
-            {#                    console.log('Price updated to: ', priceInput.value); // Log the updated price#}
-            {#                } else {#}
-            {#                    console.error('Product price not found');#}
-            {#                }#}
-            {#            })#}
-            {#            .catch(error => console.error('Error fetching product price:', error));#}
-            {#    });#}
-            {# });#}
-
             document.querySelector("#transactionProductTable").addEventListener('change', function (e) {
                 if (e.target.classList.contains('product-select')) {
                     const productId = e.target.value;
@@ -120,12 +100,14 @@
                     const formRow = e.target.closest('.form-row');
                     if (formRow) {
                         const priceInput = formRow.querySelector('.price-per-unit');
+                        const quantity = formRow.querySelector('.quantity');
                         if (priceInput) {
                             fetch(`/get-product-price/${productId}/`)
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.price) {
                                         priceInput.value = data.price;
+                                        updateTotalPrice();
                                     } else {
                                         console.error('Product price not found');
                                     }
@@ -139,6 +121,40 @@
                     }
                 }
             });
+
+
+            function updateTotalPrice() {
+                let total = 0;
+                document.querySelectorAll('.form-row').forEach(row => {
+                    const priceInput = row.querySelector('.price-per-unit');
+                    const quantityInput = row.querySelector('.quantity');
+                    if (priceInput && quantityInput) {
+                        const price = parseFloat(priceInput.value) || 0;
+                        const quantity = parseInt(quantityInput.value) || 0;
+                        total += price * quantity;
+                    }
+                });
+                document.getElementById('id_points_earned').value = Math.floor(total / 10);
+            }
+
+            // Call updateTotalPrice whenever the quantity or product changes
+            document.querySelector("#transactionProductTable").addEventListener('change', function (e) {
+                if (e.target.classList.contains('quantity') || e.target.classList.contains('product-select')) {
+                    updateTotalPrice();
+                }
+            });
+
+            // Also call updateTotalPrice when a row is added or removed
+            addButton.addEventListener("click", updateTotalPrice);
+
+            tableBody.addEventListener("click", function (e) {
+                if (e.target.classList.contains("remove-row")) {
+                    setTimeout(updateTotalPrice, 0); // Wait for the row to be removed
+                }
+            });
+
+            // Initial call to set the total price when the page loads
+            updateTotalPrice();
 
 
         });
