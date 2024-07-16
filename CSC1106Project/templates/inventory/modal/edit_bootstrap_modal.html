@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form method="post" enctype="multipart/form-data" id="editProductForm" class="needs-validation" novalidate>
+              <form enctype="multipart/form-data" id="editProductForm">
                 {% csrf_token %}
                 
                 <!-- Render each field with label_tag and the field itself -->
@@ -23,6 +23,10 @@
                 <div class="row">
                     <label>Current Image Preview</label>
                     <img id="preview_img">
+                </div>
+                <div class="mb-3">
+                    {{ form.product_quantity.label_tag }}
+                    {{ form.product_quantity}}
                 </div>
                 <div class="mb-3">
                     {{ form.product_description.label_tag }}

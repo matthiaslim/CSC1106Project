@@ -46,6 +46,8 @@
             <div class="collapse {% if 'inventory' in request.path %}show{% endif %}" id="collapse-inventory">
                 <a class="collapse-item {% if request.path == '/inventory/management' %}active{% endif %}"
                    href="{% url 'inventory_management' %}">Manage</a>
+                   <a class="collapse-item {% if request.path == '/inventory/order_management' %}active{% endif %}"
+                   href="{% url 'order_management' %}">Order Manage</a>
             </div>
 
             <!-- Finance Links -->

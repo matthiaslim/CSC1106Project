@@ -31,9 +31,13 @@ urlpatterns = [
     # Inventory URLs
     path('inventory/management', login_required(views.inventory_management), name="inventory_management"),
     path('inventory/management/create', login_required(views.add_product), name="add_product"),
-    path('inventory/get/<int:pk>/', login_required(views.get_product), name="get_product"),
-    path('inventory/update/<int:pk>/', login_required(views.update_product), name='update_product'),
-    path('inventory/delete/<int:pk>/', login_required(views.delete_product), name='delete_product'),
+    path('inventory/get/<int:pk>', login_required(views.get_product), name="get_product"),
+    path('inventory/update/<int:pk>', login_required(views.update_product), name='update_product'),
+    path('inventory/delete/<int:pk>', login_required(views.delete_product), name='delete_product'),
+
+    path('inventory/order_management/',login_required(views.order_management), name="order_management"),
+    path('inventory/order_management/create', login_required(views.create_order), name="create_order"),
+    path('inventory/order_management/edit/<int:pk>', login_required(views.edit_order), name="edit_order"),
 
     # Customer URLs
     path('customer/management', login_required(views.customer_management), name="customer_management"),

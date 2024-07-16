@@ -55,40 +55,37 @@ function deleteProduct(productID, productName) {
 
 function editProductView(productID){
     $('#edit_product_id').val(productID);
-    $('#editProductViewModal').modal('show');
-
-    // $.ajax({
-    //     url: `get/${productID}`,
-    //     method: 'GET',
-    //     success: function(data) {
-    //         if (data.status == 200) {
-    //             var product = data.product;
-
-    //             for (var itemName in product) {
-    //                 if (product.hasOwnProperty(itemName)) {
-    //                     var element =  document.getElementById( "id_"+ itemName);
-    //                     // Check if element exists before updating
-    //                     if (element) {
-    //                         if(itemName != "product_image"){
-    //                             // Update element content based on its type
-    //                             if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea' || element.tagName.toLowerCase() === 'select') {
-    //                                 element.value = product[itemName];
-    //                             } else {
-    //                                 element.textContent = product[itemName];
-    //                             }
-    //                         }else{
-    //                             $('#preview_img').attr('src',product[itemName]);
-    //                         }
-    //                     } 
-    //                 }
-    //             }
-    //             $('#editProductViewModal').modal('show');
-    //         }
-    //     },
-    //     error: function(jqXHR, textStatus, errorThrown) {
-    //         alert('Error: ' + errorThrown);
-    //     }
-    // });    
+    $.ajax({
+        url: `get/${productID}`,
+        method: 'GET',
+        success: function(data) {
+            if (data.status == 200) {
+                var product = data.product;
+                console.log(data.status);
+                for (var itemName in product) {
+                    if (product.hasOwnProperty(itemName)) {
+                        var element =  document.getElementById( "id_"+ itemName);
+                        if (element) {
+                            if(itemName != "product_image"){
+                                // Update element content based on its type
+                                if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea' || element.tagName.toLowerCase() === 'select') {
+                                    element.value = product[itemName];
+                                } else {
+                                    element.textContent = product[itemName];
+                                }
+                            }else{
+                                $('#preview_img').attr('src',product[itemName]);
+                            }
+                        } 
+                    }
+                }
+                $('#editProductViewModal').modal('show');
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert('Error: ' + errorThrown);
+        }
+    });    
 }
 
 function validateFileType(input){
@@ -129,14 +126,14 @@ $(document).ready(function() {
         }
 
         var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
-        var data = $(this).serialize();
-        productId = $('#edit_product_id').val();
+        var formData = $(this).serialize();
+        var productId = $('#edit_product_id').val();
 
         $.ajax({
             url: `update/${productId}`,
-            method: 'POST',
-            data: data ,
-            headers : { 'Content-Type': 'application/json', 'X-CSRFToken': csrf_token},
+            method: "POST",
+            data: formData ,
+            headers : { 'X-CSRFToken': csrf_token},
             success: function(data) {
                 if(data.status == 200){
                     alert('Product updated successfully');
