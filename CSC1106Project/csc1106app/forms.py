@@ -170,6 +170,43 @@ class ProductForm(forms.ModelForm):
         }
 
 
+
+class editProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            'product_name',
+            'product_image',
+            'product_description',
+            'product_category',
+            'product_sale_price',
+            'product_location',
+            'product_length',
+            'product_width',
+            'product_height',
+        ]
+        widgets = {
+            'product_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_image': forms.FileInput(attrs={'class': 'form-control', "accept":".png, .jpg, .jpeg", "onchange":"validateFileType(this)"}),
+            'product_description': forms.Textarea(attrs={'class': 'form-control',
+                                                         'rows': 2}),
+            'product_category': forms.Select(attrs={'class': 'form-control'}, choices=[
+                ("Bar furniture", "Bar furniture"),
+                ("Beds", "Beds"),
+                ("Bookcases & shelving units", "Bookcases & shelving units"),
+                ("Cabinets & cupboards", "Cabinets & cupboards"),
+                ("Chairs", "Chairs"),
+                ("Nursery furniture", "Nursery furniture"),
+                ("Wardrobes", "Wardrobes")
+            ]),
+            'product_sale_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_location': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_length': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_width': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_height': forms.NumberInput(attrs={'class': 'form-control'}),
+        
+        }
+
 class CreateCustomerForm(forms.ModelForm):
     class Meta:
         model = Membership
