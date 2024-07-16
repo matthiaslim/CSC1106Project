@@ -1,22 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    .transactionProduct table {
+        border-top: 3px solid grey; 
+        border-left: 3px solid grey; 
+        text-indent: 10px;
+    }
+    .transactionProduct th, .transactionProduct td {
+        border-bottom: none; 
+    }
+</style>
+
     <div class="container-fluid my-4 cust-container px-5">
         <div class="row mb-4 bg-white rounded shadow py-3">
             <p>Sales Summary</p>
-            <div class="col-4">
-                <p>Total Sales</p>
-                <h3>$691.53</h3>
+            <div class="col-3">
+                <p>Total Revenue</p>
+                <h3>${{ total_sum }}</h3>
+                <p>{{ total_sales_count }} Sales</p>
             </div>
-            <div class="col-4">
-                <p>Products Sold</p>
-                <h3>30 Products</h3>
-            </div>
-            <div class="col-4">
-                <p>Pending Payments</p>
-                <h3>$691.53</h3>
-                <p>10 Orders</p>
-            </div>
+            <div class="col-3">
+                <p>No. of Products Sold</p>
+                <h3>{{ items_sold }}</h3>
+                <p>items</p>
+            </div> 
         </div>
         <div class="row mb-4 py-3">
             <div class="col mb-4 px-0">
@@ -27,22 +35,82 @@
                             New Sales Order
                         </a>
                     </div>
-                    <table id="poTable" class="table table-hover">
+                    <table id="salesTable" class="table table-hover">
                         <thead>
                         <tr>
-                            {# invoice id, invoice date, status, employee #}
-                            <th>Invoice ID</th>
-                            <td>Date</td>
-                            <td>Status</td>
-                            <td>Employee</td>
+                            {# transaction id, date, employee #}
+                            <th>Transaction ID</th>
+                            <th>Date</th>
+                            <th>Value</th>
+                            <th>Payment</th>
+                            <th>Employee</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {# Add in the data from the database #}
+                            {# Add in the data from the database #}
+                            {% for transaction in sales %}
+                                <tr class="transaction-row" data-transaction-id="{{ transaction.transaction_id }}">
+                                    <td>{{ transaction.transaction_id }}</td>
+                                    <td>{{ transaction.transaction_date }}</td>
+                                    <td>{{ transaction.total_value }} </td>
+                                    <td>{{ transaction.payment_terms }}</td>
+                                    <td>{{ transaction.employee_id }}</td>
+                                </tr>
+                                <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">
+                                <td colspan="5">
+                                    <table id="transactionProductTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="product">Product Name</th>
+                                                <th class="quantity">Quantity</th>
+                                                <th class="price">Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {# tnspdt product name, quantity, price #}    
+                                        {% for item in transaction.transactionproduct_set.all %}
+                                        <tr class="transaction-product-row" id="products-{{ transaction.transaction_id }}">
+                                            <td>{{ item.product_id.product_name }}</td>
+                                            <td>{{ item.transaction_quantity }}</td>
+                                            <td>{{ item.transaction_price_per_unit }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>    
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const transactionRows = document.querySelectorAll('.transaction-row');
+
+        transactionRows.forEach(row => {
+            // console.log('Event listener row:', row);
+            row.addEventListener('click', function () {
+                const element_transaction_id = this.getAttribute('data-transaction-id');
+                // console.log('Clicked row transaction ID:', element_transaction_id); 
+                const productRow = document.getElementById(`products-${element_transaction_id}`);
+                
+                if (productRow) {
+                    if (productRow.style.display === 'none' || productRow.style.display === '') {
+                        productRow.style.display = 'table-row';
+                    } else {
+                        productRow.style.display = 'none';
+                    }
+                } else {
+                    console.error('Product row not found for ID:', element_transaction_id);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

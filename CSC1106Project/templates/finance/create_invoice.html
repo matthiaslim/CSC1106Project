@@ -10,8 +10,12 @@
                 {{ invoice_form.employee_id }}
                 {{ invoice_form.invoice_date.label_tag }}
                 {{ invoice_form.invoice_date }}
+                {{ invoice_form.payment_due_date.label_tag }}
+                {{ invoice_form.payment_due_date }}
                 {{ invoice_form.status.label_tag }}
                 {{ invoice_form.status }}
+                {{ invoice_form.payment_terms.label_tag }}
+                {{ invoice_form.payment_terms }}
             </div>
             <table id="invoiceProductTable" class="table rounded my-5">
                 <thead>
@@ -19,7 +23,6 @@
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Price Per Unit</th>
-                    <th>Payment Terms</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -30,7 +33,6 @@
                         <td>{{ form.product_id }}</td>
                         <td>{{ form.invoice_quantity }}</td>
                         <td>{{ form.invoice_price_per_unit }}</td>
-                        <td>{{ form.payment_terms }}</td>
                         <!-- Add more fields as needed -->
                         <td>
                             <button type="button" class="remove-row btn btn-danger">Remove</button>
@@ -41,7 +43,6 @@
                     <td>{{ formset.empty_form.product_id }}</td>
                     <td>{{ formset.empty_form.invoice_quantity }}</td>
                     <td>{{ formset.empty_form.invoice_price_per_unit }}</td>
-                    <td>{{ formset.empty_form.payment_terms }}</td>
                     <!-- Add more fields as needed -->
                     <td>
                         <button type="button" class="remove-row btn btn-danger">Remove</button>
