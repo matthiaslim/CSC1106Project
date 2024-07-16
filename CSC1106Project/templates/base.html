@@ -60,6 +60,8 @@
             <div class="collapse {% if 'finance' in request.path %}show{% endif %}" id="collapse-finance">
                 <a class="collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
                    href="{% url 'invoice_management' %}">Purchase Order</a>
+            <a class="collapse-item {% if request.path == '/finance/sales' %}active{% endif %}"
+                   href="{% url 'sales_management' %}">Sales</a>
                 <a class="collapse-item" href="#">Expenses</a>
             </div>
 
@@ -183,15 +185,15 @@
 </div>
 
 <script>
-    window.onload = function () {
-        {%
-            if permission_denied %
-        }
-        var modal = new bootstrap.Modal(document.getElementById('permissionModal'));
-        modal.show();
-        {%
-            endif %
-        }
+    {# window.onload = function () {#}
+    {#    {%#}
+    {#        if permission_denied %#}
+    {#    }#}
+    {#    var modal = new bootstrap.Modal(document.getElementById('permissionModal'));#}
+    {#    modal.show();#}
+    {#    {%#}
+    {#        endif %#}
+    {#    }#}
     };
 </script>
 
@@ -201,23 +203,6 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script>
     $(document).ready(function () {
-        $('#custTable').DataTable({
-            "columnDefs": [
-                {"orderable": false, "targets": [0, 6]} // Disables sorting on the first and last columns
-            ],
-            "paging": true, // Enable pagination
-            "pageLength": 10, // Set the number of items per page
-            "pagingType": "simple_numbers"
-        });
-
-        $("#custTable tbody").on("click", "tr", function () {
-            if ($(event.target).closest('input[type="checkbox"], .btn, .dropdown-menu').length === 0) {
-
-                var membershipId = $(this).data('id');
-                console.log(membershipId);
-                window.location.href = '/customer/details/' + membershipId;
-            }
-        });
 
         $('#poTable').DataTable({
             "columnDefs": [
@@ -227,8 +212,6 @@
             "pageLength": 10, // Set the number of items per page
             "pagingType": "simple_numbers"
         });
-
-
     });
 </script>
 {% block scripts %}

@@ -32,7 +32,8 @@
                 <div class="bg-white rounded shadow p-3">
                     <div class="btn-container d-flex justify-content-start mb-4">
                         <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
-                        <a class="btn btn-primary ms-3" href="{% url 'create_customer' %}"><i class="bi bi-person-fill-add"></i>
+                        <a class="btn btn-primary ms-3" href="{% url 'create_customer' %}"><i
+                                class="bi bi-person-fill-add"></i>
                             New Customer
                         </a>
                     </div>
@@ -91,4 +92,28 @@
     <ul>
 
     </ul>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#custTable').DataTable({
+                "columnDefs": [
+                    {"orderable": false, "targets": [0, 6]} // Disables sorting on the first and last columns
+                ],
+                "paging": true, // Enable pagination
+                "pageLength": 10, // Set the number of items per page
+                "pagingType": "simple_numbers"
+            });
+
+            $("#custTable tbody").on("click", "tr", function () {
+                if ($(event.target).closest('input[type="checkbox"], .btn, .dropdown-menu').length === 0) {
+
+                    var membershipId = $(this).data('id');
+                    console.log(membershipId);
+                    window.location.href = '/customer/details/' + membershipId;
+                }
+            });
+        });
+    </script>
 {% endblock %}

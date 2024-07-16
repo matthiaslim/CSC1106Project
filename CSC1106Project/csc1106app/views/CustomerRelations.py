@@ -25,15 +25,18 @@ def customer_management(request):
 def customer_details(request, customerID):
     try:
         membership = Membership.objects.get(member_id=customerID)
+        member_sales = Transaction.objects.filter(membership_id_id = membership.member_id).select_related('employee_id')
     except Membership.DoesNotExist:
         # Handle the case where the customer does not exist
         membership = None
+    except Transaction.DoesNotExist:
+        member_sales = None
 
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'},
                    {'title': f'Customer Details - {membership}'}]
-    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'membership': membership}
+    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'membership': membership, 'member_sales': member_sales}
 
     return render(request, 'customer/customer_details.html', data)
 
