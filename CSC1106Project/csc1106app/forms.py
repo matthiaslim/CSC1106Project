@@ -207,7 +207,7 @@ class InvoiceForm(forms.ModelForm):
     payment_terms = forms.ChoiceField(label="Payment terms", widget=forms.Select(attrs={'class': 'form-select'}))
     status = forms.ChoiceField(label="Status", widget=forms.Select(attrs={'class': 'form-select'}))
     employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
-    
+
     class Meta:
         model = Invoice
         fields = ['invoice_date', 'payment_due_date', 'payment_terms', 'status', 'employee_id']
@@ -215,35 +215,8 @@ class InvoiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['employee_id'].widget.attrs.update({'class': 'form-select'})
-
-class CustomSelect(Select):
-    def __init__(self, attrs=None, choices=(), prices=None):
-        default_attrs = {'class': 'form-select'}
-        if attrs:
-            default_attrs.update(attrs)
-        super().__init__(default_attrs, choices)
-
-    def create_option(self, name, value, label, selected, index, subindex=None, attrs=None):
-        display_name = label[0] if isinstance(label, tuple) and len(label) == 2 else label
-        data_price = label[1] if isinstance(label, tuple) and len(label) == 2 else None
-
-        option = super().create_option(name, value, display_name, selected, index, subindex=subindex, attrs=attrs)
-
-        if data_price:
-            option['attrs']['data-price'] = data_price
-
-        return option
-
-    def optgroups(self, name, value, attrs=None):
-        groups = []
-        for index, (option_value, option_label) in enumerate(self.choices):
-            if isinstance(option_label, (list, tuple)) and len(option_label) == 2:
-                group_name = None
-                subgroup = [
-                    self.create_option(name, option_value, option_label, option_value in value, index, attrs=attrs)]
-                groups.append((group_name, subgroup, index))
-        return groups
-
+        self.fields['status'].choices = Invoice.STATUS_CHOICES
+        self.fields['payment_terms'].choices = Invoice.PAYMENT_CHOICES
 
 class InvoiceProductForm(forms.ModelForm):
     class Meta:
@@ -277,7 +250,7 @@ class SalesForm(forms.ModelForm):
     membership_id = forms.ModelChoiceField(queryset=Membership.objects.all(), label="Member", to_field_name="member_id")
     employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
     transaction_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    points_earned = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    points_earned = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'true', 'value': 0}))
     payment_terms = forms.ChoiceField(label="Payment Terms", widget=forms.Select(attrs={'class': 'form-select'}))
 
     class Meta:
@@ -287,32 +260,10 @@ class SalesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['payment_terms'].choices = Transaction.PAYMENT_CHOICES
         self.fields['membership_id'].widget.attrs.update({'class': 'form-select'})
         self.fields['employee_id'].widget.attrs.update({'class': 'form-select'})
-        self.fields['points_earned'].widget.attrs.update({'class': 'form-select'})
         self.fields['payment_terms'].widget.attrs.update({'class': 'form-select'})
-
-
-class SelectWOA(Select):
-    # Referenced from: https://stackoverflow.com/questions/5089396/django-form-field-choices-adding-an-attribute/56097149#56097149
-    def __init__(self, attrs=None, choices=()):
-        default_attrs = {'class': 'form-select'}
-        if attrs:
-            default_attrs.update(attrs)
-        super().__init__(default_attrs, choices)
-
-    def create_option(self, name, value, label, selected, index,
-                      subindex=None, attrs=None):
-        if isinstance(label, dict):
-            opt_attrs = label.copy()
-            label = opt_attrs.pop('label')
-        else:
-            opt_attrs = {}
-        option_dict = super(SelectWOA, self).create_option(name, value,
-                                                           label, selected, index, subindex=subindex, attrs=attrs)
-        for key, val in opt_attrs.items():
-            option_dict['attrs'][key] = val
-        return option_dict
 
 
 class SalesProductForm(forms.ModelForm):
@@ -338,9 +289,9 @@ class SalesProductForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-select product-select'})
         )
 
-        self.fields['transaction_quantity'].widget.attrs.update({'class': 'form-control'})
+        self.fields['transaction_quantity'].widget.attrs.update({'class': 'form-control quantity', 'value': 1})
         self.fields['transaction_price_per_unit'].widget.attrs.update(
-            {'class': 'form-control price-per-unit', 'readonly': True}
+            {'class': 'form-control price-per-unit', 'readonly': True, 'value': products[0].product_sale_price}
         )
         self.set_initial_price()
 
