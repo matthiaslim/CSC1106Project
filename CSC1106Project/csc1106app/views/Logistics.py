@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ..forms import ProductForm,editProductForm
+from ..forms import ProductForm, editProductForm, addOrderForm, editOrderForm
 from ..models.product import Product
+from ..models.stockOrder import StockOrder
 from ..crud_ops import *
 from ..decorators import department_required
 import json
@@ -26,8 +27,9 @@ def inventory_management(request):
     if product_location:
         products = products.filter(product_location__icontains=product_location)
 
+    form = editProductForm()
 
-    return render(request, 'inventory/inventory_management.html', {'products': products })
+    return render(request, 'inventory/inventory_management.html', {'products': products , 'form': form })
 
 @login_required
 @department_required('Logistics')
@@ -80,10 +82,12 @@ def get_product(request, pk):
 @department_required('Logistics')
 def update_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    form = editProductForm(instance=product) 
 
-
-    return render(request, 'edit_bootstrap_modal.html', {"form" : form})
+    if request.method == 'POST':
+        order = editProductForm(request.POST,request.FILES,instance=product)
+        
+        order.save()
+    return JsonResponse({'status' : 200, 'message' : 'updated product successfully'})
 
 
 @login_required
@@ -96,3 +100,45 @@ def delete_product(request, pk):
         return JsonResponse({'status': 200, 'message': 'Product deleted successfully.'})
     except:
         return JsonResponse({'status': 400, 'message': 'Bad request.'})
+    
+
+@login_required
+@department_required('Logistics')
+def order_management(request):
+    # Fetch all orders initially
+    orders = StockOrder.objects.all()
+    form = addOrderForm()
+    editform = editOrderForm()
+
+    return render(request, 'inventory/order_management.html', {'orders': orders, 'form': form , 'editform' : editform})
+
+@login_required
+@department_required('Logistics')
+def create_order(request):
+    if request.method == 'POST':
+        form = addOrderForm(request.POST)
+        # Perform validation
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"status": 200, "message": "Order has been successfully placed."})
+        else:
+            print(form.errors)
+            return JsonResponse({"status": 400, "message": "Order creation failed."})
+ 
+@login_required
+@department_required('Logistics')
+def edit_order(request,pk):
+    if request.method == 'POST':
+        stockOrder = get_object_or_404(StockOrder, pk=pk)
+        form = editOrderForm(request.POST,instance=stockOrder)
+        if form.is_valid():
+            if request.POST.get('order_status') == 'Received':
+                product = get_object_or_404(Product, pk=stockOrder.product.product_id)
+                product.product_quantity += stockOrder.order_quantity
+                product.save()
+
+            form.save()
+            return JsonResponse({"status": 200, "message": "Order has been successfully updated."})
+        else:
+            print(form.errors)
+            return JsonResponse({"status": 400, "message": "Order creation failed."})

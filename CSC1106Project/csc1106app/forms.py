@@ -170,7 +170,6 @@ class ProductForm(forms.ModelForm):
         }
 
 
-
 class editProductForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -205,6 +204,30 @@ class editProductForm(forms.ModelForm):
             'product_width': forms.NumberInput(attrs={'class': 'form-control'}),
             'product_height': forms.NumberInput(attrs={'class': 'form-control'}),
         
+        }
+
+class addOrderForm(forms.ModelForm):
+    class Meta:
+        model = StockOrder
+
+        fields = ['product','order_quantity']
+
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-control'}),
+            'order_quantity': forms.NumberInput(attrs={'class' : 'form-control'}),
+        }
+
+class editOrderForm(forms.ModelForm):
+    class Meta:
+        model = StockOrder
+
+        fields = ['order_status',]
+
+        widgets = {
+            'order_quantity': forms.Select(attrs={'class' : 'form-control'}, choices= [
+                ("Pending","Pending"),
+                ("Received","Received")
+            ])
         }
 
 class CreateCustomerForm(forms.ModelForm):

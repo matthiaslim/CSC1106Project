@@ -36,7 +36,7 @@ def login_user(request):
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
-            if user is not None:
+            if user is not None and user.is_active:
                 employee = Employee.objects.get(user=user)
                 login(request, user)
                 if not employee.onboarded:

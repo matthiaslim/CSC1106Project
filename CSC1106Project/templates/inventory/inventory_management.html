@@ -13,7 +13,7 @@
 </div>
 <div class="row p-3 my-3 bg-white shadow rounded-3">
     <div class="col">
-        <table id="inventoryTable" class="table table-striped table-hover">
+        <table id="orderTable" class="table table-striped table-hover">
             <thead>
             <tr>
                 <th>ID</th>
@@ -63,7 +63,7 @@
 {% block scripts %}
 
 <script>
-    $("#inventoryTable").DataTable({
+    $("#orderTable").DataTable({
         "columnDefs": [
             {"orderable": false, "targets": [-1]} // Disable sorting on the last column
         ]

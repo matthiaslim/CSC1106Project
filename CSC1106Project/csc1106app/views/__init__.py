@@ -1,6 +1,6 @@
 from .authentication import (index,login_user,logout_user,settings, onboard)
 
-from .Logistics import (inventory_management,add_product,get_product,update_product,delete_product)
+from .Logistics import (inventory_management,add_product,get_product,update_product,delete_product,order_management,create_order,edit_order)
 
 from .CustomerRelations import (customer_management,customer_details,create_customer,update_customer,delete_customer)
 
@@ -19,6 +19,9 @@ __all__ = [
     'onboard',
     'settings',
     'inventory_management',
+    'order_management',
+    'create_order',
+    'edit_order',
     'add_product',
     'get_product',
     'update_product',
