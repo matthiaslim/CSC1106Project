@@ -39,7 +39,7 @@
                        data-target="#productViewModal" class="btn btn-sm btn-primary" title="Update Product">
                         <i class="bi bi-eye-fill"></i>
                     </a>
-                    <a href="{% url 'update_product' product.product_id %}" class="btn btn-sm btn-secondary"
+                    <a onclick="editProductView('{{ product.product_id }}')" class="btn btn-sm btn-secondary"
                        title="Update Product">
                         <i class="bi bi-pencil-square"></i>
                     </a>
@@ -57,6 +57,7 @@
 </div>
 
 {% include  './modal/add_bootstrap_modal.html' %}
+{% include './modal/edit_bootstrap_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
