@@ -74,11 +74,11 @@
                         </thead>
                         <tbody>
                         {% for sale in member_sales %}
-                            <tr>
-                                <th>{{ sale.transaction_id }}</th>
-                                <th>{{ sale.points_earned }}</th>
-                                <th>{{ sale.transaction_date }}</th>
-                                <th>{{ sale.employee_id.first_name }} {{ sale.employee_id.last_name }}</th>
+                            <tr data-id="{{ sale.transaction_id }}" role="button">
+                                <td>{{ sale.transaction_id }}</td>
+                                <td>{{ sale.points_earned }}</td>
+                                <td>{{ sale.transaction_date }}</td>
+                                <td>{{ sale.employee_id.first_name }} {{ sale.employee_id.last_name }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -98,7 +98,17 @@
                 ],
                 "paging": true, // Enable pagination
                 "pageLength": 10, // Set the number of items per page
-                "pagingType": "simple_numbers"
+                "pagingType": "simple_numbers",
+                "searching": true,
+                "ordering": true,
+            });
+
+            $("#custSalesTable tbody").on("click", "tr", function () {
+                if ($(event.target).closest('input[type="checkbox"], .btn, .dropdown-menu').length === 0) {
+
+                    var salesId = $(this).data('id');
+                    window.location.href = '/finance/sales/' + salesId;
+                }
             });
         });
     </script>
