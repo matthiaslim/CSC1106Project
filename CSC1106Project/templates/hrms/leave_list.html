@@ -51,11 +51,13 @@
                         <td>{{ leave.remark }}</td>
                         <td>
                             {% if leave.leave_status == 'pending' or leave.leave_status == "Pending" %}
+                            {% if not user_data%}
                             <a href="{% url 'leave_update' leave.leave_id %}">
                                 <button class="btn btn-sm btn-secondary" title="Update Status">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                             </a>
+                            {% endif %}
                             {% endif %}
                         </td>
                     </tr>
