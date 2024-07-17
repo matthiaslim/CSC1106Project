@@ -11,4 +11,4 @@ class InvoiceProduct(models.Model):
     invoice_price_per_unit = models.FloatField()
 
     def __str__(self):
-        return self.invoice_product_id
+        return str(self.invoice_id)

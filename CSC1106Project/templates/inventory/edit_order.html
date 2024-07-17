@@ -5,25 +5,30 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Manage Order</h1>
-    
+    {% csrf_token %}
+    <button id="submitData" class="btn btn-primary"> Mark as Received</button>
+
 </div>
 <div class="row p-3 my-3 bg-white shadow rounded-3">
     <div class="col">
         <table id="inventoryTable" class="table table-striped table-hover">
             <thead>
             <tr>
-                <th>Invoice ID</th>
-                <th>Order by</th>
-                <th>Order Date</th>
-                <th>Invoice Status</th>
-                <th>Actions</th>
+                <th>Item ID</th>
+                <th>Product Name</th>
+                <th>Product Category</th>
+                <th>Product Quantity</th>
+                <th>Product Price Per Unit</th>
             </tr>
             </thead>
             <tbody>
             {% for invoice in invoices %}
             <tr>
-                
-                
+                <td> {{ invoice.invoice_product_id}}</td>
+                <td> {{ invoice.product_id.product_name }} </td>
+                <td> {{ invoice.product_id.product_category}} </td>
+                <td> {{ invoice.invoice_quantity}} </td>
+                <td> {{ invoice.invoice_price_per_unit | floatformat:2}}</td>
             </tr>
             {% endfor %}
             </tbody>
@@ -34,3 +39,27 @@
 {% endblock %}
 
 
+{% block scripts %}
+<script>
+$(document).ready(function(){
+
+    $('#submitData').click(function(){
+        var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+        $.ajax({
+            method:'POST',
+            headers : {'X-CSRFToken' : csrf_token},
+            success : function(data){
+                if (data.success){
+                    alert('Successfully Updated Data');
+                    window.location.href="http://127.0.0.1:8000/inventory/order_management";
+                }   
+            }
+        })
+    });
+
+});
+
+</script>
+
+
+{% endblock %}
