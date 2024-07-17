@@ -34,7 +34,7 @@ urlpatterns = [
     path('inventory/get/<int:pk>', login_required(views.get_product), name="get_product"),
     path('inventory/update/<int:pk>', login_required(views.update_product), name='update_product'),
     path('inventory/delete/<int:pk>', login_required(views.delete_product), name='delete_product'),
-    path('inventory/order_management/',login_required(views.order_management), name="order_management"),
+    path('inventory/order_management',login_required(views.order_management), name="order_management"),
     path('inventory/order_management/edit/<int:pk>', login_required(views.edit_order), name="edit_order"),
 
     # Customer URLs
