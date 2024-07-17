@@ -89,21 +89,21 @@ function editProductView(productID){
 }
 
 function validateFileType(input){
-var fileName = document.getElementById("id_product_image").value;
-var idxDot = fileName.lastIndexOf(".") + 1;
-var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
-if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $('#preview_img').attr('src', e.target.result).width(350).height(350);
-        };
+    var fileName = document.getElementById("id_product_image").value;
+    var idxDot = fileName.lastIndexOf(".") + 1;
+    var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#preview_img').attr('src', e.target.result).width(350).height(350);
+            };
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}else{
-        alert("Only jpg/jpeg and png files are allowed!");
-    }   
+            reader.readAsDataURL(input.files[0]);
+        }
+    }else{
+            alert("Only jpg/jpeg and png files are allowed!");
+        }   
 }   
 
 
@@ -118,7 +118,7 @@ $(document).ready(function() {
         $.ajax({
             url: `update/${productId}`,
             method: "POST",
-            data: formData ,
+            data:  formData ,
             headers : { 'X-CSRFToken': csrf_token},
             processData: false,
             contentType: false,

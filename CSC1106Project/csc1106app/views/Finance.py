@@ -117,3 +117,10 @@ def get_product_price(request, product_id):
         return JsonResponse({'price': product.product_sale_price})
     except Product.DoesNotExist:
         return JsonResponse({'error': 'Product not found'}, status=404)
+
+@login_required
+@department_required("Finance")
+def update_invoice(request,invoiceID):
+    if request.method == "POST":
+        Invoice.objects.filter(invoice_id=invoiceID).update(status=request.POST.get('product_status'))
+        return JsonResponse({'success': True})
