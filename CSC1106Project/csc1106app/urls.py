@@ -82,7 +82,6 @@ urlpatterns = [
 
     # Payroll URLs
     path('hr/payrolls/', views.payroll_list, name='payroll_list'),
-    path('hr/payrolls/create/', views.payroll_create, name='payroll_create'),
-    path('hr/payrolls/<int:payroll_id>/update/', views.payroll_update, name='payroll_update'),
-    path('hr/payrolls/<int:payroll_id>/delete/', views.payroll_delete, name='payroll_delete'),
+    path('generate_payroll/', views.generate_payroll, name='generate_payroll'),
+    path('edit_payroll_bonus/<int:payroll_id>/', views.edit_payroll_bonus, name='edit_payroll_bonus'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

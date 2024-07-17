@@ -7,7 +7,7 @@ from .CustomerRelations import (customer_management,customer_details,create_cust
 from .HumanResource import (employee_list,employee_detail,employee_create,employee_update,employee_delete,department_list,
                             department_detail,department_create,department_update,department_delete,attendance_list,
                             attendance_create,attendance_check_out,attendance_detail,attendance_update,leave_list,add_leave,
-                            edit_leave_status,leave_delete,payroll_list,payroll_create,payroll_update,payroll_delete)
+                            edit_leave_status,payroll_list,edit_payroll_bonus,generate_payroll)
 
 from .Finance import (sales_management, create_sales,invoice_management,create_invoice,get_product_price)
 
@@ -48,11 +48,9 @@ __all__ = [
     'leave_list',
     'add_leave',
     'edit_leave_status',
-    'leave_delete',
     'payroll_list',
-    'payroll_create',
-    'payroll_update',
-    'payroll_delete',
+    'edit_payroll_bonus',
+    'generate_payroll',
     'sales_management',
     'create_sales',
     'invoice_management',

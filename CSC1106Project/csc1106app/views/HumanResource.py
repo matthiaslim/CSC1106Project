@@ -1,10 +1,10 @@
 import base64
-
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.core.management import call_command
 from ..crud_ops import search_and_filter_attendances, search_and_filter_departments, search_and_filter_employees, search_and_filter_payrolls
 from ..forms import AttendanceForm, DepartmentForm, EmployeeForm, LeaveAddForm, LeaveStatusUpdateForm, PayrollForm, CustomUserCreationForm
 from ..models.attendance import Attendance
@@ -177,7 +177,7 @@ def attendance_create(request):
                 return render(request, 'hrms/attendance_form.html')
 
             attendance = Attendance(
-                employee=employee,  # Linked via OneToOneField
+                employee=employee, 
                 attendance_date=datetime.now().date(),
                 time_in=datetime.now(),
                 image=data
@@ -258,7 +258,6 @@ def leave_list(request):
 
     return render(request, 'hrms/leave_list.html', context)
 
-
 @login_required
 def add_leave(request):
     logged_in_employee = get_object_or_404(Employee, user=request.user)
@@ -316,7 +315,6 @@ def add_leave(request):
 
     return render(request, 'hrms/leave_add.html', {'form': form})
 
-
 @login_required
 @department_required('Human Resource')
 def edit_leave_status(request, leave_id):
@@ -344,58 +342,50 @@ def edit_leave_status(request, leave_id):
                 leaveBalanceObj.save()
                 
             form.save()
-            return redirect('leave_list')  # Replace 'leave_detail' with your actual URL name
+            return redirect('leave_list')
     else:
         form = LeaveStatusUpdateForm(instance=leave)
     return render(request, 'hrms/leave_edit.html', {'form': form})
 
-
-@login_required
-def leave_delete(request, leave_id):
-    leave = get_object_or_404(Leave, pk=leave_id)
-    leave.delete()
-    return redirect('leave_list')
-
-
 # Payroll Views
-@department_required('Human Resource')
+@login_required
 def payroll_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'employee__first_name')
     order = request.GET.get('order', 'asc')
-    payrolls = search_and_filter_payrolls(query, sort_by, order)
-    return render(request, 'hrms/payroll_list.html',
-                  {'payrolls': payrolls, 'query': query, 'sort_by': sort_by, 'order': order})
 
+    user_data = request.user.employee 
 
-@department_required('Human Resource')
-def payroll_create(request):
-    if request.method == "POST":
-        form = PayrollForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('payroll_list')
+    if user_data.department.department_name in ['Human Resource', 'Chairman']:
+        all_payrolls = Payroll.objects.all().order_by(sort_by if order == 'asc' else f'-{sort_by}')
+        user_payrolls = Payroll.objects.filter(employee=user_data).order_by(sort_by if order == 'asc' else f'-{sort_by}')
     else:
-        form = PayrollForm()
-    return render(request, 'hrms/payroll_form.html', {'form': form})
+        all_payrolls = None
+        user_payrolls = Payroll.objects.filter(employee=user_data).order_by(sort_by if order == 'asc' else f'-{sort_by}')
 
+    return render(request, 'hrms/payroll_list.html', {
+        'all_payrolls': all_payrolls,
+        'user_payrolls': user_payrolls,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order
+    })
 
+@login_required
 @department_required('Human Resource')
-def payroll_update(request, payroll_id):
-    payroll = get_object_or_404(Payroll, pk=payroll_id)
-    if request.method == "POST":
+def generate_payroll(request):
+    call_command('generate_payroll')
+    return redirect('payroll_list')
+
+@login_required
+@department_required('Human Resource')
+def edit_payroll_bonus(request, payroll_id):
+    payroll = get_object_or_404(Payroll, payroll_id=payroll_id)
+    if request.method == 'POST':
         form = PayrollForm(request.POST, instance=payroll)
         if form.is_valid():
             form.save()
             return redirect('payroll_list')
     else:
         form = PayrollForm(instance=payroll)
-    return render(request, 'hrms/payroll_form.html', {'form': form})
-
-
-@department_required('Human Resource')
-def payroll_delete(request, payroll_id):
-    payroll = get_object_or_404(Payroll, pk=payroll_id)
-    payroll.delete()
-    return redirect('payroll_list')
-
+    return render(request, 'hrms/payroll_form.html', {'form': form, 'payroll': payroll})

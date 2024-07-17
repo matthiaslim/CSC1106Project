@@ -48,9 +48,10 @@ class EmployeeForm(forms.ModelForm):
 
         JOB_TITLE_CHOICES = [
             ('', 'Select a title'),
-            ('manager', 'Manager'),
-            ('employee', 'Employee'),
-            ('hr', 'HR'),
+            ('Chairman', 'Chairman'),
+            ('Manager', 'Manager'),
+            ('Employee', 'Employee'),
+            ('HR', 'HR'),
         ]
 
         widgets = {
@@ -129,7 +130,13 @@ class LeaveStatusUpdateForm(forms.ModelForm):
 class PayrollForm(forms.ModelForm):
     class Meta:
         model = Payroll
-        fields = ['employee', 'salary', 'bonus', 'benefit', 'net_pay']
+        fields = ['bonus']
+
+    def save(self, *args, **kwargs):
+        payroll = super().save(commit=False)
+        payroll.net_pay = payroll.salary - payroll.cpf_deduction + payroll.bonus
+        payroll.save()
+        return payroll
 
 
 class ProductForm(forms.ModelForm):
