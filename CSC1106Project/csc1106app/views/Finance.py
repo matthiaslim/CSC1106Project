@@ -51,6 +51,29 @@ def create_sales(request):
     return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
 
 @login_required
+def sales_details(request, sales_id):
+    try:
+        sales = Transaction.objects.get(transaction_id=sales_id)
+        salesProducts = sales.transactionproduct_set.all()
+        subtotal = 0
+        for salesProduct in salesProducts:
+            total_price = salesProduct.transaction_quantity* salesProduct.transaction_price_per_unit
+            salesProduct.total_price = total_price
+            subtotal += total_price
+
+    except Transaction.DoesNotExist:
+        sales = None
+
+    data = {
+        'sales': sales,
+        'salesProducts': salesProducts,
+        'subtotal': subtotal
+    }
+
+    return render(request, 'finance/sales_details.html', data)
+
+
+@login_required
 # @department_required("Finance")
 def invoice_management(request):
     invoices = Invoice.objects.all().prefetch_related('invoiceproduct_set')

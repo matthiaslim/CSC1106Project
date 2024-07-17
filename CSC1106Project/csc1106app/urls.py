@@ -52,6 +52,7 @@ urlpatterns = [
     path('finance/sales/create', views.create_sales, name="create_sales"),
     path('finance/orders', views.invoice_management, name="invoice_management"),
     path('finance/orders/create', views.create_invoice, name="create_invoice"),
+    path('finance/sales/<int:sales_id>/', views.sales_details, name="sales_details"),
     path('get-product-price/<int:product_id>/', views.get_product_price, name='get-product-price'),
 
     # Employee URLs

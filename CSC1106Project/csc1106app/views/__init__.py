@@ -9,7 +9,8 @@ from .HumanResource import (employee_list,employee_detail,employee_create,employ
                             attendance_create,attendance_check_out,attendance_detail,attendance_update,leave_list,add_leave,
                             edit_leave_status,payroll_list,edit_payroll_bonus,generate_payroll)
 
-from .Finance import (sales_management, create_sales,invoice_management,create_invoice,get_product_price)
+from .Finance import (sales_management, create_sales, invoice_management, create_invoice, get_product_price,
+                      sales_details)
 
 
 __all__ = [
@@ -53,6 +54,7 @@ __all__ = [
     'generate_payroll',
     'sales_management',
     'create_sales',
+    'sales_details',
     'invoice_management',
     'create_invoice',
     'get_product_price'

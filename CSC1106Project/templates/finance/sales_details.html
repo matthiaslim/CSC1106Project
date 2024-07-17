@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid px-4">
+        <div class="row">
+            <div class="col-7">
+                <div class="bg-white rounded shadow p-4">
+                    <h3>Sales Order: {{ sales.transaction_id }}</h3>
+                    <h6>Transaction Date: {{ sales.transaction_date }}</h6>
+                    <h6>Created By: {{ sales.employee_id.first_name }} {{ sales.employee_id.last_name }}</h6>
+                </div>
+                <div class="bg-white rounded shadow mt-3 p-4">
+                    <h3>Customer Details</h3>
+                    <div class="row mt-3">
+                        <div class="col-2">
+                            <p class="fw-bold">Name</p>
+                            <p class="fw-bold">Email</p>
+                            <p class="fw-bold">Telephone</p>
+                            <p class="fw-bold">Address</p>
+                            <p class="fw-bold">Country</p>
+                        </div>
+                        <div class="col-6">
+                            <p>{{ sales.membership_id.first_name }} {{ sales.membership_id.last_name }}</p>
+                            <p>{{ sales.membership_id.email_address }}</p>
+                            <p>{{ sales.membership_id.phone_number }}</p>
+                            <p>{{ sales.membership_id.address }}</p>
+                            <p>{{ sales.membership_id.country }}</p>
+                        </div>
+                        <div class="col">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded shadow mt-3 p-4">
+                    <h3>Sales Products</h3>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Price Per Unit</th>
+                            <th>Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for salesProduct in salesProducts %}
+                            <tr>
+                                <th>{{ salesProduct.product_id.product_id }}</th>
+                                <th>{{ salesProduct.product_id.product_name }}</th>
+                                <th>{{ salesProduct.transaction_quantity }}</th>
+                                <th>${{ salesProduct.transaction_price_per_unit }}</th>
+                                <th>${{ salesProduct.total_price }}</th>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="text-end" colspan="4">Sub-Total:</td>
+                            <td>${{ subtotal }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end" colspan="4">Points Earned:</td>
+                            <td>{{ sales.points_earned }}</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="bg-white rounded shadow">
+                    {#                    PDF PREVIEW#}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
