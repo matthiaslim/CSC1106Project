@@ -22,7 +22,7 @@
             <tbody>
             {% for invoice in invoices %}
             <tr>
-                {% if invoice.status == 'Completed' or invoice.status == 'Approved' %}
+                {% if invoice.status == 'Completed' or invoice.status == 'Accepted' %}
                 <td>{{ invoice.invoice_id }}</td>
                 <td>{{ invoice.employee_id }}</td>
                 <td>{{ invoice.invoice_date }}</td>
