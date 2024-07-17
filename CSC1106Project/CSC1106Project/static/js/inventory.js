@@ -110,23 +110,9 @@ if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
 $(document).ready(function() {
     $('#editProductForm').on('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
-        var form = $(this);
-        var isEmpty = false;
-    
-        form.find(':input').each(function() {
-            if ($(this).prop('required') && $.trim($(this).val()) === '') {
-                isEmpty = true;
-                return false;  // Exit loop early if any empty required field is found
-            }
-        });
-    
-        if (isEmpty) {
-            alert('Please fill out all required fields.');
-            return;  // Stop further processing
-        }
 
         var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
-        var formData = $(this).serialize();
+        var formData = new FormData($('#editProductForm')[0]);
         var productId = $('#edit_product_id').val();
 
         $.ajax({
@@ -134,6 +120,8 @@ $(document).ready(function() {
             method: "POST",
             data: formData ,
             headers : { 'X-CSRFToken': csrf_token},
+            processData: false,
+            contentType: false,
             success: function(data) {
                 if(data.status == 200){
                     alert('Product updated successfully');

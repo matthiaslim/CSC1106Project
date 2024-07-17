@@ -49,7 +49,7 @@ def employee_create(request):
         if form.is_valid() and user_form.is_valid():
             try:
                 user = user_form.save()
-                
+
                 employee = form.save(commit=False)
                 employee.user = user
                 employee.save()
