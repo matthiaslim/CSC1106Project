@@ -85,8 +85,8 @@ def update_product(request, pk):
 
     if request.method == 'POST':
         order = editProductForm(request.POST,request.FILES,instance=product)
-
         order.save()
+        
     return JsonResponse({'status' : 200, 'message' : 'updated product successfully'})
 
 
