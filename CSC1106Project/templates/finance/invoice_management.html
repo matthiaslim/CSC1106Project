@@ -63,6 +63,10 @@
                             <th>Employee</th>
                             <th>Payment Due Date</th>
                             <th>Status</th>
+                        
+                            {% if user_data.employee_role == "Manager" or user_data.employee_role == "Chairman" %}
+                                    <th>Action</th>
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -76,6 +80,18 @@
                             <td>{{ invoice.employee_id }}</td>
                             <td>{{ invoice.payment_due_date }}</td>
                             <td>{{ invoice.status }}</td>
+                            {% if user_data.employee_role == "Manager" or user_data.employee_role == "Chairman" %}
+                                {% if invoice.status == 'Pending' %}
+                                    <td>
+                                        <a onclick="openEditBootstrapModal('{{ invoice.invoice_id }}','{{invoice.status}}')" class="btn btn-sm btn-secondary"
+                                        title="Update Product">
+                                        <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    </td>
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            {% endif %}
                         </tr>
                         <tr class="invoiceProduct" id="products-{{ invoice.invoice_id }}" style="display: none;">
                             <td colspan="5">
@@ -106,31 +122,84 @@
             </div>
         </div>
     </div>
+
+{% include './modal/edit_invoice.html' %} 
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        const invoiceRows = document.querySelectorAll('.invoice-row');
+<script>
+    $(document).ready(function(){
 
         invoiceRows.forEach(row => {
-            console.log('Event listener row:', row);
-            row.addEventListener('click', function () {
-                const element_invoice_id = this.getAttribute('data-invoice-id');
-                console.log('Clicked row invoice ID:', element_invoice_id); 
-                const productRow = document.getElementById(`products-${element_invoice_id}`);
-                
-                if (productRow) {
-                    if (productRow.style.display === 'none' || productRow.style.display === '') {
-                        productRow.style.display = 'table-row';
-                    } else {
-                        productRow.style.display = 'none';
+            row.addEventListener('click', rowClickHandler);
+        });
+
+        $("#submitEditBtn").click(function(event){
+            event.preventDefault();
+            var idBtn = $('#submitEditBtn').data('attr')
+            var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+            var formData = $('#invoice_status').val();
+            
+            $.ajax({
+
+                url: `update/${idBtn}`,
+                method: "POST",
+                headers : { 'X-CSRFToken': csrf_token},
+                data: {'product_status' : formData} ,
+                success: function(data){
+                    if(data.success){
+                        window.location.reload();
+                        alert('Invoice updated successfully');
                     }
-                } else {
-                    console.error('Product row not found for ID:', element_invoice_id);
                 }
             });
         });
+
+        $(document).on('shown.bs.modal', '#editInvoiceModal', function () {
+            addClickListeners();
+        });
     });
+
+
+    const invoiceRows = document.querySelectorAll('.invoice-row');
+
+    function rowClickHandler() {
+            const element_invoice_id = this.getAttribute('data-invoice-id');
+            const productRow = document.getElementById(`products-${element_invoice_id}`);
+
+            if (productRow) {
+                if (productRow.style.display === 'none' || productRow.style.display === '') {
+                    productRow.style.display = 'table-row';
+                } else {
+                    productRow.style.display = 'none';
+                }
+            } else {
+                console.error('Product row not found for ID:', element_invoice_id);
+            }
+        }
+
+   
+
+    function removeClickListeners() {
+        invoiceRows.forEach(row => {
+            row.removeEventListener('click', rowClickHandler);
+        });
+    }
+
+    // Function to re-add event listeners
+    function addClickListeners() {
+        invoiceRows.forEach(row => {
+            row.addEventListener('click', rowClickHandler);
+        });
+    }
+
+
+    function openEditBootstrapModal(invoiceID,invoiceStatus){
+        removeClickListeners();
+        $('#submitEditBtn').attr('data-attr',invoiceID);
+        $('#invoice_status').val(invoiceStatus).change();
+        $('#editInvoiceModal').modal('show');
+    }
+
 </script>
 {% endblock %}
