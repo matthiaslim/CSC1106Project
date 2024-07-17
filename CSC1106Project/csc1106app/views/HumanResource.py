@@ -16,6 +16,7 @@ from ..models.payroll import Payroll
 from ..decorators import department_required
 from datetime import datetime
 from django.db.models import Q
+from django.utils import timezone
 
 
 
@@ -374,7 +375,14 @@ def payroll_list(request):
 @login_required
 @department_required('Human Resource')
 def generate_payroll(request):
+    current_month = timezone.now().replace(day=1)
+
+    if Payroll.objects.filter(month=current_month).exists():
+        messages.warning(request, 'Payroll for the current month has already been generated.')
+        return redirect('payroll_list')
+    
     call_command('generate_payroll')
+    messages.success(request, 'Payroll generated successfully.')
     return redirect('payroll_list')
 
 @login_required
