@@ -10,20 +10,23 @@
     .transactionProduct th, .transactionProduct td {
         border-bottom: none; 
     }
+    .summary {
+        text-indent: 10px;
+    }
 </style>
 
-    <div class="container-fluid my-4 cust-container px-5">
-        <div class="row mb-4 bg-white rounded shadow py-3">
+    <div class="container-fluid my-4 cust-container px-2">
+        <div class="summary row mb-4 bg-white rounded shadow py-3">
             <p>Sales Summary</p>
             <div class="col-3">
                 <p>Total Revenue</p>
                 <h3>${{ total_sum }}</h3>
-                <p>{{ total_sales_count }} Sales</p>
+                <p>{{ total_quantity_sold }} items sold</p>
             </div>
             <div class="col-3">
-                <p>No. of Products Sold</p>
-                <h3>{{ items_sold }}</h3>
-                <p>items</p>
+                <p>Sales Count</p>
+                <h3>{{ total_transaction_count }}</h3>
+                <p>transactions</p>
             </div> 
         </div>
         <div class="row mb-4 py-3">
@@ -39,11 +42,12 @@
                         <thead>
                         <tr>
                             {# transaction id, date, employee #}
-                            <th>Transaction ID</th>
+                            <th>ID</th>
                             <th>Date</th>
                             <th>Value</th>
                             <th>Payment</th>
                             <th>Employee</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -55,15 +59,30 @@
                                     <td>{{ transaction.total_value }} </td>
                                     <td>{{ transaction.payment_terms }}</td>
                                     <td>{{ transaction.employee_id }}</td>
+                                    <td>
+                                        <!-- <form action="{% url 'update_sales' invoice.invoice_id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </button>
+                                        </form> -->
+                                        <form action="{% url 'delete_sales' sales.transaction_id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">
-                                <td colspan="5">
+                                <td colspan="10">
                                     <table id="transactionProductTable" class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th class="product">Product Name</th>
-                                                <th class="quantity">Quantity</th>
-                                                <th class="price">Price</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Sub-total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -73,6 +92,7 @@
                                             <td>{{ item.product_id.product_name }}</td>
                                             <td>{{ item.transaction_quantity }}</td>
                                             <td>{{ item.transaction_price_per_unit }}</td>
+                                            <td>{{ item.sub_total }}</td>
                                         </tr>
                                         {% endfor %}
                                         </tbody>

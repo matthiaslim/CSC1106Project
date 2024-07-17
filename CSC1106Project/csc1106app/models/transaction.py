@@ -16,5 +16,8 @@ class Transaction(models.Model):
     transaction_date = models.DateField()
     payment_terms = models.CharField(max_length=30, choices=PAYMENT_CHOICES, default='Card')
 
+    def total_value(self):
+        return sum([transaction_product.transaction_quantity * transaction_product.transaction_price_per_unit for transaction_product in self.transactionproduct_set.all()])
+
     def __str__(self):
         return str(self.transaction_id)

@@ -9,5 +9,8 @@ class TransactionProduct(models.Model):
     transaction_quantity = models.IntegerField()
     transaction_price_per_unit = models.FloatField()
 
+    def sub_total(self):
+        return self.transaction_quantity * self.transaction_price_per_unit
+
     def __str__(self):
         return self.transaction_product_id
