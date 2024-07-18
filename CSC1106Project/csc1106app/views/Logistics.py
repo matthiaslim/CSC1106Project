@@ -7,7 +7,6 @@ from ..models.invoice import Invoice
 from ..models.invoiceProduct import InvoiceProduct
 from ..crud_ops import *
 from ..decorators import department_required
-import json
 
 # Inventory Views
 @login_required

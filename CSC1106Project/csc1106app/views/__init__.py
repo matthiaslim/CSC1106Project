@@ -1,3 +1,5 @@
+from .chart import (get_chart_information)
+
 from .authentication import (index,login_user,logout_user,settings, onboard)
 
 from .Logistics import (inventory_management,add_product,get_product,update_product,delete_product,order_management,edit_order)
@@ -14,6 +16,7 @@ from .Finance import (sales_management, create_sales, invoice_management, create
 
 
 __all__ = [
+    'get_chart_information',
     'index',
     'login_user',
     'logout_user',

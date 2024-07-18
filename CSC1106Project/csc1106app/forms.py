@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
-
+from datetime import date, timedelta
 from .models import *
 
 class CustomUserCreationForm(UserCreationForm):
@@ -66,13 +66,18 @@ class EmployeeForm(forms.ModelForm):
     hire_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     contract_expiry_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
 
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'].widget.attrs['max'] = (date.today() - (timedelta(days=6575))).isoformat()
+        self.fields['hire_date'].widget.attrs['max'] = date.today().isoformat()
+        self.fields['contract_expiry_date'].widget.attrs['min'] = date.today().isoformat()
+
     class Meta:
         model = Employee
         fields = ['first_name', 'last_name', 'department', 'job_title', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
-
-
-
+    
 
 class DepartmentForm(forms.ModelForm):
     class Meta:

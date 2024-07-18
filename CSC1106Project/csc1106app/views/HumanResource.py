@@ -82,7 +82,7 @@ def employee_update(request, employee_id):
     else:
         user_form = UserEditForm(instance=user)
         form = EmployeeForm(instance=employee)
-    return render(request, 'index.html', {'form': form , 'user_form': user_form})
+    return render(request, 'hrms/employee_form.html', {'form': form , 'user_form': user_form})
 
 
 @login_required
