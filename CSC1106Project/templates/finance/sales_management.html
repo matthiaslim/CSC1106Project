@@ -2,6 +2,9 @@
 
 {% block content %}
 <style>
+    .summary {
+        text-indent: 10px;
+    }
     .transactionProduct table {
         border-top: 3px solid grey; 
         border-left: 3px solid grey; 
@@ -10,11 +13,14 @@
     .transactionProduct th, .transactionProduct td {
         border-bottom: none; 
     }
+    .btn-small {
+        padding: 4px 10px;
+    }
 </style>
 
-    <div class="container-fluid my-4 cust-container px-5">
-        <div class="row mb-4 bg-white rounded shadow py-3">
-            <p>Sales Summary</p>
+    <div class="container-fluid my-4 cust-container px-2">
+        <div class="summary row mb-4 bg-white rounded shadow py-3">
+            <p>Sales Summary {{ current_year }}</p>
             <div class="col-3">
                 <p>Total Revenue</p>
                 <h3>${{ total_sum }}</h3>
@@ -29,12 +35,19 @@
         <div class="row mb-4 py-3">
             <div class="col mb-4 px-0">
                 <div class="bg-white rounded shadow p-3">
-                    <div class="btn-container d-flex justify-content-start mb-4">
-                        <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
-                        <a class="btn btn-primary ms-3" href="{% url 'create_sales' %}"><i class="bi bi-person-fill-add"></i>
-                            New Sales Order
-                        </a>
-                    </div>
+                    <form method="GET" action="{% url 'sales_management' %}">
+                        <div class="btn-group">
+                            <div class="btn-container d-flex justify-content-start mb-4">
+                                <button type="submit" value="Submit" class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
+                            </div>
+                            <div class="btn-container d-flex justify-content-start mb-4">
+                                <a class="btn btn-primary ms-3" href="{% url 'create_sales' %}"><i class="bi bi-person-fill-add"></i>
+                                    New Sales Order
+                                </a>
+                            </div>
+                        </div>
+                        {{ form.as_p }}
+                    </form>
                     <table id="salesTable" class="table table-hover">
                         <thead>
                         <tr>
@@ -49,12 +62,20 @@
                         <tbody>
                             {# Add in the data from the database #}
                             {% for transaction in sales %}
-                                <tr class="transaction-row" data-transaction-id="{{ transaction.transaction_id }}">
+                                <tr class="transaction-row align-middle" data-transaction-id="{{ transaction.transaction_id }}">
                                     <td>{{ transaction.transaction_id }}</td>
                                     <td>{{ transaction.transaction_date }}</td>
                                     <td>{{ transaction.total_value }} </td>
                                     <td>{{ transaction.payment_terms }}</td>
                                     <td>{{ transaction.employee_id }}</td>
+                                    <td>
+                                        <form action="{% url 'delete_sales' transaction.transaction_id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Are you sure?');">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">
                                 <td colspan="5">

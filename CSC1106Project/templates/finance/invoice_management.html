@@ -2,6 +2,9 @@
 
 {% block content %}
 <style>
+    .summary {
+        text-indent: 10px;
+    }
     .invoiceProduct table {
         border-top: 3px solid grey; 
         border-left: 3px solid grey; 
@@ -12,11 +15,11 @@
     }
 </style>
 
-    <div class="container-fluid my-4 cust-container px-5">
-        <div class="row mb-4 bg-white rounded shadow py-3">
-            <p>Payment Summary</p>
-            <div class="col-3">
-                <p>Total Outstanding</p>
+    <div class="container-fluid my-4 cust-container px-2">
+        <div class="summary row mb-4 bg-white rounded shadow py-3">
+            <p>Payment Summary {{ current_year }}</p>
+            <div class="col-2 me-5">
+                <p>Total Purchases</p>
                 <h3>${{ total_sum }}</h3>
                 <p>{{ total_invoice_count }} Invoices</p>
             </div>
@@ -42,7 +45,7 @@
                     <form method="GET" action="{% url 'invoice_management' %}">
                         <div class="btn-group">
                             <div class="btn-container d-flex justify-content-start mb-4">
-                                <button type="submit" value="Submit" class="btn btn-primary mb-4"><i class="bi bi-funnel-fill"></i>Filter</button>
+                                <button type="submit" value="Submit" class="btn btn-secondary mb-4"><i class="bi bi-funnel-fill"></i> Filter</button>
                             </div>
                             <div class="btn-container d-flex justify-content-start mb-4">
                                 <a class="btn btn-primary ms-4 mb-4" href="{% url 'create_invoice' %}"><i class="bi bi-person-fill-add"></i>
@@ -62,11 +65,8 @@
                             <th>Payment</th>
                             <th>Employee</th>
                             <th>Payment Due Date</th>
-                            <th>Status</th>
-                        
-                            {% if user_data.employee_role == "Manager" or user_data.employee_role == "Chairman" %}
-                                    <th>Action</th>
-                            {% endif %}
+                            <th>Status</th>                        
+                            <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -80,27 +80,35 @@
                             <td>{{ invoice.employee_id }}</td>
                             <td>{{ invoice.payment_due_date }}</td>
                             <td>{{ invoice.status }}</td>
-                            {% if user_data.employee_role == "Manager" or user_data.employee_role == "Chairman" %}
-                                {% if invoice.status == 'Pending' %}
-                                    <td>
-                                        <a onclick="openEditBootstrapModal('{{ invoice.invoice_id }}','{{invoice.status}}')" class="btn btn-sm btn-secondary"
-                                        title="Update Product">
-                                        <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                    </td>
-                                {% else %}
-                                    <td></td>
+                            <td>
+                                {% if user_data.employee_role == "Manager" or user_data.employee_role == "Chairman" %}
+                                    {% if invoice.status == 'Pending' %}
+                                        
+                                            <a onclick="openEditBootstrapModal('{{ invoice.invoice_id }}','{{invoice.status}}')" class="btn btn-sm btn-secondary"
+                                            title="Update Product">
+                                            <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        
+                                    {% else %}
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
+                                <form action="{% url 'delete_invoice' invoice.invoice_id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?');">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         <tr class="invoiceProduct" id="products-{{ invoice.invoice_id }}" style="display: none;">
-                            <td colspan="5">
+                            <td colspan="10">
                                 <table id="invoiceProductTable" class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="product">Product Name</th>
-                                            <th class="quantity">Quantity</th>
-                                            <th class="price">Price</th>
+                                            <th>Product Name</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Sub-total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -109,6 +117,7 @@
                                         <td>{{ item.product_id.product_name }}</td>
                                         <td>{{ item.invoice_quantity }}</td>
                                         <td>{{ item.invoice_price_per_unit }}</td>
+                                        <td>{{ item.sub_total }}</td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>

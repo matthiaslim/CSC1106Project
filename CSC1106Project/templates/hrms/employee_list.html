@@ -35,16 +35,33 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'employee_detail' employee.employee_id %}">
-                        <button class="btn btn-sm btn-primary" title="View Details">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </a>
-                    <a href="{% url 'employee_update' employee.employee_id %}">
-                        <button class="btn btn-sm btn-secondary" title="Update Details">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                    </a>
+                        {% if user_data.department.department_name == "Chairman" and employee.user_id != user_data.user_id %}
+                            <!-- Chairman can view and edit details of all employees -->
+                            <a href="{% url 'employee_detail' employee.employee_id %}">
+                                <button class="btn btn-sm btn-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </a>
+                            <a href="{% url 'employee_update' employee.employee_id %}">
+                                <button class="btn btn-sm btn-secondary" title="Update Details">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </a>
+                        {% elif user_data.department.department_name == "HR" %}
+                            {% if employee.department.department_name != "Chairman" and employee.user_id != user_data.user_id %}
+                                <!-- HR can view and edit details of employees who are not chairman -->
+                                <a href="{% url 'employee_detail' employee.employee_id %}">
+                                    <button class="btn btn-sm btn-primary" title="View Details">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </a>
+                                <a href="{% url 'employee_update' employee.employee_id %}">
+                                    <button class="btn btn-sm btn-secondary" title="Update Details">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </a>
+                            {% endif %}
+                        {% endif %}
                 </td>
             </tr>
             {% endfor %}
