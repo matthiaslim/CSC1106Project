@@ -18,8 +18,15 @@ current_year = date.today().year
 @department_required("Finance")
 def sales_management(request):
     sales = Transaction.objects.all().prefetch_related('transactionproduct_set')
+    total_quantity_sold = 0
+
+
     for transaction in sales:
         transaction.total_value = sum(item.transaction_quantity * item.transaction_price_per_unit for item in transaction.transactionproduct_set.all())
+        total_quantity_sold += sum(item.transaction_quantity for item in transaction.transactionproduct_set.all())
+
+        for item in transaction.transactionproduct_set.all():
+            item.sub_total = item.sub_total()
     
     total_sum = sum(transaction.total_value for transaction in sales)
     total_transaction_count = len(sales)
@@ -30,9 +37,9 @@ def sales_management(request):
         'form': sales_filter.form,
         'sales': sales_filter.qs,
         'current_year': current_year,
-        'total_quantity_sold': total_quantity_sold,
         'total_sum': total_sum,
-        'total_transaction_count': total_transaction_count
+        'total_quantity_sold': total_quantity_sold,
+        'total_transaction_count': total_transaction_count,
     })
 
 @login_required
@@ -99,6 +106,9 @@ def invoice_management(request):
 
     for invoice in invoices:
         invoice.total_value = sum(item.invoice_quantity * item.invoice_price_per_unit for item in invoice.invoiceproduct_set.all())
+
+        for item in invoice.invoiceproduct_set.all():
+            item.sub_total = item.sub_total()
 
     # Revenue yearly
     total_sum = sum(invoice.total_value for invoice in invoices)
