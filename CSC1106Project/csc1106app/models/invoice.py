@@ -22,5 +22,8 @@ class Invoice(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     payment_terms = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default='Card')
 
+    def total_value(self):
+        return sum([invoice_product.invoice_quantity * invoice_product.invoice_price_per_unit for invoice_product in self.invoiceproduct_set.all()])
+
     def __str__(self):
         return self.invoice_id

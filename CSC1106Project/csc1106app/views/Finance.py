@@ -20,7 +20,6 @@ def sales_management(request):
     sales = Transaction.objects.all().prefetch_related('transactionproduct_set')
     total_quantity_sold = 0
 
-
     for transaction in sales:
         transaction.total_value = sum(item.transaction_quantity * item.transaction_price_per_unit for item in transaction.transactionproduct_set.all())
         total_quantity_sold += sum(item.transaction_quantity for item in transaction.transactionproduct_set.all())
@@ -90,7 +89,8 @@ def sales_details(request, sales_id):
 
     return render(request, 'finance/sales_details.html', data)
 
-# @login_required
+@login_required
+@department_required("Finance")
 def delete_sales(request, sales_id):
     if request.method == 'POST':
         sales = get_object_or_404(Transaction, transaction_id=sales_id)
@@ -157,14 +157,15 @@ def create_invoice(request):
 
     return render(request, 'finance/create_invoice.html', {'invoice_form': invoice_form, 'formset': formset})
 
-# @login_required
+@login_required
 @department_required("Finance")
 def update_invoice(request,invoice_id):
     if request.method == "POST":
         Invoice.objects.filter(invoice_id=invoice_id).update(status=request.POST.get('product_status'))
         return JsonResponse({'success': True})
 
-# @login_required
+@login_required
+@department_required("Finance")
 def delete_invoice(request, pk):
     if request.method == 'POST':
         invoice = get_object_or_404(Invoice, pk=pk)
@@ -173,14 +174,16 @@ def delete_invoice(request, pk):
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
-# @login_required
+@login_required
 def get_product_price(request, product_id):
     try:
         product = Product.objects.get(pk=product_id)
         return JsonResponse({'price': product.product_sale_price})
     except Product.DoesNotExist:
         return JsonResponse({'error': 'Product not found'}, status=404)
-    
+
+@login_required
+@department_required("Finance")
 def financial_data_for_year(year):
     sales = Transaction.objects.filter(transaction_date__year=year)
     purchases = Invoice.objects.filter(invoice_date__year=year)
@@ -199,7 +202,7 @@ def financial_data_for_year(year):
         'net_profit': net_profit
     }
 
-# @login_required
+@login_required
 def financial_report(request):
     # Current year
     current_year_financial_data = financial_data_for_year(current_year)
@@ -209,24 +212,22 @@ def financial_report(request):
     previous_year_financial_data = financial_data_for_year(previous_year)
 
     # Year-on-year % change
-    try:
-        yoy_change_total_sales = round(((current_year_financial_data['total_sales'] - 
-                                   previous_year_financial_data['total_sales']) / 
-                                   previous_year_financial_data['total_sales']) * 100)
-        yoy_change_total_purchases = round(((current_year_financial_data['total_purchases'] - 
-                                       previous_year_financial_data['total_purchases']) / 
-                                       previous_year_financial_data['total_purchases']) * 100)
-        yoy_change_employee_wages = round(((current_year_financial_data['total_employee_wages'] - 
-                                      previous_year_financial_data['total_employee_wages']) / 
-                                      previous_year_financial_data['total_employee_wages']) * 100)
-        yoy_change_net_profit = round(((current_year_financial_data['net_profit'] -
-                                  previous_year_financial_data['net_profit']) /
-                                  previous_year_financial_data['net_profit']) * 100)
-    except ZeroDivisionError:
-        yoy_change_total_sales = 0
-        yoy_change_total_purchases = 0
-        yoy_change_employee_wages = 0
-        yoy_change_net_profit = 0
+    yoy_change_total_sales = calculate_yoy_change(
+        current_year_financial_data['total_sales'], 
+        previous_year_financial_data['total_sales']
+    )
+    yoy_change_total_purchases = calculate_yoy_change(
+        current_year_financial_data['total_purchases'], 
+        previous_year_financial_data['total_purchases']
+    )
+    yoy_change_employee_wages = calculate_yoy_change(
+        current_year_financial_data['total_employee_wages'], 
+        previous_year_financial_data['total_employee_wages']
+    )
+    yoy_change_net_profit = calculate_yoy_change(
+        current_year_financial_data['net_profit'], 
+        previous_year_financial_data['net_profit']
+    )
 
     return render(request, 'finance/financial_report.html', {
         'current_year': current_year,
@@ -238,3 +239,9 @@ def financial_report(request):
         'yoy_change_employee_wages': yoy_change_employee_wages,
         'yoy_change_net_profit': yoy_change_net_profit
     })
+
+def calculate_yoy_change(current_year_value, previous_year_value):
+    if previous_year_value == 0:
+        return None 
+    else:
+        return round(((current_year_value - previous_year_value) / previous_year_value) * 100)
