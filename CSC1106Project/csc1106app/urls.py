@@ -27,6 +27,7 @@ urlpatterns = [
     path('logout', login_required(views.logout_user), name="logout"),
     path('settings', login_required(views.settings), name="settings"),
     path('onboard', login_required(views.onboard), name="onboard"),
+    #path('get_chart_information',login_required(views.get_chart_information), name="get_chart_information")
 
     # Inventory URLs
     path('inventory/management', login_required(views.inventory_management), name="inventory_management"),

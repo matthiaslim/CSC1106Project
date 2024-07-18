@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from ..forms import ChangePasswordForm, CustomAuthenticationForm, CustomUserCreationForm
+from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
 
 
@@ -13,7 +13,7 @@ from ..models import Employee
 def index(request):
     return render(request, 'index.html')
 
-
+@login_required
 def settings(request):
     if request.method == 'POST':
         form = ChangePasswordForm(request.user, request.POST)
@@ -89,7 +89,7 @@ def onboard(request):
 #         form = CustomUserCreationForm()
 #     return render(request, 'signup.html', {'form': form})
 
-
+@login_required
 def logout_user(request):
     logout(request)
     return redirect('login')

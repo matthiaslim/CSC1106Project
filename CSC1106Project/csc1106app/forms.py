@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
-from django.forms import inlineformset_factory, Select
+from django.forms import inlineformset_factory
 
 from .models import *
 
@@ -16,6 +16,14 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'class': 'form-control'})
 
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email',]
+
+        widgets = {
+            'email': forms.EmailInput(attrs={'readonly': True, 'class': 'form-control'}),
+        }
 
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
@@ -30,6 +38,30 @@ class ChangePasswordForm(PasswordChangeForm):
         self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
 
 class EmployeeForm(forms.ModelForm):
+   
+
+    GENDER_CHOICES = [
+        ('', 'Select a gender'),
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other'),
+    ]
+
+    JOB_TITLE_CHOICES = [
+        ('', 'Select a title'),
+        ('Chairman', 'Chairman'),
+        ('Manager', 'Manager'),
+        ('Employee', 'Employee'),
+        ('HR', 'HR'),
+    ]
+
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    department = forms.ModelChoiceField(queryset=Department.objects.exclude(department_name='Chairman'), widget=forms.Select(attrs={'class': 'form-control'}))
+    job_title = forms.ChoiceField(choices=JOB_TITLE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    employee_role = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     hire_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
     contract_expiry_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
@@ -39,33 +71,7 @@ class EmployeeForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'department', 'job_title', 'gender', 'date_of_birth',
                   'hire_date', 'contract_expiry_date', 'employee_role']
 
-        GENDER_CHOICES = [
-            ('', 'Select a gender'),
-            ('male', 'Male'),
-            ('female', 'Female'),
-            ('other', 'Other'),
-        ]
 
-        JOB_TITLE_CHOICES = [
-            ('', 'Select a title'),
-            ('Chairman', 'Chairman'),
-            ('Manager', 'Manager'),
-            ('Employee', 'Employee'),
-            ('HR', 'HR'),
-        ]
-
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'department': forms.Select(attrs={'class': 'form-control'}),
-            'job_title': forms.Select(choices=JOB_TITLE_CHOICES, attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'gender': forms.Select(choices=GENDER_CHOICES, attrs={'class': 'form-control'}),
-            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'hire_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'contract_expiry_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'employee_role': forms.TextInput(attrs={'class': 'form-control'}),
-        }
 
 
 class DepartmentForm(forms.ModelForm):

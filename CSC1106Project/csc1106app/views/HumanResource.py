@@ -5,14 +5,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.core.management import call_command
-from ..crud_ops import search_and_filter_attendances, search_and_filter_departments, search_and_filter_employees, search_and_filter_payrolls
-from ..forms import AttendanceForm, DepartmentForm, EmployeeForm, LeaveAddForm, LeaveStatusUpdateForm, PayrollForm, CustomUserCreationForm
+from ..crud_ops import search_and_filter_attendances, search_and_filter_departments, search_and_filter_employees
+from ..forms import  ( UserEditForm, AttendanceForm, DepartmentForm, 
+                      EmployeeForm, LeaveAddForm, LeaveStatusUpdateForm, 
+                      PayrollForm, CustomUserCreationForm)
 from ..models.attendance import Attendance
 from ..models.department import Department
 from ..models.employee import Employee
 from ..models.leave import Leave
 from ..models.leaveBalance import LeaveBalance
 from ..models.payroll import Payroll
+from ..models.user import User
 from ..decorators import department_required
 from datetime import datetime
 from django.db.models import Q
@@ -21,6 +24,7 @@ from django.utils import timezone
 
 
 # Employee Views
+@login_required
 @department_required('Human Resource')
 def employee_list(request):
     query = request.GET.get('q')
@@ -35,13 +39,13 @@ def employee_list(request):
         'order': order,
     })
 
-
+@login_required
 @department_required('Human Resource')
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     return render(request, 'hrms/employee_detail.html', {'employee': employee})
 
-
+@login_required
 @department_required('Human Resource')
 def employee_create(request):
     if request.method == "POST":
@@ -65,20 +69,23 @@ def employee_create(request):
 
     return render(request, 'hrms/employee_form.html', {'form': form, 'user_form' : user_form})
 
-
+@login_required
 @department_required('Human Resource')
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
+    user = get_object_or_404(User, pk=employee.user_id)
     if request.method == "POST":
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
             return redirect('employee_list')
     else:
+        user_form = UserEditForm(instance=user)
         form = EmployeeForm(instance=employee)
-    return render(request, 'hrms/employee_form.html', {'form': form})
+    return render(request, 'index.html', {'form': form , 'user_form': user_form})
 
 
+@login_required
 @department_required('Human Resource')
 def employee_delete(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
@@ -89,6 +96,7 @@ def employee_delete(request, employee_id):
 
 
 # Department Views
+@login_required
 @department_required('Human Resource')
 def department_list(request):
     query = request.GET.get('q')
@@ -99,12 +107,14 @@ def department_list(request):
                   {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
 
 
+@login_required
 @department_required('Human Resource')
 def department_detail(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
     return render(request, 'hrms/department_detail.html', {'department': department})
 
 
+@login_required
 @department_required('Human Resource')
 def department_create(request):
     if request.method == "POST":
@@ -117,6 +127,7 @@ def department_create(request):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
+@login_required
 @department_required('Human Resource')
 def department_update(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
@@ -130,6 +141,7 @@ def department_update(request, department_id):
     return render(request, 'hrms/department_form.html', {'form': form})
 
 
+@login_required
 @department_required('Human Resource')
 def department_delete(request, department_id):
     department = get_object_or_404(Department, pk=department_id)
@@ -139,6 +151,7 @@ def department_delete(request, department_id):
 
 # Attendance Views
 @login_required
+@department_required('Human Resource')
 def attendance_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'attendance_id')
@@ -317,6 +330,8 @@ def add_leave(request):
     return render(request, 'hrms/leave_add.html', {'form': form})
 
 @login_required
+@login_required
+@department_required
 @department_required('Human Resource')
 def edit_leave_status(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
