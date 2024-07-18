@@ -50,12 +50,15 @@ urlpatterns = [
 
     # Finance URLs
     path('finance/sales', views.sales_management, name="sales_management"),
+    path('finance/sales/<int:sales_id>/', views.sales_details, name="sales_details"),
     path('finance/sales/create', views.create_sales, name="create_sales"),
+    path('finance/sales/delete/<int:sales_id>', views.delete_sales, name='delete_sales'),
     path('finance/orders', views.invoice_management, name="invoice_management"),
     path('finance/orders/create', views.create_invoice, name="create_invoice"),
-    path('finance/update/<int:invoiceID>', views.update_invoice, name="update_invoice"),
-    path('finance/sales/<int:sales_id>/', views.sales_details, name="sales_details"),
+    path('finance/update/<int:invoice_id>', views.update_invoice, name="update_invoice"),
+    path('finance/orders/delete/<int:invoice_id>', views.delete_invoice, name='delete_invoice'),
     path('get-product-price/<int:product_id>/', views.get_product_price, name='get-product-price'),
+    path('finance/financial_report', views.financial_report, name='financial_report'),
 
     # Employee URLs
     path('hr/employees/', views.employee_list, name='employee_list'),
