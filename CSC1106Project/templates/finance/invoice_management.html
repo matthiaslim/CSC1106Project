@@ -58,7 +58,27 @@
                                 </a>
                             </div>
                         </div>
-                        {{ form.as_p }}
+                        <div class="row">
+                            <div class="col-6">
+                                {{ form.invoice_date__gte.label_tag }}
+                                {{ form.invoice_date__gte }}
+                                {{ form.payment_due_date__gte.label_tag }}
+                                {{ form.payment_due_date__gte }}
+                                {{ form.payment_terms.label_tag }}
+                                {{ form.payment_terms }}
+                                {{ form.employee_id.label_tag }}
+                                {{ form.employee_id }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.invoice_date__lte.label_tag }}
+                                {{ form.invoice_date__lte }}
+                                {{ form.payment_due_date__lte.label_tag }}
+                                {{ form.payment_due_date__lte }}
+                                {{ form.status.label_tag }}
+                                {{ form.status }}
+                            </div>
+                        </div>
+                        {#                        {{ form.as_p }}#}
                     </form>
                     <table id="invoiceTable" class="table table-hover">
                         <thead>

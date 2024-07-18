@@ -241,8 +241,8 @@ def get_product_price(request, product_id):
     except Product.DoesNotExist:
         return JsonResponse({'error': 'Product not found'}, status=404)
 
-@login_required
-@department_required("Finance")
+# @login_required
+# @department_required("Finance")
 def financial_data_for_year(year):
     sales = Transaction.objects.filter(transaction_date__year=year)
     purchases = Invoice.objects.filter(invoice_date__year=year)
@@ -348,7 +348,7 @@ def generate_invoice(invoice):
     c.drawString(475, 758, f"Invoice #: {invoice.invoice_id}")
     c.drawString(475, 743, f"Date: {invoice.invoice_date.strftime('%Y-%m-%d')}")
 
-    c.drawString(30, 500, f"Payment Terms: {invoice.payment_terms}")
+    c.drawString(30, 525, f"Payment Terms: {invoice.payment_terms}")
 
     # Table Header
     c.setFont("Helvetica-Bold", 12)
@@ -405,7 +405,7 @@ def generate_sales(sales):
 
     # Title
     c.setFont("Helvetica-Bold", 20)
-    c.drawString(30, 750, "INVOICE")
+    c.drawString(30, 750, "SALES")
 
     # Company Information
     c.setFont("Helvetica", 12)
@@ -423,7 +423,7 @@ def generate_sales(sales):
     c.drawString(30, 560, f"Email: {sales.membership_id.email_address}")
 
     # Invoice Details
-    c.drawString(475, 758, f"Invoice #: {sales.transaction_id}")
+    c.drawString(475, 758, f"Sales #: {sales.transaction_id}")
     c.drawString(475, 743, f"Date: {sales.transaction_date.strftime('%Y-%m-%d')}")
 
     c.drawString(30, 525, f"Payment Terms: {sales.payment_terms}")

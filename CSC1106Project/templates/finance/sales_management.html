@@ -33,7 +33,7 @@
                 <p>Sales Count</p>
                 <h3>{{ total_transaction_count }}</h3>
                 <p>transactions</p>
-            </div> 
+            </div>
         </div>
         <div class="row mb-4 py-3">
             <div class="col mb-4 px-0">
@@ -46,12 +46,26 @@
                                 </button>
                             </div>
                             <div class="btn-container d-flex justify-content-start mb-4">
-                                <a class="btn btn-primary ms-3" href="{% url 'create_sales' %}"><i class="bi bi-person-fill-add"></i>
+                                <a class="btn btn-primary ms-3" href="{% url 'create_sales' %}"><i
+                                        class="bi bi-person-fill-add"></i>
                                     New Sales Order
                                 </a>
                             </div>
                         </div>
-                        {{ form.as_p }}
+                        <div class="row">
+                            <div class="col-6">
+                                {{ form.transaction_date__gte.label_tag }}
+                                {{ form.transaction_date__gte }}
+                                {{ form.payment_terms.label_tag }}
+                                {{ form.payment_terms }}
+                            </div>
+                            <div class="col-6">
+                                {{ form.transaction_date__lte.label_tag }}
+                                {{ form.transaction_date__lte }}
+                                {{ form.employee_id.label_tag }}
+                                {{ form.employee_id }}
+                            </div>
+                        </div>
                     </form>
                     <table id="salesTable" class="table table-hover">
                         <thead>
@@ -76,17 +90,18 @@
                                 <td>{{ transaction.payment_terms }}</td>
                                 <td>{{ transaction.employee_id }}</td>
                                 <td>
-                                    <a href="{% url 'sales_details' transaction.transaction_id %}" class="btn btn-primary btn-small">
+                                    <a href="{% url 'sales_details' transaction.transaction_id %}"
+                                       class="btn btn-primary">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a class="btn btn-sm btn-secondary"
+                                    <a class="btn btn btn-secondary"
                                        title="Update Product">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <form action="{% url 'delete_sales' transaction.transaction_id %}" method="post"
                                           style="display:inline;">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-small"
+                                        <button type="submit" class="btn btn-danger"
                                                 onclick="return confirm('Are you sure?');">
                                             <i class="bi bi-trash"></i>
                                         </button>
