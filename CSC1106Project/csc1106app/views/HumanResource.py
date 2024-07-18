@@ -1,5 +1,6 @@
 import base64
 from django.core.files.base import ContentFile
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -74,6 +75,11 @@ def employee_create(request):
 def employee_update(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
     user = get_object_or_404(User, pk=employee.user_id)
+
+    currentUserProfile = get_object_or_404(Employee, user_id=request.user)
+    if employee.department.department_name == 'Chairman' and not currentUserProfile.department.department_name == "Chairman":
+        return redirect("employee_list")
+    
     if request.method == "POST":
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
