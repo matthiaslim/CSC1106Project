@@ -259,17 +259,15 @@ class InvoiceForm(forms.ModelForm):
     invoice_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
     payment_due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
     payment_terms = forms.ChoiceField(label="Payment terms", widget=forms.Select(attrs={'class': 'form-select'}))
-    status = forms.ChoiceField(label="Status", widget=forms.Select(attrs={'class': 'form-select'}))
     employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
 
     class Meta:
         model = Invoice
-        fields = ['invoice_date', 'payment_due_date', 'payment_terms', 'status', 'employee_id']
+        fields = ['invoice_date', 'payment_due_date', 'payment_terms', 'employee_id']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['employee_id'].widget.attrs.update({'class': 'form-select'})
-        self.fields['status'].choices = Invoice.STATUS_CHOICES
         self.fields['payment_terms'].choices = Invoice.PAYMENT_CHOICES
 
 class InvoiceProductForm(forms.ModelForm):
