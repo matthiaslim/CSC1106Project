@@ -4,7 +4,9 @@ from django.core.management.base import BaseCommand
 from csc1106app.models.product import Product
 from csc1106app.models.department import Department
 
-from csc1106app.models import User
+from csc1106app.models.user import User
+from csc1106app.models.employee import Employee
+from datetime import datetime
 
 
 class Command(BaseCommand):
@@ -56,10 +58,30 @@ class Command(BaseCommand):
         password = 'admin123'
 
         if not User.objects.filter(email=email).exists():
-            User.objects.create_superuser(email=email, password=password)
+            superuser = User.objects.create_superuser(email=email, password=password)
             self.stdout.write(self.style.SUCCESS(f'Superuser {email} created successfully'))
+
+            # Add a record to the Employee table referencing the superuser
+            try:
+                department = Department.objects.get(pk=1)
+                Employee.objects.create(
+                    user=superuser,
+                    first_name='Admin',
+                    last_name='User',
+                    department=department,
+                    job_title='Administrator',
+                    gender='NA',
+                    date_of_birth='1970-01-01',  # Example date
+                    hire_date=datetime.today().strftime('%Y-%m-%d'),  # Example date
+                    employee_role='Administrator',
+                    onboarded=True  # Set onboarded to True for the superuser
+                )
+                self.stdout.write(self.style.SUCCESS('Employee record for superuser created successfully'))
+            except Exception as e:
+                self.stdout.write(self.style.ERROR(f'Error creating employee record: {e}'))
         else:
             self.stdout.write(self.style.WARNING(f'Superuser {email} already exists'))
+
 
         self.stdout.write(self.style.SUCCESS('Data imported successfully'))
         self.stdout.write(self.style.SUCCESS(f'Total product added {count_product}, No. of products exist: {count_product_exist}'))
