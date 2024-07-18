@@ -1,22 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-    .summary {
-        text-indent: 10px;
-    }
-    .transactionProduct table {
-        border-top: 3px solid grey; 
-        border-left: 3px solid grey; 
-        text-indent: 10px;
-    }
-    .transactionProduct th, .transactionProduct td {
-        border-bottom: none; 
-    }
-    .btn-small {
-        padding: 4px 10px;
-    }
-</style>
+    <style>
+        .summary {
+            text-indent: 10px;
+        }
+
+        .transactionProduct table {
+            border-top: 3px solid grey;
+            border-left: 3px solid grey;
+            text-indent: 10px;
+        }
+
+        .transactionProduct th, .transactionProduct td {
+            border-bottom: none;
+        }
+
+        .btn-small {
+            padding: 4px 10px;
+        }
+    </style>
 
     <div class="container-fluid my-4 cust-container px-2">
         <div class="summary row mb-4 bg-white rounded shadow py-3">
@@ -38,7 +41,9 @@
                     <form method="GET" action="{% url 'sales_management' %}">
                         <div class="btn-group">
                             <div class="btn-container d-flex justify-content-start mb-4">
-                                <button type="submit" value="Submit" class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
+                                <button type="submit" value="Submit" class="btn btn-secondary"><i
+                                        class="bi bi-funnel-fill"></i> Filter
+                                </button>
                             </div>
                             <div class="btn-container d-flex justify-content-start mb-4">
                                 <a class="btn btn-primary ms-3" href="{% url 'create_sales' %}"><i class="bi bi-person-fill-add"></i>
@@ -61,49 +66,57 @@
                         </tr>
                         </thead>
                         <tbody>
-                            {# Add in the data from the database #}
-                            {% for transaction in sales %}
-                                <tr class="transaction-row align-middle" data-transaction-id="{{ transaction.transaction_id }}">
-                                    <td>{{ transaction.transaction_id }}</td>
-                                    <td>{{ transaction.transaction_date }}</td>
-                                    <td>{{ transaction.total_value }} </td>
-                                    <td>{{ transaction.payment_terms }}</td>
-                                    <td>{{ transaction.employee_id }}</td>
-                                    <td>
-                                        <form action="{% url 'delete_sales' transaction.transaction_id %}" method="post" style="display:inline;">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Are you sure?');">
-                                                <i class="bi bi-trash"></i> Delete
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">
-                                <td colspan="10">
-                                    <table id="transactionProductTable" class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Product Name</th>
-                                                <th>Quantity</th>
-                                                <th>Price</th>
-                                                <th>Sub-total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        {# tnspdt product name, quantity, price #}    
-                                        {% for item in transaction.transactionproduct_set.all %}
-                                        <tr class="transaction-product-row" id="products-{{ transaction.transaction_id }}">
-                                            <td>{{ item.product_id.product_name }}</td>
-                                            <td>{{ item.transaction_quantity }}</td>
-                                            <td>{{ item.transaction_price_per_unit }}</td>
-                                            <td>{{ item.sub_total }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </td>    
+                        {# Add in the data from the database #}
+                        {% for transaction in sales %}
+                            <tr class="transaction-row align-middle"
+                                data-transaction-id="{{ transaction.transaction_id }}">
+                                <td>{{ transaction.transaction_id }}</td>
+                                <td>{{ transaction.transaction_date }}</td>
+                                <td>{{ transaction.total_value }} </td>
+                                <td>{{ transaction.payment_terms }}</td>
+                                <td>{{ transaction.employee_id }}</td>
+                                <td>
+                                    <a href="{% url 'sales_details' transaction.transaction_id %}" class="btn btn-primary btn-small">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-secondary"
+                                       title="Update Product">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form action="{% url 'delete_sales' transaction.transaction_id %}" method="post"
+                                          style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-small"
+                                                onclick="return confirm('Are you sure?');">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
-                            {% endfor %}
+                            {#                                <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">#}
+                            {#                                <td colspan="5">#}
+                            {#                                    <table id="transactionProductTable" class="table table-hover">#}
+                            {#                                        <thead>#}
+                            {#                                            <tr>#}
+                            {#                                                <th class="product">Product Name</th>#}
+                            {#                                                <th class="quantity">Quantity</th>#}
+                            {#                                                <th class="price">Price</th>#}
+                            {#                                            </tr>#}
+                            {#                                        </thead>#}
+                            {#                                        <tbody>#}
+                            {#                                         tnspdt product name, quantity, price     #}
+                            {#                                        {% for item in transaction.transactionproduct_set.all %}#}
+                            {#                                        <tr class="transaction-product-row" id="products-{{ transaction.transaction_id }}">#}
+                            {#                                            <td>{{ item.product_id.product_name }}</td>#}
+                            {#                                            <td>{{ item.transaction_quantity }}</td>#}
+                            {#                                            <td>{{ item.transaction_price_per_unit }}</td>#}
+                            {#                                        </tr>#}
+                            {#                                        {% endfor %}#}
+                            {#                                        </tbody>#}
+                            {#                                    </table>#}
+                            {#                                </td>    #}
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -113,28 +126,38 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-        const transactionRows = document.querySelectorAll('.transaction-row');
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const transactionRows = document.querySelectorAll('.transaction-row');
 
-        transactionRows.forEach(row => {
-            // console.log('Event listener row:', row);
-            row.addEventListener('click', function () {
-                const element_transaction_id = this.getAttribute('data-transaction-id');
-                // console.log('Clicked row transaction ID:', element_transaction_id); 
-                const productRow = document.getElementById(`products-${element_transaction_id}`);
-                
-                if (productRow) {
-                    if (productRow.style.display === 'none' || productRow.style.display === '') {
-                        productRow.style.display = 'table-row';
+            transactionRows.forEach(row => {
+                // console.log('Event listener row:', row);
+                row.addEventListener('click', function () {
+                    const element_transaction_id = this.getAttribute('data-transaction-id');
+                    // console.log('Clicked row transaction ID:', element_transaction_id);
+                    const productRow = document.getElementById(`products-${element_transaction_id}`);
+
+                    if (productRow) {
+                        if (productRow.style.display === 'none' || productRow.style.display === '') {
+                            productRow.style.display = 'table-row';
+                        } else {
+                            productRow.style.display = 'none';
+                        }
                     } else {
-                        productRow.style.display = 'none';
+                        console.error('Product row not found for ID:', element_transaction_id);
                     }
-                } else {
-                    console.error('Product row not found for ID:', element_transaction_id);
-                }
+                });
             });
+
+            $('#salesTable').DataTable({
+                "columnDefs": [
+                    {"orderable": false, "targets": [5]} // Disables sorting on the first and last columns
+                ],
+                "paging": true, // Enable pagination
+                "pageLength": 10, // Set the number of items per page
+                "pagingType": "simple_numbers"
+            });
+
         });
-    });
-</script>
+    </script>
 {% endblock %}
