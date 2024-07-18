@@ -1,8 +1,8 @@
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from ..forms import InvoiceForm, InvoiceProductFormSet, SalesForm, SalesProductFormSet
-from ..filters import InvoiceFilter
+from ..filters import InvoiceFilter, SalesFilter
 from ..models.product import Product
 from ..crud_ops import *
 from ..decorators import department_required
@@ -228,6 +228,3 @@ def financial_report(request):
         'yoy_change_employee_wages': yoy_change_employee_wages,
         'yoy_change_net_profit': yoy_change_net_profit
     })
-    
-
-
