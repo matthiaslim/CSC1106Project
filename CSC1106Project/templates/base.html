@@ -33,7 +33,7 @@
             <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
                 <div><i class="bi bi-house"></i> Home</div>
             </a>
-
+            {% if user_data.department.department_name == "Logistics" or user_data.department.department_name == "Chairman" %}
             <!-- Inventory Links -->
             <a data-bs-toggle="collapse" href="#collapse-inventory" role="button"
                aria-expanded="{% if 'inventory' in request.path %}true{% else %}false{% endif %}"
@@ -49,7 +49,8 @@
                    <a class="collapse-item {% if request.path == '/inventory/order_management' %}active{% endif %}"
                    href="{% url 'order_management' %}">Order Manage</a>
             </div>
-
+            {% endif %}
+            {% if user_data.department.department_name == "Finance" or user_data.department.department_name == "Chairman" %}
             <!-- Finance Links -->
             <a data-bs-toggle="collapse" href="#collapse-finance" role="button"
                aria-expanded="{% if 'finance' in request.path %}true{% else %}false{% endif %}"
@@ -58,7 +59,7 @@
                     <i class="bi bi-wallet"></i> Finance
                 </div>
                 <i class="bi bi-chevron-right collapse-head" id="caret-finance"></i>
-            </a>
+            </a>  
             <div class="collapse {% if 'finance' in request.path %}show{% endif %}" id="collapse-finance">
                 <a class="collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
                    href="{% url 'invoice_management' %}">Purchase Order</a>
@@ -67,6 +68,8 @@
                 <a class="collapse-item" href="#">Expenses</a>
             </div>
 
+            {% endif %}
+            {% if user_data.department.department_name == "Customer Relation" or user_data.department.department_name == "Chairman" %}
             <!-- Customer Links -->
             <a data-bs-toggle="collapse" href="#collapse-crm" role="button"
                aria-expanded="{% if 'customer' in request.path %}true{% else %}false{% endif %}"
@@ -81,6 +84,7 @@
                    href="{% url 'customer_management' %}">Customers</a>
                 <a class="collapse-item" href="#">Support</a>
             </div>
+            {% endif %}
 
             <!-- HR Links -->
             <a data-bs-toggle="collapse" href="#collapse-hrm" role="button"
@@ -91,13 +95,16 @@
                 </div>
                 <i class="bi bi-chevron-right collapse-head" id="caret-hrm"></i>
             </a>
+               
             <div class="collapse {% if 'hr' in request.path %}show{% endif %}" id="collapse-hrm">
+                {% if  user_data.department.department_name == "Human Resource" or user_data.department.department_name == "Chairman"%}
                 <a class="collapse-item {% if request.path == '/hr/employees/' %}active{% endif %}"
                    href="{% url 'employee_list' %}">Employee</a>
                 <a class="collapse-item {% if request.path == '/hr/departments/' %}active{% endif %}"
                    href="{% url 'department_list' %}">Department</a>
                 <a class="collapse-item {% if request.path == '/hr/attendances/' %}active{% endif %}"
                    href="{% url 'attendance_list' %}">Attendance</a>
+                {% endif %}
                 <a class="collapse-item {% if request.path == '/hr/leaves/' %}active{% endif %}"
                    href="{% url 'leave_list' %}">Leave</a>
                 <a class="collapse-item {% if request.path == '/hr/payrolls/' %}active{% endif %}"
@@ -185,14 +192,15 @@
         </div>
     </div>
 </div>
-<!-- {% if permission_denied %}
+
+{% if permission_denied %}
 <script>
     window.onload = function () {
         var modal = new bootstrap.Modal(document.getElementById('permissionModal'));
         modal.show();
     };
 </script>
-{% endif %} -->
+{% endif %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>

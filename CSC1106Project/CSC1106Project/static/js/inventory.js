@@ -126,7 +126,6 @@ $(document).ready(function() {
                 if(data.status == 200){
                     alert('Product updated successfully');
                     window.location.reload();
-                    $('#editProductViewModal').modal('hide');   
                 }                
             },
             error: function(jqXHR, textStatus, errorThrown) {
