@@ -3,6 +3,8 @@
 
 {% block title %}Home{% endblock %}
 
+{% load static %}
+
 {% block content %}
 <div class="container my-4">
     <div class="row mb-4">
@@ -70,6 +72,10 @@
                 </div>
             </div>
         </div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+          
         <div class="col-lg-6 mb-4">
             <div class="card card-container">
                 <div class="card-header">
@@ -91,3 +97,15 @@
     </div>
 </div>
 {% endblock %}
+
+
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{%static 'js/chart.js' %}"></script>
+
+{% endblock %}
+
+
+

@@ -10,7 +10,7 @@ from ..decorators import department_required
 
 # Finance Views
 @login_required
-# @department_required("Finance")
+@department_required("Finance")
 def sales_management(request):
     sales = Transaction.objects.all().prefetch_related('transactionproduct_set')
     for transaction in sales:
@@ -26,7 +26,7 @@ def sales_management(request):
     })
 
 @login_required
-# @department_required("Finance")
+@department_required("Finance")
 def create_sales(request):
     if request.method == 'POST':
         sales_form = SalesForm(request.POST)
@@ -51,6 +51,7 @@ def create_sales(request):
     return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
 
 @login_required
+@department_required("Finance")
 def sales_details(request, sales_id):
     try:
         sales = Transaction.objects.get(transaction_id=sales_id)
@@ -74,7 +75,7 @@ def sales_details(request, sales_id):
 
 
 @login_required
-# @department_required("Finance")
+@department_required("Finance")
 def invoice_management(request):
     invoices = Invoice.objects.all().prefetch_related('invoiceproduct_set')
 
@@ -94,7 +95,7 @@ def invoice_management(request):
     }) 
 
 @login_required
-# @department_required("Finance")
+@department_required("Finance")
 def create_invoice(request):
     if request.method == 'POST':
         invoice_form = InvoiceForm(request.POST)
