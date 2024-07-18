@@ -24,12 +24,12 @@
             <div class="col-3">
                 <p>Total Revenue</p>
                 <h3>${{ total_sum }}</h3>
-                <p>{{ total_sales_count }} Sales</p>
+                <p>{{ total_quantity_sold }} items sold</p>
             </div>
             <div class="col-3">
-                <p>No. of Products Sold</p>
-                <h3>{{ items_sold }}</h3>
-                <p>items</p>
+                <p>Sales Count</p>
+                <h3>{{ total_transaction_count }}</h3>
+                <p>transactions</p>
             </div> 
         </div>
         <div class="row mb-4 py-3">
@@ -52,11 +52,12 @@
                         <thead>
                         <tr>
                             {# transaction id, date, employee #}
-                            <th>Transaction ID</th>
+                            <th>ID</th>
                             <th>Date</th>
                             <th>Value</th>
                             <th>Payment</th>
                             <th>Employee</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -78,13 +79,14 @@
                                     </td>
                                 </tr>
                                 <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">
-                                <td colspan="5">
+                                <td colspan="10">
                                     <table id="transactionProductTable" class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th class="product">Product Name</th>
-                                                <th class="quantity">Quantity</th>
-                                                <th class="price">Price</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Sub-total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -94,6 +96,7 @@
                                             <td>{{ item.product_id.product_name }}</td>
                                             <td>{{ item.transaction_quantity }}</td>
                                             <td>{{ item.transaction_price_per_unit }}</td>
+                                            <td>{{ item.sub_total }}</td>
                                         </tr>
                                         {% endfor %}
                                         </tbody>

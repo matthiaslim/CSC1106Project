@@ -25,18 +25,18 @@
             </div>
             <div class="col-3">
                 <p>Payment Due Today</p>
-                <h3>$691.53</h3>
-                <p>5 Invoices</p>
+                <h3>${{ sum_due_today }}</h3>
+                <p>{{ count_due_today }} Invoices</p>
             </div>
             <div class="col-3">
                 <p>Payment Due in 30 days</p>
-                <h3>$691.53</h3>
-                <p>10 Invoices</p>
+                <h3>${{ sum_due_30_days }}</h3>
+                <p>{{ count_due_30_days }} Invoices</p>
             </div>
             <div class="col-3">
                 <p>Overdue Invoice</p>
-                <h3>$691.53</h3>
-                <p>15 Invoices</p>
+                <h3>${{ sum_overdue }}</h3>
+                <p>{{ count_overdue }} Invoices</p>
             </div>
         </div>
         <div class="row mb-4 py-3">
@@ -59,7 +59,7 @@
                         <thead>
                         <tr>
                             {# invoice id, invoice date, status, employee #}
-                            <th>Invoice ID</th>
+                            <th>ID</th>
                             <th>Date</th>
                             <th>Value</th>
                             <th>Payment</th>
