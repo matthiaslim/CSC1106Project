@@ -27,7 +27,11 @@ urlpatterns = [
     path('logout/', views.logout_user, name="logout"),
     path('settings', login_required(views.settings), name="settings"),
     path('onboard', login_required(views.onboard), name="onboard"),
-    #path('get_chart_information',login_required(views.get_chart_information), name="get_chart_information")
+    #path('display_chart_information',login_required(views.get_chart_information), name="get_chart_information"),
+    path('get_product_details/',login_required(views.get_product_details), name="get_product_details"),
+    path('inventory_summary/',login_required(views.inventory_summary), name="inventory_summary"),
+    #path('top_selling_items',login_required(views.top_selling_items), name="top_selling_items"),
+
 
     # Inventory URLs
     path('inventory/management', login_required(views.inventory_management), name="inventory_management"),
