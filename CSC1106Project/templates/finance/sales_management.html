@@ -94,7 +94,8 @@
                                        class="btn btn-primary">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a class="btn btn btn-secondary"
+                                    <a onclick="openEditBootstrapModal('{{ transaction.transaction_id }}','{{ transaction.payment_terms }}', '{{ transaction.transaction_date }}')"
+                                       class="btn btn btn-secondary"
                                        title="Update Product">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
@@ -138,31 +139,62 @@
             </div>
         </div>
     </div>
+
+    {% include './modal/edit_sales.html' %}
 {% endblock %}
 
 {% block scripts %}
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
-            const transactionRows = document.querySelectorAll('.transaction-row');
+            $(document).on('shown.bs.modal', '#editInvoiceModal', function () {
+                addClickListeners();
+            });
 
-            transactionRows.forEach(row => {
-                // console.log('Event listener row:', row);
-                row.addEventListener('click', function () {
-                    const element_transaction_id = this.getAttribute('data-transaction-id');
-                    // console.log('Clicked row transaction ID:', element_transaction_id);
-                    const productRow = document.getElementById(`products-${element_transaction_id}`);
+            $("#submitEditBtn").click(function (event) {
+                event.preventDefault();
+                var idBtn = $('#submitEditBtn').data('attr')
+                var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+                var payment_terms = $('#payment_terms').val();
+                var transaction_date = $('#transaction_date').val();
 
-                    if (productRow) {
-                        if (productRow.style.display === 'none' || productRow.style.display === '') {
-                            productRow.style.display = 'table-row';
-                        } else {
-                            productRow.style.display = 'none';
+                $.ajax({
+
+                    url: `sales/update/${idBtn}`,
+                    method: "POST",
+                    headers: {'X-CSRFToken': csrf_token},
+                    data: {
+                        'payment_terms': payment_terms,
+                        'transaction_date': transaction_date
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            window.location.reload();
+                            alert('Invoice updated successfully');
                         }
-                    } else {
-                        console.error('Product row not found for ID:', element_transaction_id);
                     }
                 });
             });
+
+            {#const transactionRows = document.querySelectorAll('.transaction-row');#}
+            {##}
+            {#transactionRows.forEach(row => {#}
+            {#    // console.log('Event listener row:', row);#}
+            {#    row.addEventListener('click', function () {#}
+            {#        const element_transaction_id = this.getAttribute('data-transaction-id');#}
+            {#        // console.log('Clicked row transaction ID:', element_transaction_id);#}
+            {#        const productRow = document.getElementById(`products-${element_transaction_id}`);#}
+            {##}
+            {#        if (productRow) {#}
+            {#            if (productRow.style.display === 'none' || productRow.style.display === '') {#}
+            {#                productRow.style.display = 'table-row';#}
+            {#            } else {#}
+            {#                productRow.style.display = 'none';#}
+            {#            }#}
+            {#        } else {#}
+            {#            console.error('Product row not found for ID:', element_transaction_id);#}
+            {#        }#}
+            {#    });#}
+            {# });#}
 
             $('#salesTable').DataTable({
                 "columnDefs": [
@@ -174,5 +206,57 @@
             });
 
         });
+
+        const transactionRows = document.querySelectorAll('.transaction-row');
+
+        function rowClickHandler() {
+            const element_transaction_id = this.getAttribute('data-transaction-id');
+            const productRow = document.getElementById(`products-${element_transaction_id}`);
+
+            if (productRow) {
+                if (productRow.style.display === 'none' || productRow.style.display === '') {
+                    productRow.style.display = 'table-row';
+                } else {
+                    productRow.style.display = 'none';
+                }
+            } else {
+                console.error('Product row not found for ID:', element_transaction_id);
+            }
+        }
+
+        function removeClickListeners() {
+            transactionRows.forEach(row => {
+                row.removeEventListener('click', rowClickHandler);
+            });
+        }
+
+        // Function to re-add event listeners
+        function addClickListeners() {
+            transactionRows.forEach(row => {
+                row.addEventListener('click', rowClickHandler);
+            });
+        }
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        function openEditBootstrapModal(transaction_id, payment_terms, transaction_date) {
+            removeClickListeners();
+            $('#submitEditBtn').attr('data-attr', transaction_id);
+            $('#payment_terms').val(payment_terms).change();
+            $('#transaction_date').val(formatDate(transaction_date)).change()
+            $('#editSalesModal').modal('show');
+        }
     </script>
 {% endblock %}

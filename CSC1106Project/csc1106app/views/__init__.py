@@ -13,7 +13,7 @@ from .HumanResource import (employee_list,employee_detail,employee_create,employ
 
 from .Finance import (sales_management, create_sales, sales_details, delete_sales, invoice_management,
                       create_invoice, update_invoice, delete_invoice, get_product_price, financial_report,
-                      invoice_details)
+                      invoice_details, update_sales)
 
 
 __all__ = [
@@ -59,6 +59,7 @@ __all__ = [
     'sales_management',
     'create_sales',
     'sales_details',
+    'update_sales',
     'delete_sales',
     'invoice_management',
     'invoice_details',
