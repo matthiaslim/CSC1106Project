@@ -51,13 +51,15 @@
                         <td>{{ leave.remark }}</td>
                         <td>
                             {% if leave.leave_status == 'pending' or leave.leave_status == "Pending" %}
-                            {% if not user_data%}
-                            <a href="{% url 'leave_update' leave.leave_id %}">
-                                <button class="btn btn-sm btn-secondary" title="Update Status">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                            </a>
-                            {% endif %}
+                                {% if user_data.department.department_name == "Human Resource" or user_data.department.department_name == "Chairman"  %}
+                                    {% if user_data.user_id != leave.employee.user_id %}
+                                    <a href="{% url 'leave_update' leave.leave_id %}">
+                                        <button class="btn btn-sm btn-secondary" title="Update Status">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
                             {% endif %}
                         </td>
                     </tr>

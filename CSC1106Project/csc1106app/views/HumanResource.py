@@ -336,8 +336,6 @@ def add_leave(request):
     return render(request, 'hrms/leave_add.html', {'form': form})
 
 @login_required
-@login_required
-@department_required
 @department_required('Human Resource')
 def edit_leave_status(request, leave_id):
     leave = get_object_or_404(Leave, pk=leave_id)
