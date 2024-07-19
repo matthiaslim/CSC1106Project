@@ -24,7 +24,7 @@ body {
 /* Wrapper styles */
 #wrapper {
     display: flex;
-    height: 100vh;
+    height: 100%;
 }
 
 .brand-container a {
@@ -44,7 +44,6 @@ body {
 .navbar {
     background-color: white;
     color: var(--text-color);
-    min-height: 6%;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
@@ -95,7 +94,11 @@ body {
 
 /* Sidebar (Aside) styles */
 .sidenav-wrapper {
+    height: 100vh;
     width: 275px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
     background-color: var(--primary-color);
     color: var(--secondary-color);
     padding-top: 20px;
@@ -112,7 +115,7 @@ body {
 .sidenav-items a {
     display: flex;
     justify-content: space-between;
-    align-items:center;
+    align-items: center;
     color: var(--secondary-color);
     font-size: 1em;
     text-decoration: none;
@@ -193,12 +196,12 @@ body {
 }
 
 /* Customer Page */
-.cust-container{
+.cust-container {
     display: flex;
     flex-direction: column;
 }
 
-.cust-stats-container{
+.cust-stats-container {
     height: 15vh;
 }
 
