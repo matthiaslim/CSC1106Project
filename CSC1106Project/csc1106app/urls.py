@@ -52,6 +52,7 @@ urlpatterns = [
     # Finance URLs
     path('finance/sales', views.sales_management, name="sales_management"),
     path('finance/sales/<int:sales_id>/', views.sales_details, name="sales_details"),
+    path('finance/send_sales_email/<int:sales_id>/', views.send_sales_email, name='send_sales_email'),
     path('finance/sales/update/<int:sales_id>', views.update_sales, name="update_sales"),
     path('finance/sales/create', views.create_sales, name="create_sales"),
     path('finance/sales/delete/<int:sales_id>', views.delete_sales, name='delete_sales'),
