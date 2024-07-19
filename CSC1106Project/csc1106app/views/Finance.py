@@ -1,3 +1,4 @@
+from django.core.mail import EmailMessage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 import os
@@ -20,6 +21,8 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from datetime import date, timedelta
 from decimal import Decimal
+
+from django.conf import settings
 
 # Variables
 current_year = date.today().year
@@ -206,6 +209,28 @@ def invoice_details(request, invoice_id):
     }
 
     return render(request, 'finance/invoice_details.html', data)
+
+
+def send_sales_email(request, sales_id):
+    if request.method == 'POST':
+        try:
+            sales = Transaction.objects.get(transaction_id=sales_id)
+            pdf_file_path = os.path.join(settings.MEDIA_ROOT, 'sales', f'sales_{sales.transaction_id}.pdf')
+
+            customer_email = sales.membership_id.email_address
+
+            email = EmailMessage(
+                subject='Your Sales Document',
+                body='Please find attached the sales document.',
+                from_email=settings.EMAIL_HOST_USER,
+                to=[customer_email]  # Replace with the recipient's email address
+            )
+            email.attach_file(pdf_file_path)
+            email.send()
+
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
 
 @login_required

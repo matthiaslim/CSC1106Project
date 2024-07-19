@@ -68,8 +68,14 @@
 
                 </div>
             </div>
-             <div class="col-6">
+            <div class="col-6">
                 <div class="bg-white rounded shadow">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-secondary m-3"
+                            onclick="sendEmail({{ sales.transaction_id }})">
+                        <i class="bi bi-envelope"></i>
+                        Email Sales
+                    </button>
                     <iframe src="{{ pdf_file_path }}" width="100%"
                             height="800px">
                         This browser does not support PDFs. Please download the PDF to view it: <a
@@ -79,4 +85,31 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function sendEmail(sales_id) {
+            var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+            fetch(`/finance/send_sales_email/${sales_id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrf_token,
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Email sent successfully.');
+                    } else {
+                        alert('Failed to send email.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Failed to send email.');
+                });
+        }
+    </script>
 {% endblock %}
