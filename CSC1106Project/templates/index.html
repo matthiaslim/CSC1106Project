@@ -5,97 +5,63 @@
 
 {% load static %}
 
+
 {% block content %}
 <div class="container my-4">
     <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="dashboard-stat bg-white">
-                <div>
-                    <h6>Require Invoice</h6>
-                    <span class="number">25</span>
+        <div class="row justify-content-around">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                    This is some text within a card body.
+                    </div>
                 </div>
-                <i class="bi bi-file-earmark-text"></i>
             </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="dashboard-stat bg-white">
-                <div>
-                    <h6>Require Packing</h6>
-                    <span class="number">10</span>
+            <div class="col-6">
+                <div class="card">
+                    <h3 style="margin-left:10px;margin-top:10px;"class="card-title">Product Details</h3>
+                    <div class="card-body">
+                       
+                        <div class="d-flex flex-col">
+                            <h5>Low Stock Items: </h5>
+                            <span id="low-stock"> </span>
+                        </div>
+                        <div class="d-flex flex-col">
+                            <h5>All Item Groups:</h5>
+                            <span id="Category"></span>
+                        </div> 
+                        <div class="d-flex flex-col">
+                            <h5>All Items: </h5>
+                            <span></span>
+                        </div>
+
+                        
+                    </div>
                 </div>
-                <i class="bi bi-box"></i>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="dashboard-stat bg-white">
-                <div>
-                    <h6>Need To Ship</h6>
-                    <span class="number">33</span>
-                </div>
-                <i class="bi bi-truck"></i>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="dashboard-stat bg-white">
-                <div>
-                    <h6>Require Delivery</h6>
-                    <span class="number">45</span>
-                </div>
-                <i class="bi bi-cart"></i>
             </div>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-lg-6 mb-4">
-            <div class="card card-container">
-                <div class="card-header">
-                    <h5>Invoice</h5>
-                    <div>
-                        <select class="form-select form-select-sm">
-                            <option selected>Year</option>
-                            <option value="1">Month</option>
-                            <option value="2">Week</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <h6>Overdue Invoice</h6>
-                    <p class="mb-2">100</p>
-                    <h6>Overdue Amount</h6>
-                    <p class="mb-2">$33,000</p>
-                    <div class="d-flex justify-content-center">
-                        <div style="width: 50%; height: 200px;">
-                            <canvas id="invoiceChart"></canvas>
-                        </div>
+        <div class="row justify-content-around">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                    This is some text within a card body.
                     </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <canvas id="myChart"></canvas>
-        </div>
-          
-        <div class="col-lg-6 mb-4">
-            <div class="card card-container">
-                <div class="card-header">
-                    <h5>Total Profit</h5>
-                    <div>
-                        <select class="form-select form-select-sm">
-                            <option selected>Months</option>
-                            <option value="1">Weeks</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div style="width: 100%; height: 200px;">
-                        <canvas id="profitChart"></canvas>
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <canvas id="myChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 {% endblock %}
 
 
