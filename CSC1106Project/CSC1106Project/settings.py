@@ -37,7 +37,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'islandfurniture1234@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'cayt eofv nxmj frgu'
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 # Application definition
 
