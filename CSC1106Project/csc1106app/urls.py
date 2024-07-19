@@ -23,8 +23,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', login_required(views.index), name="home"),
-    path('login', views.login_user, name="login"),
-    path('logout', views.logout_user, name="logout"),
+    path('login/', views.login_user, name="login"),
+    path('logout/', views.logout_user, name="logout"),
     path('settings', login_required(views.settings), name="settings"),
     path('onboard', login_required(views.onboard), name="onboard"),
     #path('get_chart_information',login_required(views.get_chart_information), name="get_chart_information")
