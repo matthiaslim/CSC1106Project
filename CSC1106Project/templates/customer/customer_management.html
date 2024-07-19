@@ -3,6 +3,7 @@
 {% block title %} Customers {% endblock %}
 
 {% block content %}
+{% load widget_tweaks %}
     <div class="container-fluid my-4 cust-container px-5">
         <div class="row mb-4 cust-stats-container">
             <div class="col-lg-4 col-md-6 mb-4 ps-0">
@@ -30,13 +31,31 @@
         <div class="row mb-4">
             <div class="col mb-4 px-0">
                 <div class="bg-white rounded shadow p-3">
-                    <div class="btn-container d-flex justify-content-start mb-4">
-                        <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
-                        <a class="btn btn-primary ms-3" href="{% url 'create_customer' %}"><i
-                                class="bi bi-person-fill-add"></i>
-                            New Customer
-                        </a>
-                    </div>
+                    <form method="GET" class="form-group" id="filter-customer-form" action="{% url 'customer_management' %}">
+                        <div class="btn-container d-flex justify-content-start mb-4">
+                            <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
+                            <a class="btn btn-primary ms-3" href="{% url 'create_customer' %}"><i
+                                    class="bi bi-person-fill-add"></i>
+                                New Customer
+                            </a>
+                        </div>
+                        <div class="row my-3">
+                            <div class="col-6">
+                                {% render_field filter.full_name.label_tag %}
+                                {% render_field filter.full_name class+="form-control"  %}
+
+                                Email: 
+                                {% render_field filter.email_address__icontains class+="form-control"  %}
+                            </div>
+                            <div class="col-6">
+                                Address: 
+                                {% render_field filter.address__icontains class+="form-control"  %}
+
+                                {% render_field filter.phone_number.label_tag %}
+                                {% render_field filter.phone_number class+="form-control"  %}
+                            </div>
+                        </div>
+                    </form>
                     <table id="custTable" class="table table-hover">
                         <thead>
                         <tr>
