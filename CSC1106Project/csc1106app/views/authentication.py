@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
 
-
 # Home View
 def index(request):
     return render(request, 'index.html')
@@ -28,7 +27,6 @@ def settings(request):
     return render(request, 'settings.html', {'form': form})
 
 
-# Login View
 def login_user(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
