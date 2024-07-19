@@ -33,7 +33,8 @@ def sales_management(request):
     total_quantity_sold = 0
 
     for transaction in sales:
-        transaction.total_value = sum(item.transaction_quantity * item.transaction_price_per_unit for item in transaction.transactionproduct_set.all())
+        transaction.total_value = sum(item.transaction_quantity * item.transaction_price_per_unit for item in
+                                      transaction.transactionproduct_set.all())
         total_quantity_sold += sum(item.transaction_quantity for item in transaction.transactionproduct_set.all())
 
         for item in transaction.transactionproduct_set.all():
@@ -93,8 +94,7 @@ def sales_details(request, sales_id):
             salesProduct.total_price = total_price
             subtotal += total_price
 
-        pdf_file_path = os.path.join('media', 'sales', f"sales_{sales.transaction_id}.pdf").replace('\\','/')
-
+        pdf_file_path = os.path.join('media', 'sales', f"sales_{sales.transaction_id}.pdf").replace('\\', '/')
 
         if not default_storage.exists(pdf_file_path):
             generate_sales(sales)
@@ -110,6 +110,18 @@ def sales_details(request, sales_id):
     }
 
     return render(request, 'finance/sales_details.html', data)
+
+
+@login_required
+@department_required("Finance")
+def update_sales(request, sales_id):
+    if request.method == "POST":
+        Transaction.objects.filter(transaction_id=sales_id).update(
+            payment_terms=request.POST.get('payment_terms'),
+            transaction_date=request.POST.get('transaction_date')
+        )
+        return JsonResponse({'success': True})
+
 
 @login_required
 @department_required("Finance")
@@ -177,7 +189,7 @@ def invoice_details(request, invoice_id):
             invoiceProduct.total_price = total_price
             subtotal += total_price
 
-        pdf_file_path = os.path.join('media', 'invoices', f"invoice_{invoice.invoice_id}.pdf").replace('\\','/')
+        pdf_file_path = os.path.join('media', 'invoices', f"invoice_{invoice.invoice_id}.pdf").replace('\\', '/')
         print(pdf_file_path)
 
         if not default_storage.exists(pdf_file_path):
@@ -223,6 +235,7 @@ def update_invoice(request, invoice_id):
         Invoice.objects.filter(invoice_id=invoice_id).update(status=request.POST.get('product_status'))
         return JsonResponse({'success': True})
 
+
 @login_required
 @department_required("Finance")
 def delete_invoice(request, invoice_id):
@@ -233,6 +246,7 @@ def delete_invoice(request, invoice_id):
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
 @login_required
 def get_product_price(request, product_id):
     try:
@@ -240,6 +254,7 @@ def get_product_price(request, product_id):
         return JsonResponse({'price': product.product_sale_price})
     except Product.DoesNotExist:
         return JsonResponse({'error': 'Product not found'}, status=404)
+
 
 # @login_required
 # @department_required("Finance")
@@ -260,6 +275,7 @@ def financial_data_for_year(year):
         'total_employee_wages': total_employee_wages,
         'net_profit': net_profit
     }
+
 
 @login_required
 def financial_report(request):
@@ -305,6 +321,8 @@ def calculate_yoy_change(current_year_value, previous_year_value):
         return None
     else:
         return round(((current_year_value - previous_year_value) / previous_year_value) * 100)
+
+
 def split_text_to_fit(text, font_name, font_size, max_width):
     """
     Splits a given text into lines so that each line fits within the specified maximum width.
@@ -396,6 +414,7 @@ def generate_invoice(invoice):
     default_storage.save(file_path, buffer)
 
     return buffer
+
 
 def generate_sales(sales):
     buffer = BytesIO()

@@ -1,0 +1,30 @@
+<!-- Modal -->
+<div class="modal fade" id="editSalesModal" tabindex="-1" aria-labelledby="editSalesModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Sales Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <label for="payment_terms">Payment Type</label>
+                    {% csrf_token %}
+                    <select class="form-select" id="payment_terms" name="payment_terms">
+                        <option value="Card">Card</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Cash">Cash</option>
+                    </select>
+                    <div>
+                        <label for="transaction_date" class="form-label">Transaction Date</label>
+                        <input type="date" class="form-control" id="transaction_date" name="transaction_date"/>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="submitEditBtn" data-attr="" type="submit" class="btn btn-warning">Update</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
