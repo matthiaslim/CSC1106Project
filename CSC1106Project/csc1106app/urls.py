@@ -23,8 +23,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', login_required(views.index), name="home"),
-    path('login', views.login_user, name="login"),
-    path('logout', login_required(views.logout_user), name="logout"),
+    path('login/', views.login_user, name="login"),
+    path('logout/', views.logout_user, name="logout"),
     path('settings', login_required(views.settings), name="settings"),
     path('onboard', login_required(views.onboard), name="onboard"),
     #path('get_chart_information',login_required(views.get_chart_information), name="get_chart_information")
@@ -47,6 +47,7 @@ urlpatterns = [
        name="update_customer"),
     path('customer/delete/<int:customerID>', login_required(views.delete_customer),
        name="delete_customer"),
+    path('customer/order/<int:sales_id>/', views.sales_details, name="customer_order"),
 
     # Finance URLs
     path('finance/sales', views.sales_management, name="sales_management"),
@@ -55,6 +56,7 @@ urlpatterns = [
     path('finance/sales/delete/<int:sales_id>', views.delete_sales, name='delete_sales'),
     path('finance/orders', views.invoice_management, name="invoice_management"),
     path('finance/orders/create', views.create_invoice, name="create_invoice"),
+    path('finance/orders/<int:invoice_id>', views.invoice_details, name="invoice_details"),
     path('finance/update/<int:invoice_id>', views.update_invoice, name="update_invoice"),
     path('finance/orders/delete/<int:invoice_id>', views.delete_invoice, name='delete_invoice'),
     path('get-product-price/<int:product_id>/', views.get_product_price, name='get-product-price'),

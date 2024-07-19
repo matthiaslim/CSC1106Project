@@ -41,22 +41,17 @@
                         <thead>
                         <tr>
                             {# name, address, phone number, email address#}
-                            <th> #</th>
                             <th> Name</th>
                             <th> Address</th>
                             <th> Phone Number</th>
                             <th> Email</th>
                             <th> Status</th>
-                            <th></th>
+                            <th> Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for membership in memberships %}
                             <tr role="button" data-id="{{ membership.member_id }}">
-                                <th scope="row"><input
-                                        class="form-check-input" type="checkbox"
-                                        value="{{ membership.member_id }}" id="flexCheckIndeterminate">
-                                </th>
                                 <td>
                                     {{ membership.first_name }} {{ membership.last_name }}
                                 </td>
@@ -69,17 +64,18 @@
                                 <td> {{ membership.membership_status }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-outline" type="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item"
-                                               href="/customer/update/{{ membership.member_id }}">
-                                            Edit </a></li>
-                                        <li><a class="dropdown-item"
-                                               href="/customer/delete/{{ membership.member_id }}"> Delete </a></li>
-                                    </ul>
+                                    <a href="{% url 'customer_details' membership.member_id %}" class="btn btn-sm btn-primary"
+                                       title="View Customer">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    <a href="{% url 'update_customer' membership.member_id %}" class="btn btn-sm btn-secondary"
+                                       title="Update Product">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{% url 'delete_customer' membership.member_id %}"
+                                       class="btn btn-sm btn-danger" title="Delete Product">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -99,20 +95,11 @@
         $(document).ready(function () {
             $('#custTable').DataTable({
                 "columnDefs": [
-                    {"orderable": false, "targets": [0, 6]} // Disables sorting on the first and last columns
+                    {"orderable": false, "targets": [0, 5]} // Disables sorting on the first and last columns
                 ],
                 "paging": true, // Enable pagination
                 "pageLength": 10, // Set the number of items per page
                 "pagingType": "simple_numbers"
-            });
-
-            $("#custTable tbody").on("click", "tr", function () {
-                if ($(event.target).closest('input[type="checkbox"], .btn, .dropdown-menu').length === 0) {
-
-                    var membershipId = $(this).data('id');
-                    console.log(membershipId);
-                    window.location.href = '/customer/details/' + membershipId;
-                }
             });
         });
     </script>
