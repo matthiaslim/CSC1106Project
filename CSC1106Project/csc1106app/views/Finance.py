@@ -1,12 +1,12 @@
 from django.core.mail import EmailMessage
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db import transaction
 import os
 
 from django.core.files.storage import default_storage
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.contrib import messages
 
 from ..forms import InvoiceForm, InvoiceProductFormSet, SalesForm, SalesProductFormSet
 from ..filters import InvoiceFilter, SalesFilter
@@ -84,6 +84,8 @@ def sales_management(request):
 
 #     return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
 
+@login_required
+@department_required("Finance")
 def create_sales(request):
     if request.method == 'POST':
         sales_form = SalesForm(request.POST)

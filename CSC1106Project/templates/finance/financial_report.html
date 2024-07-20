@@ -39,21 +39,21 @@
                     <td>{{ yoy_change_employee_wages }}</td>
                 </tr>
                 <tr>
-                    <th scope="row" class="font-weight-bold">Net Profit</th>
+                    <th scope="row">Net Profit</th>
                     {% if current_year_financial_data.net_profit < 0 %}
-                        <td class="text-danger font-weight-bold">{{ current_year_financial_data.net_profit }}</td>
+                        <td class="text-danger">{{ current_year_financial_data.net_profit }}</td>
                     {% else %}
                         <td>{{ current_year_financial_data.net_profit }}</td>
                     {% endif %}
                     
                     {% if previous_year_financial_data.net_profit < 0 %}
-                        <td class="text-danger font-weight-bold">{{ previous_year_financial_data.net_profit }}</td>
+                        <td class="text-danger">{{ previous_year_financial_data.net_profit }}</td>
                     {% else %}
                         <td>{{ previous_year_financial_data.net_profit }}</td>
                     {% endif %}
 
                     {% if yoy_change_net_profit < 0 %}
-                        <td class="text-danger font-weight-bold">{{ yoy_change_net_profit }}</td>
+                        <td class="text-danger">{{ yoy_change_net_profit }}</td>
                     {% else %}
                         <td>{{ yoy_change_net_profit }}</td>
                     {% endif %}
