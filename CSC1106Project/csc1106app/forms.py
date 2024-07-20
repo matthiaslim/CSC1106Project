@@ -58,7 +58,7 @@ class EmployeeForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     department = forms.ModelChoiceField(queryset=Department.objects.exclude(department_name='Chairman'), widget=forms.Select(attrs={'class': 'form-control'}))
-    job_title = forms.ChoiceField(choices=JOB_TITLE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    job_title = forms.ChoiceField(choices=JOB_TITLE_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}))
     gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     employee_role = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -285,11 +285,11 @@ class InvoiceProductForm(forms.ModelForm):
 
         # Set the product_id field dynamically
         self.fields['product_id'] = forms.ModelChoiceField(queryset=Product.objects.all(),
-                                                      widget=forms.Select(attrs={'class': 'form-control'}))
+                                                      widget=forms.Select(attrs={'class': 'form-select'}))
 
         # Add class to invoice_quantity field
-        self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-control'})
-        self.fields['invoice_price_per_unit'].widget.attrs.update({'class': 'form-control'})
+        self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-select'})
+        self.fields['invoice_price_per_unit'].widget.attrs.update({'class': 'form-select'})
 
 
 
