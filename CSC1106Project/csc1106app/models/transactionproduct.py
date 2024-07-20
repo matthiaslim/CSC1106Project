@@ -13,5 +13,4 @@ class TransactionProduct(models.Model):
         return self.transaction_quantity * self.transaction_price_per_unit
 
 
-    def __str__(self):
-        return self.transaction_product_id
+    
