@@ -4,9 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 import os
 
 from django.core.files.storage import default_storage
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 
 from ..forms import InvoiceForm, InvoiceProductFormSet, SalesForm, SalesProductFormSet
 from ..filters import InvoiceFilter, SalesFilter
@@ -60,21 +60,75 @@ def sales_management(request):
 
 @login_required
 @department_required("Finance")
+# def create_sales(request):
+#     if request.method == 'POST':
+#         sales_form = SalesForm(request.POST)
+#         formset = SalesProductFormSet(request.POST, request.FILES)
+#         print(formset.errors)
+#         if sales_form.is_valid() and formset.is_valid():
+#             sales = sales_form.save()
+#             point_earned = sales_form.cleaned_data.get('points_earned')
+#             member = sales_form.cleaned_data.get('membership_id')
+#             member.points += point_earned
+#             formset.instance = sales
+#             member.save()
+#             formset.save()
+#             pdf_buffer = generate_sales(sales)
+#             return redirect('sales_management')
+#     else:
+#         sales_form = SalesForm()
+#         formset = SalesProductFormSet()
+
+#     for form in formset.forms:
+#         form.set_initial_price()
+
+#     return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
+
 def create_sales(request):
     if request.method == 'POST':
         sales_form = SalesForm(request.POST)
         formset = SalesProductFormSet(request.POST, request.FILES)
         print(formset.errors)
         if sales_form.is_valid() and formset.is_valid():
-            sales = sales_form.save()
-            point_earned = sales_form.cleaned_data.get('points_earned')
-            member = sales_form.cleaned_data.get('membership_id')
-            member.points += point_earned
-            formset.instance = sales
-            member.save()
-            formset.save()
-            pdf_buffer = generate_sales(sales)
-            return redirect('sales_management')
+            # Start a transaction
+            with transaction.atomic():
+                # Check product quantities before proceeding
+                all_products_sufficient = True
+                for form in formset:
+                    product_obj = form.cleaned_data.get('product_id')
+                    sold_quantity = form.cleaned_data.get('transaction_quantity')
+                    # Get product ID
+                    if product_obj:
+                        product_id = product_obj.product_id
+                        product = Product.objects.get(product_id=product_id)
+
+                    if product.product_quantity < sold_quantity:
+                        all_products_sufficient = False
+                        messages.error(request, f"Insufficient quantity for product {product.product_name}.")
+                        break  # Exit loop if product has insufficient quantity
+                
+                if all_products_sufficient:
+                    sales = sales_form.save()
+                    point_earned = sales_form.cleaned_data.get('points_earned')
+                    member = sales_form.cleaned_data.get('membership_id')
+                    member.points += point_earned
+                    member.save()
+                    
+                    # Update product quantities
+                    for form in formset:
+                        product_obj = form.cleaned_data.get('product_id')
+                        sold_quantity = form.cleaned_data.get('transaction_quantity')
+                        # Get product ID
+                        if product_obj:
+                            product_id = product_obj.product_id
+                            product = Product.objects.get(product_id=product_id)
+                        product.product_quantity -= sold_quantity
+                        product.save()
+
+                    formset.instance = sales
+                    formset.save()
+                    pdf_buffer = generate_sales(sales)
+                    return redirect('sales_management')
     else:
         sales_form = SalesForm()
         formset = SalesProductFormSet()
@@ -176,7 +230,13 @@ def invoice_management(request):
         'invoices': invoice_filter.qs,
         'current_year': current_year,
         'total_sum': total_sum,
-        'total_invoice_count': total_invoice_count
+        'total_invoice_count': total_invoice_count,
+        'sum_due_today': sum_due_today,
+        'count_due_today': count_due_today,
+        'sum_due_30_days': sum_due_30_days,
+        'count_due_30_days': count_due_30_days,
+        'sum_overdue': sum_overdue,
+        'count_overdue': count_overdue
     })
 
 
@@ -298,7 +358,7 @@ def financial_data_for_year(year):
         'total_sales': total_sales,
         'total_purchases': total_purchases,
         'total_employee_wages': total_employee_wages,
-        'net_profit': net_profit
+        'net_profit': net_profit,
     }
 
 
@@ -329,6 +389,11 @@ def financial_report(request):
         previous_year_financial_data['net_profit']
     )
 
+    inventory = Product.objects.all()
+    
+    inventory_value = sum(product.product_total_value() for product in inventory)
+    total_assets = inventory_value
+
     return render(request, 'finance/financial_report.html', {
         'current_year': current_year,
         'previous_year': previous_year,
@@ -337,7 +402,9 @@ def financial_report(request):
         'yoy_change_total_sales': yoy_change_total_sales,
         'yoy_change_total_purchases': yoy_change_total_purchases,
         'yoy_change_employee_wages': yoy_change_employee_wages,
-        'yoy_change_net_profit': yoy_change_net_profit
+        'yoy_change_net_profit': yoy_change_net_profit,
+        'inventory_value': inventory_value,
+        'total_assets': total_assets,
     })
 
 

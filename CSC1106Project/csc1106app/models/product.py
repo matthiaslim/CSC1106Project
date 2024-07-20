@@ -14,5 +14,8 @@ class Product(models.Model):
     product_length = models.IntegerField()
     product_image = models.ImageField(upload_to='product_image/', null=True, blank=True)
 
+    def product_total_value(self):
+        return self.product_quantity * self.product_sale_price
+
     def __str__(self):
         return f"{self.product_name}"
