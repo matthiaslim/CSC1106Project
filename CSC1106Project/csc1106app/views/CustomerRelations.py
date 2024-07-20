@@ -8,6 +8,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from ..filters import MembershipFilter
 
+
 # Customer Views
 @login_required
 @department_required('Customer Relations')
@@ -17,10 +18,20 @@ def customer_management(request):
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'}]
-    
-    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 
-            'memberships': customer_filter.qs, 'filter': customer_filter.form}
-    
+
+    total_customers = Membership.objects.count()
+    active_customers = Membership.objects.filter(membership_status="Active").count()
+    inactive_customers = Membership.objects.exclude(membership_status="Active").count()
+
+    data = {
+        'breadcrumbs': breadcrumbs,
+        'memberships': customer_filter.qs,
+        'filter': customer_filter.form,
+        'total_customers': total_customers,
+        'active_customers': active_customers,
+        'inactive_customers': inactive_customers
+    }
+
     return render(request, 'customer/customer_management.html', data)
 
 
@@ -41,7 +52,7 @@ def customer_details(request, customerID):
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'},
                    {'title': f'Customer Details - {membership}'}]
-    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'membership': membership,
+    data = {'breadcrumbs': breadcrumbs, 'membership': membership,
             'member_sales': member_sales}
 
     return render(request, 'customer/customer_details.html', data)
@@ -82,7 +93,7 @@ def create_customer(request):
                    {'title': 'Management', 'url': '/customer/management'},
                    {'title': 'Create Customer'}]
     return render(request, 'customer/create_customer.html',
-                  {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
+                  {'breadcrumbs': breadcrumbs, 'form': form})
 
 
 @login_required
@@ -114,7 +125,7 @@ def update_customer(request, customerID):
                    {'title': 'Management', 'url': '/customer/management'},
                    {'title': 'Create Customer'}]
     return render(request, 'customer/update_customer.html',
-                  {'breadcrumbs': breadcrumbs, 'page_title': 'Create Customer', 'form': form})
+                  {'breadcrumbs': breadcrumbs, 'form': form})
 
 
 @login_required

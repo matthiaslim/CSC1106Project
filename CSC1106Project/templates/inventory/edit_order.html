@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Manage Order</h1>
     {% csrf_token %}
-    <button id="submitData" class="btn btn-primary"> Mark as Received</button>
+    <button id="submitData" class="btn btn-primary" data-redirect-url="{% url 'order_management' %}"> Mark as Received</button>
 
 </div>
 <div class="row p-3 my-3 bg-white shadow rounded-3">
@@ -51,7 +51,7 @@ $(document).ready(function(){
             success : function(data){
                 if (data.success){
                     alert('Successfully Updated Data');
-                    window.location.href="http://127.0.0.1:8000/inventory/order_management";
+                    window.location.href=$('#submitData').data('redirect-url');
                 }   
             }
         })

@@ -1,25 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-    .summary {
-        text-indent: 10px;
-    }
-</style>
+    <style>
+        .summary {
+            text-indent: 10px;
+        }
+    </style>
 
-<div class="container-fluid my-4 cust-container px-2">
-    <div class="summary row mb-4 bg-white rounded shadow py-3">
-        <h2>Financial Report</h2>
-        <table class="table">
-            <thead>
-            <tr class="align-middle">
-                <th scope="col"><h3>Income Statement</h3></th>
-                <th scope="col"><h3>{{ current_year }}</h3></th>
-                <th scope="col"><h3>{{ previous_year }}</h3></th>
-                <th scope="col"><p class="mt-3">Year-on-year<br>% change</p></th>
-            </tr>
-            </thead>
-            <tbody>
+    <div class="container-fluid my-4 cust-container px-2">
+        <h1 class="mb-3">Financial Report</h1>
+        <div class="summary row mb-4 bg-white rounded shadow py-3">
+            <table class="table">
+                <thead>
+                <tr class="align-middle">
+                    <th scope="col"><h3>Income Statement</h3></th>
+                    <th scope="col"><h3>{{ current_year }}</h3></th>
+                    <th scope="col"><h3>{{ previous_year }}</h3></th>
+                    <th scope="col"><p class="mt-3">Year-on-year<br>% change</p></th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <th scope="row">Sales</th>
                     <td>{{ current_year_financial_data.total_sales }}</td>
@@ -45,7 +45,7 @@
                     {% else %}
                         <td>{{ current_year_financial_data.net_profit }}</td>
                     {% endif %}
-                    
+
                     {% if previous_year_financial_data.net_profit < 0 %}
                         <td class="text-danger">{{ previous_year_financial_data.net_profit }}</td>
                     {% else %}
@@ -58,17 +58,17 @@
                         <td>{{ yoy_change_net_profit }}</td>
                     {% endif %}
                 </tr>
-        </table>
-    </div>
-    <div class="summary row mb-4 bg-white rounded shadow py-3">
-        <table class="table">
-            <thead>
-            <tr class="align-middle">
-                <th scope="col"><h3>Balance Sheet    </h3></th>
-                <th scope="col"><h3>{{ current_year }}</h3></th>
-            </tr>
-            </thead>
-            <tbody>
+            </table>
+        </div>
+        <div class="summary row mb-4 bg-white rounded shadow py-3">
+            <table class="table">
+                <thead>
+                <tr class="align-middle">
+                    <th scope="col"><h3>Balance Sheet </h3></th>
+                    <th scope="col"><h3>{{ current_year }}</h3></th>
+                </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <th scope="row">Inventory</th>
                     <td>{{ inventory_value }}</td>
@@ -77,8 +77,8 @@
                     <th scope="row">Total Assets</th>
                     <td>{{ total_assets }}</td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 {% endblock %}
