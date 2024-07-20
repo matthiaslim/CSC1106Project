@@ -34,9 +34,8 @@
                         <td>{{ form.product_id }}</td>
                         <td>{{ form.transaction_quantity }}</td>
                         <td>{{ form.transaction_price_per_unit }}</td>
-                        <!-- Add more fields as needed -->
                         <td>
-                            <button type="button" class="remove-row btn btn-danger">Remove</button>
+                            <button type="button" class="btn btn-secondary" disabled>Remove</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -44,7 +43,6 @@
                     <td>{{ formset.empty_form.product_id }}</td>
                     <td>{{ formset.empty_form.transaction_quantity }}</td>
                     <td>{{ formset.empty_form.transaction_price_per_unit }}</td>
-                    <!-- Add more fields as needed -->
                     <td>
                         <button type="button" class="remove-row btn btn-danger">Remove</button>
                     </td>
@@ -96,11 +94,9 @@
             document.querySelector("#transactionProductTable").addEventListener('change', function (e) {
                 if (e.target.classList.contains('product-select')) {
                     const productId = e.target.value;
-                    // Ensure the closest '.form-row' exists before proceeding
                     const formRow = e.target.closest('.form-row');
                     if (formRow) {
                         const priceInput = formRow.querySelector('.price-per-unit');
-                        const quantity = formRow.querySelector('.quantity');
                         if (priceInput) {
                             fetch(`/get-product-price/${productId}/`)
                                 .then(response => response.json())
@@ -137,23 +133,20 @@
                 document.getElementById('id_points_earned').value = Math.floor(total / 10);
             }
 
-            // Call updateTotalPrice whenever the quantity or product changes
             document.querySelector("#transactionProductTable").addEventListener('change', function (e) {
                 if (e.target.classList.contains('quantity') || e.target.classList.contains('product-select')) {
                     updateTotalPrice();
                 }
             });
 
-            // Also call updateTotalPrice when a row is added or removed
             addButton.addEventListener("click", updateTotalPrice);
 
             tableBody.addEventListener("click", function (e) {
                 if (e.target.classList.contains("remove-row")) {
-                    setTimeout(updateTotalPrice, 0); // Wait for the row to be removed
+                    setTimeout(updateTotalPrice, 0);
                 }
             });
 
-            // Initial call to set the total price when the page loads
             updateTotalPrice();
 
 

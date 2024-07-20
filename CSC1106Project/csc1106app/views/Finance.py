@@ -92,6 +92,7 @@ def create_sales(request):
         formset = SalesProductFormSet(request.POST, request.FILES)
         print(formset.errors)
         if sales_form.is_valid() and formset.is_valid():
+            message = ""
             # Start a transaction
             with transaction.atomic():
                 # Check product quantities before proceeding
@@ -106,16 +107,16 @@ def create_sales(request):
 
                     if product.product_quantity < sold_quantity:
                         all_products_sufficient = False
-                        messages.error(request, f"Insufficient quantity for product {product.product_name}.")
-                        break  # Exit loop if product has insufficient quantity
-                
+                        message += f"Insufficient quantity for product {product.product_name}.\n"
+                        # break  # Exit loop if product has insufficient quantity
+
                 if all_products_sufficient:
                     sales = sales_form.save()
                     point_earned = sales_form.cleaned_data.get('points_earned')
                     member = sales_form.cleaned_data.get('membership_id')
                     member.points += point_earned
                     member.save()
-                    
+
                     # Update product quantities
                     for form in formset:
                         product_obj = form.cleaned_data.get('product_id')
@@ -131,6 +132,10 @@ def create_sales(request):
                     formset.save()
                     pdf_buffer = generate_sales(sales)
                     return redirect('sales_management')
+
+                elif not all_products_sufficient:
+                    print(message)
+                    messages.error(request, message, extra_tags='danger')
     else:
         sales_form = SalesForm()
         formset = SalesProductFormSet()
@@ -392,7 +397,7 @@ def financial_report(request):
     )
 
     inventory = Product.objects.all()
-    
+
     inventory_value = sum(product.product_total_value() for product in inventory)
     total_assets = inventory_value
 

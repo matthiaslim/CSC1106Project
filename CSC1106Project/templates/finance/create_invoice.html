@@ -33,7 +33,7 @@
                         <td>{{ form.invoice_price_per_unit }}</td>
                         <!-- Add more fields as needed -->
                         <td>
-                            <button type="button" class="remove-row btn btn-danger">Remove</button>
+                            <button type="button" class="btn btn-secondary" disabled>Remove</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -70,6 +70,19 @@
             let addButton = document.getElementById("add-more");
             let totalForms = document.getElementById("id_invoiceproduct_set-TOTAL_FORMS");
 
+            const updateIndices = () => {
+                document.querySelectorAll('#invoiceProductTable tbody tr').forEach((row, index) => {
+                    if (row.style.display !== 'none') {
+                        Array.from(row.querySelectorAll('input, select')).forEach(input => {
+                            const name = input.name.replace(/\d+/, index);
+                            const id = input.id.replace(/\d+/, index);
+                            input.name = name;
+                            input.id = id;
+                        });
+                    }
+                });
+            };
+
             addButton.addEventListener("click", function () {
                 let clone = templateRow.cloneNode(true);
                 clone.removeAttribute("id");
@@ -80,6 +93,7 @@
                 clone.innerHTML = clone.innerHTML.replace(formRegex, `id_invoiceproduct_set-${newFormIndex}-`).replace(nameRegex, `invoiceproduct_set-${newFormIndex}`);
                 tableBody.insertBefore(clone, tableBody.lastElementChild);
                 totalForms.value = parseInt(totalForms.value) + 1;
+                updateIndices();
             });
 
             tableBody.addEventListener("click", function (e) {
