@@ -5,11 +5,13 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Manage Department</h1>
+    {% if user_data.department.department_name == "Chairman" %}
     <a href="{% url 'department_create' %}">
         <button class="btn btn-primary focus-ring">
             <i class="bi bi-plus-lg"></i> New Department
         </button>
     </a>
+    {% endif %}
 </div>
 <div class="row p-3 my-3 bg-white shadow rounded-3">
     <div class="col">
