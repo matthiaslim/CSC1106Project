@@ -25,5 +25,3 @@ class Invoice(models.Model):
     def total_value(self):
         return sum([invoice_product.invoice_quantity * invoice_product.invoice_price_per_unit for invoice_product in self.invoiceproduct_set.all()])
 
-    def __str__(self):
-        return self.invoice_id

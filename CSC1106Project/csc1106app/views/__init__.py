@@ -1,4 +1,4 @@
-from .chart import (get_chart_information)
+from .chart import (display_chart_information,get_product_details,inventory_summary,top_selling_items)
 
 from .authentication import (index,login_user,logout_user,settings, onboard)
 
@@ -17,7 +17,10 @@ from .Finance import (sales_management, create_sales, sales_details, delete_sale
 
 
 __all__ = [
-    'get_chart_information',
+    'display_chart_information',
+    'get_product_details',
+    'inventory_summary',
+    'top_selling_items',
     'index',
     'login_user',
     'logout_user',

@@ -41,6 +41,10 @@ def login_user(request):
                     return redirect('onboard')
 
                 return redirect('home')  # Redirect to a home page or another page after login
+        else:
+            # Handle invalid login attempt
+            error_message = "Invalid username or password."
+            messages.error(request, error_message)
     else:
         form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})

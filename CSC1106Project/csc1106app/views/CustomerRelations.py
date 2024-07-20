@@ -6,17 +6,21 @@ from ..crud_ops import *
 from ..decorators import department_required
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
+from ..filters import MembershipFilter
 
 # Customer Views
 @login_required
 @department_required('Customer Relations')
 def customer_management(request):
-    memberships = Membership.objects.all()
+    customer_filter = MembershipFilter(request.GET, queryset=Membership.objects.all())
+    print(customer_filter.form)
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'}]
-    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 'memberships': memberships}
+    
+    data = {'breadcrumbs': breadcrumbs, 'page_title': 'Customers', 
+            'memberships': customer_filter.qs, 'filter': customer_filter.form}
+    
     return render(request, 'customer/customer_management.html', data)
 
 
