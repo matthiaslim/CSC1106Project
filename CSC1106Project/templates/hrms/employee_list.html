@@ -37,7 +37,7 @@
                 <td>
                         {% if user_data.department.department_name == "Chairman" and employee.user_id != user_data.user_id %}
                             <!-- Chairman can view and edit details of all employees -->
-                            <a href="{% url 'employee_detail' employee.employee_id %}">
+                            <a style="text-decoration: none;" href="{% url 'employee_detail' employee.employee_id %}">
                                 <button class="btn btn-sm btn-primary" title="View Details">
                                     <i class="bi bi-eye"></i>
                                 </button>
