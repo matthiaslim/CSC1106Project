@@ -20,7 +20,15 @@ def settings(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully")
             return redirect('home')
+        else:
+            message = "";
+            for field, errors in form.errors.items():
+                for error in errors:
+                    message += f"{error}\n"
+
+            messages.error(request, message, extra_tags='danger')
     else:
         form = ChangePasswordForm(request.user)
 
