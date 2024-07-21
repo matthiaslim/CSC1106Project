@@ -3,35 +3,32 @@
 {% block title %} Customers {% endblock %}
 
 {% block content %}
-{% load widget_tweaks %}
+    {% load widget_tweaks %}
     <div class="container-fluid my-4 cust-container px-2">
-        <div class="row mb-4 cust-stats-container">
-            <div class="col-lg-4 col-md-6 mb-4 ps-0">
-                <div class="cust-stats bg-white shadow h-100">
-                    <i class="bi bi-people-fill fs-1"></i>
-                    <h1 class="fw-bold"> 2 </h1>
-                    <p> Total Customers </p>
-                </div>
+        <h1 class="mb-3">Manage Customers</h1>
+        <div class="row mb-5 p-3 cust-stats-container bg-white shadow rounded">
+            <div class="col-4">
+                <i class="bi bi-people-fill fs-1"></i>
+                <h1 class="fw-bold"> {{ total_customers }} </h1>
+                <p> Total Customers </p>
             </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="cust-stats bg-white shadow h-100">
-                    <i class="bi bi-play-circle-fill fs-1"></i>
-                    <h1 class="fw-bold"> 2 </h1>
-                    <p> Active Customers </p>
-                </div>
+            <div class="col-4">
+                <i class="bi bi-play-circle-fill fs-1"></i>
+                <h1 class="fw-bold"> {{ active_customers }} </h1>
+                <p> Active Customers </p>
+
             </div>
-            <div class="col-lg-4 col-md-6 mb-4 pe-0">
-                <div class="cust-stats bg-white shadow h-100">
-                    <i class="bi bi-pause-circle-fill fs-1"></i>
-                    <h1 class="fw-bold"> 2 </h1>
-                    <p> Inactive Customers </p>
-                </div>
+            <div class="col-4">
+                <i class="bi bi-pause-circle-fill fs-1"></i>
+                <h1 class="fw-bold"> {{ inactive_customers }} </h1>
+                <p> Inactive Customers </p>
             </div>
         </div>
         <div class="row mb-4">
             <div class="col mb-4 px-0">
                 <div class="bg-white rounded shadow p-3">
-                    <form method="GET" class="form-group" id="filter-customer-form" action="{% url 'customer_management' %}">
+                    <form method="GET" class="form-group" id="filter-customer-form"
+                          action="{% url 'customer_management' %}">
                         <div class="btn-container d-flex justify-content-start mb-4">
                             <button class="btn btn-secondary"><i class="bi bi-funnel-fill"></i> Filter</button>
                             <a class="btn btn-primary ms-3" href="{% url 'create_customer' %}"><i
@@ -39,20 +36,27 @@
                                 New Customer
                             </a>
                         </div>
-                        <div class="row my-3">
+                        <div>
+                            <a class="btn btn-outline" data-bs-toggle="collapse" href="#filterCollapse" role="button"
+                               aria-expanded="false" aria-controls="collapseExample">
+                                <i class="bi bi-chevron-down"></i>
+                                Filter Options
+                            </a>
+                        </div>
+                        <div class="row collapse m-3" id="filterCollapse">
                             <div class="col-6">
                                 {% render_field filter.full_name.label_tag %}
-                                {% render_field filter.full_name class+="form-control"  %}
+                                {% render_field filter.full_name class+="form-control" %}
 
-                                Email: 
-                                {% render_field filter.email_address__icontains class+="form-control"  %}
+                                Email:
+                                {% render_field filter.email_address__icontains class+="form-control" %}
                             </div>
                             <div class="col-6">
-                                Address: 
-                                {% render_field filter.address__icontains class+="form-control"  %}
+                                Address:
+                                {% render_field filter.address__icontains class+="form-control" %}
 
                                 {% render_field filter.phone_number.label_tag %}
-                                {% render_field filter.phone_number class+="form-control"  %}
+                                {% render_field filter.phone_number class+="form-control" %}
                             </div>
                         </div>
                     </form>
@@ -83,11 +87,13 @@
                                 <td> {{ membership.membership_status }}
                                 </td>
                                 <td>
-                                    <a href="{% url 'customer_details' membership.member_id %}" class="btn btn-sm btn-primary"
+                                    <a href="{% url 'customer_details' membership.member_id %}"
+                                       class="btn btn-sm btn-primary"
                                        title="View Customer">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    <a href="{% url 'update_customer' membership.member_id %}" class="btn btn-sm btn-secondary"
+                                    <a href="{% url 'update_customer' membership.member_id %}"
+                                       class="btn btn-sm btn-secondary"
                                        title="Update Product">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
@@ -119,6 +125,19 @@
                 "paging": true, // Enable pagination
                 "pageLength": 10, // Set the number of items per page
                 "pagingType": "simple_numbers"
+            });
+
+            var collapseElement = document.getElementById('filterCollapse'); // Replace 'collapseExample' with your collapse element's ID
+            var triggerElement = document.querySelector('[data-bs-toggle="collapse"][href="#filterCollapse"], [data-bs-toggle="collapse"][data-bs-target="#filterCollapse"]'); // Adjust selector as needed
+
+            collapseElement.addEventListener('show.bs.collapse', function () {
+                triggerElement.querySelector('.bi').classList.remove('bi-chevron-down');
+                triggerElement.querySelector('.bi').classList.add('bi-chevron-up');
+            });
+
+            collapseElement.addEventListener('hide.bs.collapse', function () {
+                triggerElement.querySelector('.bi').classList.remove('bi-chevron-up');
+                triggerElement.querySelector('.bi').classList.add('bi-chevron-down');
             });
         });
     </script>

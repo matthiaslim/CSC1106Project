@@ -107,8 +107,7 @@ def create_sales(request):
 
                     if product.product_quantity < sold_quantity:
                         all_products_sufficient = False
-                        message += f"Insufficient quantity for product {product.product_name}.\n"
-                        # break  # Exit loop if product has insufficient quantity
+                        message += f"Insufficient quantity for product {product.product_name}. Stocks Left: {product.product_quantity}\n"
 
                 if all_products_sufficient:
                     sales = sales_form.save()
@@ -131,6 +130,7 @@ def create_sales(request):
                     formset.instance = sales
                     formset.save()
                     pdf_buffer = generate_sales(sales)
+                    messages.success(request, 'Sales order successfully created')
                     return redirect('sales_management')
 
                 elif not all_products_sufficient:
@@ -312,6 +312,7 @@ def create_invoice(request):
             formset.save()
 
             pdf_buffer = generate_invoice(invoice)
+            messages.success(request, 'Invoice successfully created')
             return redirect('invoice_management')
     else:
         invoice_form = InvoiceForm()

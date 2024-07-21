@@ -11,7 +11,8 @@ from .transaction import Transaction
 from .transactionproduct import TransactionProduct
 from .user import User
 from .leaveBalance import LeaveBalance
+from .usersession import UserSession
 
 __all__ = ['Attendance', 'Department', 'Employee', 'Invoice',
            'InvoiceProduct', 'Leave', 'LeaveBalance', 'Membership', 'Payroll',
-           'Product', 'Transaction', 'TransactionProduct', 'User']
+           'Product', 'Transaction', 'TransactionProduct', 'User', 'UserSession']

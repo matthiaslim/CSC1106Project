@@ -18,6 +18,7 @@
     </style>
 
     <div class="container-fluid my-4 cust-container px-2">
+        <h1 class="mb-3">Manage Invoice</h1>
         <div class="summary row mb-4 bg-white rounded shadow py-3">
             <p>Payment Summary {{ current_year }}</p>
             <div class="col-2 me-5">
@@ -46,19 +47,26 @@
                 <div class="bg-white rounded shadow p-3">
                     <form method="GET" action="{% url 'invoice_management' %}">
                         <div class="btn-group">
-                            <div class="btn-container d-flex justify-content-start mb-4">
+                            <div class="btn-container d-flex justify-content-start">
                                 <button type="submit" value="Submit" class="btn btn-secondary mb-4"><i
                                         class="bi bi-funnel-fill"></i> Filter
                                 </button>
                             </div>
                             <div class="btn-container d-flex justify-content-start mb-4">
-                                <a class="btn btn-primary ms-4 mb-4" href="{% url 'create_invoice' %}"><i
+                                <a class="btn btn-primary ms-4" href="{% url 'create_invoice' %}"><i
                                         class="bi bi-person-fill-add"></i>
                                     New Invoice
                                 </a>
                             </div>
                         </div>
-                        <div class="row">
+                        <div>
+                            <a class="btn btn-outline" data-bs-toggle="collapse" href="#filterCollapse" role="button"
+                               aria-expanded="false" aria-controls="collapseExample">
+                                <i class="bi bi-chevron-down"></i>
+                                Filter Options
+                            </a>
+                        </div>
+                        <div class="row collapse m-3" id="filterCollapse">
                             <div class="col-6">
                                 {{ form.invoice_date__gte.label_tag }}
                                 {{ form.invoice_date__gte }}
@@ -207,6 +215,20 @@
             $(document).on('shown.bs.modal', '#editInvoiceModal', function () {
                 addClickListeners();
             });
+
+            var collapseElement = document.getElementById('filterCollapse'); // Replace 'collapseExample' with your collapse element's ID
+            var triggerElement = document.querySelector('[data-bs-toggle="collapse"][href="#filterCollapse"], [data-bs-toggle="collapse"][data-bs-target="#filterCollapse"]'); // Adjust selector as needed
+
+            collapseElement.addEventListener('show.bs.collapse', function () {
+                triggerElement.querySelector('.bi').classList.remove('bi-chevron-down');
+                triggerElement.querySelector('.bi').classList.add('bi-chevron-up');
+            });
+
+            collapseElement.addEventListener('hide.bs.collapse', function () {
+                triggerElement.querySelector('.bi').classList.remove('bi-chevron-up');
+                triggerElement.querySelector('.bi').classList.add('bi-chevron-down');
+            });
+
         });
 
 

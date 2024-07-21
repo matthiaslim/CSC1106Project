@@ -29,6 +29,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+<<<<<<< HEAD
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
@@ -45,6 +46,17 @@ EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER') 
+=======
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+ALLOWED_HOSTS = ['*']
+
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")  
+>>>>>>> dev/feature-merge
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 # Application definition
@@ -70,6 +82,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csc1106app.middleware.XFrameOptionsMiddleware',
+    'csc1106app.middleware.SingleSessionMiddleware'
 ]
 
 ROOT_URLCONF = 'CSC1106Project.urls'

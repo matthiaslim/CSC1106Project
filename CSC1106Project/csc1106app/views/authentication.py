@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
+from ..models import UserSession
 
 # Home View
 def index(request):
@@ -19,7 +20,15 @@ def settings(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
+            messages.success(request, "Password changed successfully")
             return redirect('home')
+        else:
+            message = "";
+            for field, errors in form.errors.items():
+                for error in errors:
+                    message += f"{error}\n"
+
+            messages.error(request, message, extra_tags='danger')
     else:
         form = ChangePasswordForm(request.user)
 
@@ -93,6 +102,11 @@ def onboard(request):
 
 
 def logout_user(request):
+    usersession = UserSession.objects.get(session_id=request.session.session_key)
+
+    if usersession:
+        usersession.delete()
+
     logout(request)
     return redirect('login')
 

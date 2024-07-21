@@ -57,14 +57,14 @@ class EmployeeForm(forms.ModelForm):
 
     first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    department = forms.ModelChoiceField(queryset=Department.objects.exclude(department_name='Chairman'), widget=forms.Select(attrs={'class': 'form-control'}))
+    department = forms.ModelChoiceField(queryset=Department.objects.exclude(department_name='Chairman'), widget=forms.Select(attrs={'class': 'form-select'}))
     job_title = forms.ChoiceField(choices=JOB_TITLE_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}))
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
     employee_role = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
-    hire_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
-    contract_expiry_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
+    date_of_birth = forms.DateField(widget=forms.TextInput(attrs={'type': 'date', 'class': 'form-control'}))
+    hire_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date', 'class': 'form-control'}))
+    contract_expiry_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date', 'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
 
@@ -288,7 +288,7 @@ class InvoiceProductForm(forms.ModelForm):
                                                       widget=forms.Select(attrs={'class': 'form-select'}))
 
         # Add class to invoice_quantity field
-        self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-select'})
+        self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-control'})
         self.fields['invoice_price_per_unit'].widget.attrs.update({'class': 'form-select'})
 
 
@@ -334,7 +334,7 @@ class SalesProductForm(forms.ModelForm):
 
         # Dynamically populate the product choices
         products = Product.objects.all()
-        product_items = [(product.product_id, f"{product.product_name} - ${product.product_sale_price}") for product in
+        product_items = [(product.product_id, f"{product.product_name} - ${product.product_sale_price} ({product.product_quantity})") for product in
                          products]
 
         self.fields['product_id'] = forms.ChoiceField(

@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 from django.core.management.base import BaseCommand
 from csc1106app.models.product import Product
@@ -53,9 +52,8 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f'Department {i} already exists'))
 
         # Create a superuser
-        username = 'admin'
-        email = 'admin@example.com'
-        password = 'admin123'
+        email = 'admin@admin.com'
+        password = 'w[S+=H5(ofdWPqD'
 
         if not User.objects.filter(email=email).exists():
             superuser = User.objects.create_superuser(email=email, password=password)

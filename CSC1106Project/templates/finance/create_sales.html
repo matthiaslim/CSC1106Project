@@ -35,7 +35,7 @@
                         <td>{{ form.transaction_quantity }}</td>
                         <td>{{ form.transaction_price_per_unit }}</td>
                         <td>
-                            <button type="button" class="btn btn-secondary" disabled>Remove</button>
+                            <button type="button" class="remove-row btn btn-danger">Remove</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -86,10 +86,20 @@
 
             tableBody.addEventListener("click", function (e) {
                 if (e.target.classList.contains("remove-row")) {
-                    e.target.closest("tr").remove();
-                    totalForms.value = parseInt(totalForms.value) - 1;
+                    // Check if the row to be removed is the first row
+                    if (e.target.closest("tr") !== tableBody.querySelector("tr")) {
+                        e.target.closest("tr").remove();
+                        totalForms.value = parseInt(totalForms.value) - 1;
+                    }
                 }
             });
+
+            // Disable the first row button
+            let firstRowButton = tableBody.rows[0].querySelector("button.remove-row");
+            console.log(firstRowButton)
+            firstRowButton.disabled = true;
+            firstRowButton.classList.remove("btn-danger");
+            firstRowButton.classList.add("btn-secondary");
 
             document.querySelector("#transactionProductTable").addEventListener('change', function (e) {
                 if (e.target.classList.contains('product-select')) {

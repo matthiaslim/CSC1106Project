@@ -45,25 +45,29 @@ function populateTopSellingItems(){
     type: "GET",
     success: function(data){
         const dataProduct = data['Product'];
-        for (var i=0; i<dataProduct.length; i++){
-          activeClass = i == 0 ? 'active' : '';
-          current = i == 0 ? 'true' : '';
+        if(dataProduct.length > 0){
+          for (var i=0; i<dataProduct.length; i++){
+            activeClass = i == 0 ? 'active' : '';
+            current = i == 0 ? 'true' : '';
 
-          indicatorHTML += `<button type="button" data-bs-indicator="#carouselTopSelling" 
-                            data-bs-slide-to="${i}" class=${activeClass} aria-current=${current} 
-                            aria-label="Slide ${i}"></button>`
+            indicatorHTML += `<button type="button" data-bs-indicator="#carouselTopSelling" 
+                              data-bs-slide-to="${i}" class=${activeClass} aria-current=${current} 
+                              aria-label="Slide ${i}"></button>`
 
 
-          productsHTML += `<div class="carousel-item ${activeClass}">
-                            <img src="/media/${dataProduct[i].product_image}" class="d-block w-100" alt="${dataProduct[i].product_name}">
-                            <div style="color:black;" class="carousel-caption d-none d-md-block">
-                                <h5>${dataProduct[i].product_name}</h5>
-                                <p>${dataProduct[i].product_description}</p>
-                            </div>
-                      </div>`
-        }
-        indicator.innerHTML= indicatorHTML;
-        main.innerHTML = productsHTML;
+            productsHTML += `<div class="carousel-item ${activeClass}">
+                              <img src="/media/${dataProduct[i].product_image}" class="d-block w-100" alt="${dataProduct[i].product_name}">
+                              <div style="color:black;" class="carousel-caption d-none d-md-block">
+                                  <h5>${dataProduct[i].product_name}</h5>
+                                  <p>${dataProduct[i].product_description}</p>
+                              </div>
+                        </div>`
+          }
+          indicator.innerHTML= indicatorHTML;
+          main.innerHTML = productsHTML;
+          
+          $('#noCarouselItem').hide();
+      }
     }
   })
 }
@@ -85,25 +89,29 @@ function populateTopSalesPerMonth(){
     success: function(response){
       labels = response.month;
       data = response.data;
-
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '$Sales per month',
-            data: data,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+      $('#myChart').hide();
+      if (data.length > 0){
+          $('#noChartItem').hide();
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: '$Sales per month',
+                data: data,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
             }
-          }
-        }
-      });
+          });
+        $('#myChart').show();
+      }
     }
   });
 

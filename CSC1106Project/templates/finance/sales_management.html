@@ -22,6 +22,7 @@
     </style>
 
     <div class="container-fluid my-4 cust-container px-2">
+        <h1 class="mb-3">Manage Sales</h1>
         <div class="summary row mb-4 bg-white rounded shadow py-3">
             <p>Sales Summary {{ current_year }}</p>
             <div class="col-3">
@@ -52,7 +53,14 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="row">
+                        <div>
+                            <a class="btn btn-outline" data-bs-toggle="collapse" href="#filterCollapse" role="button"
+                               aria-expanded="false" aria-controls="collapseExample">
+                                <i class="bi bi-chevron-down"></i>
+                                Filter Options
+                            </a>
+                        </div>
+                        <div class="row collapse m-3" id="filterCollapse">
                             <div class="col-6">
                                 {{ form.transaction_date__gte.label_tag }}
                                 {{ form.transaction_date__gte }}
@@ -203,6 +211,18 @@
                 "paging": true, // Enable pagination
                 "pageLength": 10, // Set the number of items per page
                 "pagingType": "simple_numbers"
+            });
+            var collapseElement = document.getElementById('filterCollapse'); // Replace 'collapseExample' with your collapse element's ID
+            var triggerElement = document.querySelector('[data-bs-toggle="collapse"][href="#filterCollapse"], [data-bs-toggle="collapse"][data-bs-target="#filterCollapse"]'); // Adjust selector as needed
+
+            collapseElement.addEventListener('show.bs.collapse', function () {
+                triggerElement.querySelector('.bi').classList.remove('bi-chevron-down');
+                triggerElement.querySelector('.bi').classList.add('bi-chevron-up');
+            });
+
+            collapseElement.addEventListener('hide.bs.collapse', function () {
+                triggerElement.querySelector('.bi').classList.remove('bi-chevron-up');
+                triggerElement.querySelector('.bi').classList.add('bi-chevron-down');
             });
 
         });
