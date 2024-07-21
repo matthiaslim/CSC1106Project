@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
+from ..models import UserSession
 
 
 # Home View
@@ -103,6 +104,11 @@ def onboard(request):
 
 
 def logout_user(request):
+    usersession = UserSession.objects.get(session_id=request.session.session_key)
+
+    if usersession:
+        usersession.delete()
+
     logout(request)
     return redirect('login')
 
