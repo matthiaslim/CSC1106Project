@@ -1,9 +1,7 @@
 from ..models import *
-from ..crud_ops import *
 from django.http import JsonResponse
 from django.db.models import Sum
 from datetime import datetime
-import json
 from collections import defaultdict
 
 def display_chart_information(request):
@@ -45,6 +43,7 @@ def inventory_summary(request):
     pendingInvoiceIds = pendingInvoiceItem.values_list('invoice_id',flat=True)
     pendingInvoiceCount = InvoiceProduct.objects.filter(invoice_id__in=pendingInvoiceIds).aggregate(total_quantity=Sum('invoice_quantity'))
     
+    pendingInvoiceCount = {'total_quantity':0} if list(pendingInvoiceCount.values())[0] is None else pendingInvoiceCount
 
     return JsonResponse({"currentstock": totalProductQuantity , "pendingstock" : pendingInvoiceCount})
 
