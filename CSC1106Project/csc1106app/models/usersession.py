@@ -8,4 +8,4 @@ User = get_user_model()  # This gets the user model defined in AUTH_USER_MODEL
 class UserSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     session_id = models.CharField(max_length=40,unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    expiry_date = models.DateTimeField(auto_now_add=True)

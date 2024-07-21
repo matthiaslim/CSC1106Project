@@ -2,6 +2,8 @@ from django.utils.deprecation import MiddlewareMixin
 from django.contrib.sessions.models import Session
 from django.contrib.auth import get_user_model
 from .models import UserSession
+from django.contrib import messages
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -19,28 +21,24 @@ class XFrameOptionsMiddleware():
 class SingleSessionMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if request.user.is_authenticated:
-            current_session_key = request.session.session_key
+            current_session_id = request.session.session_key 
 
-            #check current user session matches 
-            user_sessions = UserSession.objects.filter(user=request.user)
-            #if different then check else dont need care
-            #need delete if Session.objects.get == same 
-            #set a new one
-
-            # Remove all sessions except the current one
-            for user_session in user_sessions:
-                if user_session.session_id != current_session_key:
-                    # Delete session from the session store
-                    try:
-                        previous_session = Session.objects.get(session_key=user_session.session_id)
-                        previous_session.delete()
-                    except Session.DoesNotExist:
-                        pass
-                    
-                    # Delete the UserSession record
-                    user_session.delete()
-
-            # Update or create the UserSession record for the current session
             user_session, created = UserSession.objects.get_or_create(user=request.user)
-            user_session.session_id = current_session_key
-            user_session.save()
+            
+            try:
+                existing_session_exists = Session.objects.filter(session_key=user_session.session_id).exists()
+                current_session = Session.objects.get(session_key=current_session_id)
+            except Session.DoesNotExist:
+                return 
+
+            if created or user_session.expiry_date < timezone.now() or not existing_session_exists:
+                user_session.session_id = current_session.session_key
+                user_session.expiry_date = current_session.expire_date
+                user_session.save()
+                return 
+            
+            if current_session_id != user_session.session_id:
+                current_session.delete()
+
+                    
+            
