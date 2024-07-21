@@ -25,11 +25,17 @@
             </tr>
             </thead>
             <tbody>
-            {% for department in departments%}
+            {% for department in departments %}
             <tr>
                 <td>{{ department.department_id }}</td>
-                <td>{{ department.department_name }}</a></td>
-                <td>{{ department.employee }}</td>
+                <td>{{ department.department_name }}</td>
+                <td>
+                    {% for employee in department.employees.all %}
+                        {% if employee.job_title == 'Manager' or 'Chairman' %}
+                            {{ employee.first_name }} {{ employee.last_name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
                 <td>
                     <a href="{% url 'department_update' department.department_id %}">
                         <button class="btn btn-sm btn-secondary" title="Update Management">
@@ -48,8 +54,9 @@
 <script>
     $('#departmentTable').DataTable({
         "columnDefs": [
-            {"orderable": false, "targets": [-1]} // Disable sorting on the last column
+            {"orderable": false, "targets": [-1]}
         ]
     });
 </script>
 {% endblock %}
+

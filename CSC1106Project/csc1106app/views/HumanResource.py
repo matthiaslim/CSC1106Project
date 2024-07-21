@@ -108,9 +108,17 @@ def department_list(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'department_name')
     order = request.GET.get('order', 'asc')
-    departments = search_and_filter_departments(query, sort_by, order)
-    return render(request, 'hrms/department_list.html',
-                  {'departments': departments, 'query': query, 'sort_by': sort_by, 'order': order})
+    
+    departments = search_and_filter_departments(query, sort_by, order).exclude(department_name='Chairman')
+
+    departments = departments.prefetch_related('employees')
+
+    return render(request, 'hrms/department_list.html', {
+        'departments': departments,
+        'query': query,
+        'sort_by': sort_by,
+        'order': order
+    })
 
 
 @login_required
@@ -145,14 +153,6 @@ def department_update(request, department_id):
     else:
         form = DepartmentForm(instance=department)
     return render(request, 'hrms/department_form.html', {'form': form})
-
-
-@login_required
-@department_required('Human Resource')
-def department_delete(request, department_id):
-    department = get_object_or_404(Department, pk=department_id)
-    department.delete()
-    return redirect('department_list')
 
 
 # Attendance Views

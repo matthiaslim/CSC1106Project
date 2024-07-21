@@ -80,7 +80,6 @@ urlpatterns = [
     path('hr/departments/<int:department_id>/', views.department_detail, name='department_detail'),
     path('hr/departments/create/', views.department_create, name='department_create'),
     path('hr/departments/<int:department_id>/update/', views.department_update, name='department_update'),
-    path('hr/departments/<int:department_id>/delete/', views.department_delete, name='department_delete'),
 
     # Attendance URLs
     path('hr/attendances/', views.attendance_list, name='attendance_list'),

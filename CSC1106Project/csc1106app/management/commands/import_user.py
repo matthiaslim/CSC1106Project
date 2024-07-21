@@ -21,7 +21,7 @@ class Command(BaseCommand):
                 user = User.objects.create_superuser(email=email_addr, password=password) if roles[i] == 1 else User.objects.create_user(email=email_addr, password=password)
                 # Add a record to the Employee table referencing the superuser
                 department = Department.objects.get(pk=roles[i])
-                job_title = "Chairman" if roles[i] == 1 else department.department_name
+                job_title = "Chairman" if roles[i] == 1 else "Manager"
 
                 try:
                     Employee.objects.create(
