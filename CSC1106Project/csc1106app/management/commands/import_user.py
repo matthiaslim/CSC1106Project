@@ -9,13 +9,14 @@ from datetime import datetime
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Create a superuser
-        email = ['isaiah','matt','junlong','edwin','cheejian','deston','xienghua','shunhao']
+        email = ['Isaiah Ang','Matthias Lim','JunLong Ng','Edwin Hew','CheeJian Chuah','Deston Seet','XiengHua Tan','ShunHao Teo']
         roles = [1,1,1,1,5,4,3,2]
 
         for i in range(len(email)):
-
-            email_addr = email[i] + "@gmail.com"
-            password = email[i] + "@123"
+            surname = email[i].split(' ')[1]
+            name = email[i].split(' ')[0]
+            email_addr = name.lower() + "@gmail.com"
+            password = name.lower() + "@123"
 
             if not User.objects.filter(email=email_addr).exists():
                 user = User.objects.create_superuser(email=email_addr, password=password) if roles[i] == 1 else User.objects.create_user(email=email_addr, password=password)
@@ -26,8 +27,8 @@ class Command(BaseCommand):
                 try:
                     Employee.objects.create(
                         user=user,
-                        first_name= email[i],
-                        last_name='User',
+                        first_name= name,
+                        last_name=surname,
                         department=department,
                         job_title= job_title,
                         gender='Male',
@@ -36,7 +37,7 @@ class Command(BaseCommand):
                         employee_role= job_title ,
                         onboarded=True  # Set onboarded to True for the superuser
                     )
-                    self.stdout.write(self.style.SUCCESS(f'Employee record for {email} created successfully'))
+                    self.stdout.write(self.style.SUCCESS(f'Employee record for {name} created successfully'))
                 except Exception as e:
                     self.stdout.write(self.style.ERROR(f'Error creating employee record: {e}'))
             else:
