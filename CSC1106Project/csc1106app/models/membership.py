@@ -26,7 +26,7 @@ class Membership(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default="Male")
     address = models.CharField(max_length=255)
     phone_number = models.IntegerField()
-    email_address = models.EmailField(max_length=100)
+    email_address = models.EmailField(max_length=100, unique=True)
     country = models.CharField(max_length=200, choices=COUNTRY_CHOICES, default="Singapore")
     membership_level = models.CharField(max_length=50)
     points = models.IntegerField()

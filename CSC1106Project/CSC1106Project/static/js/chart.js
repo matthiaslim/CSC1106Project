@@ -32,7 +32,6 @@ function populateInventorySummary(){
 
 }
 
-
 function populateTopSellingItems(){
   const indicator = document.getElementById("indict");
   const main = document.getElementById("main");

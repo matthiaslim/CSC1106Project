@@ -170,7 +170,7 @@ class ProductForm(forms.ModelForm):
             'product_description': forms.Textarea(attrs={'class': 'form-control',
                                                          'rows': 3}),
             'product_category': forms.Select(attrs={'class': 'form-control'}, choices=[
-                ("Bar Furniture", "Bar Furniture"),
+                ("Bar furniture", "Bar furniture"),
                 ("Beds", "Beds"),
                 ("Bookcases & shelving units", "Bookcases & shelving units"),
                 ("Cabinets & cupboards", "Cabinets & cupboards"),

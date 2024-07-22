@@ -196,9 +196,10 @@ def attendance_create(request):
                 messages.error(request, 'Employee not found for the logged-in user.')
                 return render(request, 'hrms/attendance_form.html')
 
+            print(datetime.now())
+
             attendance = Attendance(
                 employee=employee, 
-                attendance_date=datetime.now().date(),
                 time_in=datetime.now(),
                 image=data
             )
