@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from .employee import Employee
 from datetime import date
@@ -21,6 +23,7 @@ class Invoice(models.Model):
     payment_due_date = models.DateField(default=date.today)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     payment_terms = models.CharField(max_length=10, choices=PAYMENT_CHOICES, default='Card')
+    uuid_filename = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def total_value(self):
         return sum([invoice_product.invoice_quantity * invoice_product.invoice_price_per_unit for invoice_product in self.invoiceproduct_set.all()])
