@@ -158,7 +158,7 @@ def sales_details(request, sales_id):
             salesProduct.total_price = total_price
             subtotal += total_price
 
-        pdf_file_path = os.path.join('media', 'sales', f"sales_{sales.transaction_id}.pdf").replace('\\', '/')
+        pdf_file_path = os.path.join('media', 'sales', sales.transaction_date.strftime('%Y-%m-%d') ,f"sales_{sales.uuid_filename}.pdf").replace('\\', '/')
 
         if not default_storage.exists(pdf_file_path):
             generate_sales(sales)
@@ -259,7 +259,8 @@ def invoice_details(request, invoice_id):
             invoiceProduct.total_price = total_price
             subtotal += total_price
 
-        pdf_file_path = os.path.join('media', 'invoices', f"invoice_{invoice.invoice_id}.pdf").replace('\\', '/')
+        pdf_file_path = os.path.join('media', 'invoices', invoice.invoice_date.strftime('%Y-%m-%d') ,f"invoice_{invoice.uuid_filename}.pdf").replace('\\', '/')
+
         print(pdf_file_path)
 
         if not default_storage.exists(pdf_file_path):
@@ -507,7 +508,9 @@ def generate_invoice(invoice):
 
     buffer.seek(0)
 
-    file_path = os.path.join('invoices', f"invoice_{invoice.invoice_id}.pdf")
+    base_sales_path = os.path.join('invoices', invoice.invoice_date.strftime('%Y-%m-%d'))
+
+    file_path = os.path.join(base_sales_path, f"invoice_{invoice.uuid_filename}.pdf")
 
     if default_storage.exists(file_path):
         default_storage.delete(file_path)
@@ -588,7 +591,9 @@ def generate_sales(sales):
 
     buffer.seek(0)
 
-    file_path = os.path.join('sales', f"sales_{sales.transaction_id}.pdf")
+    base_sales_path = os.path.join('sales', sales.transaction_date.strftime('%Y-%m-%d'))
+
+    file_path = os.path.join(base_sales_path, f"sales_{sales.uuid_filename}.pdf")
 
     if default_storage.exists(file_path):
         default_storage.delete(file_path)
