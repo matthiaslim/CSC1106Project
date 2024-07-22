@@ -283,7 +283,7 @@ def send_sales_email(request, sales_id):
     if request.method == 'POST':
         try:
             sales = Transaction.objects.get(transaction_id=sales_id)
-            pdf_file_path = os.path.join(settings.MEDIA_ROOT, 'sales', f'sales_{sales.transaction_id}.pdf')
+            pdf_file_path = os.path.join(settings.MEDIA_ROOT, 'sales', sales.transaction_date.strftime('%Y-%m-%d'), f'sales_{sales.uuid_filename}.pdf')
 
             customer_email = sales.membership_id.email_address
 
