@@ -115,9 +115,6 @@ def update_image_path(sender, instance, created, **kwargs):
             instance.product_image.name = product_image_path(instance, os.path.basename(instance.product_image.name))
             instance.save()
 
-            
-
-
 @receiver(post_delete, sender=Product)
 def delete_image_file(sender, instance, **kwargs):
     if instance.product_image:

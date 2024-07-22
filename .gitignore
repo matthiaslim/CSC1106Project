@@ -165,3 +165,5 @@ CSC1106Project/media/attendance_images/
 CSC1106Project/media/employee_images/
 CSC1106Project/media/sales/
 CSC1106Project/media/invoices/
+
+*.pem
