@@ -357,9 +357,9 @@ def financial_data_for_year(year):
     purchases = Invoice.objects.filter(invoice_date__year=year)
     payroll = Payroll.objects.filter(month__year=year)
 
-    total_sales = Decimal(sum(sale.total_value() for sale in sales))
-    total_purchases = Decimal(sum(invoice.total_value() for invoice in purchases))
-    total_employee_wages = Decimal(sum(item.net_pay for item in payroll))
+    total_sales = round(Decimal(sum(sale.total_value() for sale in sales)),2)
+    total_purchases = round(Decimal(sum(invoice.total_value() for invoice in purchases)),2)
+    total_employee_wages = round(Decimal(sum(item.net_pay for item in payroll)),2)
 
     net_profit = total_sales - total_purchases - total_employee_wages
 
@@ -399,8 +399,8 @@ def financial_report(request):
     )
 
     inventory = Product.objects.all()
-
-    inventory_value = sum(product.product_total_value() for product in inventory)
+    inventory_value = round(sum(product.product_total_value() for product in inventory),2)
+    
     total_assets = inventory_value
 
     return render(request, 'finance/financial_report.html', {
@@ -421,7 +421,7 @@ def calculate_yoy_change(current_year_value, previous_year_value):
     if previous_year_value == 0:
         return None
     else:
-        return round(((current_year_value - previous_year_value) / previous_year_value) * 100)
+        return round(((current_year_value - previous_year_value) / previous_year_value) * 100, 2)
 
 
 def split_text_to_fit(text, font_name, font_size, max_width):
