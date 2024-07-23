@@ -7,6 +7,16 @@
     <h1>Apply for Leave</h1>
 </div>
 
+{% if form.errors %}
+<div class="alert alert-danger">
+    {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    {% endfor %}
+</div>
+{% endif %}
+
 <div class="row p-3 my-3 bg-white shadow rounded-3">
     <div class="col">
         <form method="post">

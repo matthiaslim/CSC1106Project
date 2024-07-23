@@ -129,6 +129,25 @@ class LeaveAddForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.initial = initial
 
+    def clean(self):
+        cleaned_data = super().clean()
+        employee_id = cleaned_data.get('employee_id')
+        leave_start_date = cleaned_data.get('leave_start_date')
+        leave_end_date = cleaned_data.get('leave_end_date')
+        leave_type = cleaned_data.get('leave_type')
+
+        if leave_start_date and leave_end_date:
+            conflicting_leave = Leave.objects.filter(
+                employee_id=employee_id,
+                leave_start_date__lte=leave_end_date,
+                leave_end_date__gte=leave_start_date
+            ).exclude(leave_type=leave_type).exists()
+
+            if conflicting_leave:
+                raise ValidationError('You cannot have Medical and Annual leave on the same day.')
+
+        return cleaned_data
+
 
 class LeaveStatusUpdateForm(forms.ModelForm):
     class Meta:
