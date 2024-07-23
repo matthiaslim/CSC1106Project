@@ -36,6 +36,8 @@ function populateTopSellingItems(){
   const indicator = document.getElementById("indict");
   const main = document.getElementById("main");
 
+  $('#noCarouselItem').show();
+
   var productsHTML = '';
   var indicatorHTML = '';
 
@@ -78,6 +80,8 @@ function populateTopSalesPerMonth(){
     chartStatus.destroy();
   }
 
+  $("#noChartItem").show();
+
   const ctx = document.getElementById('myChart');
   let labels = [];
   let data = [];
@@ -109,6 +113,7 @@ function populateTopSalesPerMonth(){
               }
             }
           });
+        $("#noChartItem").hide();
         $('#myChart').show();
       }
     }
