@@ -11,9 +11,6 @@
     </tr>
 </table>
 <a href="{% url 'department_update' department.department_id %}" class="btn btn-warning">Edit</a>
-<form method="post" action="{% url 'department_delete' department.department_id %}" class="d-inline">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete</button>
 </form>
 <a href="{% url 'department_list' %}" class="btn btn-secondary">Back to List</a>
 

@@ -55,7 +55,7 @@ def attendance_path(instance, filename):
     dt = datetime.now()
     numeric_date = dt.strftime('%Y%m%d%H%M%S')
     if instance.attendance_id:
-        return f'attendance_images/{instance.employee.employee_id}/{numeric_date}_{filename}'
+        return f'attendance_images/{instance.employee.employee_id}/{filename}'
     return f'attendance_images/tmp/{numeric_date}_{filename}'
 
 @receiver(post_save, sender=Attendance)

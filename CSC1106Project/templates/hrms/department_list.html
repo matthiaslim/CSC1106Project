@@ -29,20 +29,16 @@
             <tr>
                 <td>{{ department.department_id }}</td>
                 <td>{{ department.department_name }}</td>
+                <td>{{ department.employee.first_name }} {{ department.employee.last_name }}</td>
+                {% if employee.job_title == 'Manager' or 'Chairman' %}
                 <td>
-                    {% for employee in department.employees.all %}
-                        {% if employee.job_title == 'Manager' or 'Chairman' %}
-                            {{ employee.first_name }} {{ employee.last_name }}
-                        {% endif %}
-                    {% endfor %}
-                </td>
-                <td>
-                    <a href="{% url 'department_update' department.department_id %}">
+                    <a style="text-decoration: none;" href="{% url 'department_update' department.department_id %}">
                         <button class="btn btn-sm btn-secondary" title="Update Management">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                     </a>
                 </td>
+                {% endif %}
             </tr>
             {% endfor %}
             </tbody>

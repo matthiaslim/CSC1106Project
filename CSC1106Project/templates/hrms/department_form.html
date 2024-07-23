@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}{% if form.instance.pk %}Edit Department{% else %}Add Department{% endif %}{% endblock %}
+{% block title %}Edit Department{% endblock %}
 
 {% block content %}
-<h1>{% if form.instance.pk %}Edit Department{% else %}Add Department{% endif %}</h1>
+<h1>Edit Department</h1>
 <form method="post">
     {% csrf_token %}
     <div class="form-group">
         {{ form.as_p }}
     </div>
-    <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
-</form>
-<a href="{% url 'department_list' %}" class="btn btn-secondary">Back to List</a>
+    <div class="d-flex">
+        <button type="submit" class="btn btn-primary me-2">{% if form.instance.pk %}Save{% else %}Add{% endif %}</button>
+        <a href="{% url 'department_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
 {% endblock %}

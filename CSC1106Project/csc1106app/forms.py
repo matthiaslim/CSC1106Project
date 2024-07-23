@@ -42,9 +42,9 @@ class EmployeeForm(forms.ModelForm):
 
     GENDER_CHOICES = [
         ('', 'Select a gender'),
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
     ]
 
     JOB_TITLE_CHOICES = [
@@ -82,14 +82,23 @@ class EmployeeForm(forms.ModelForm):
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
-        fields = ['department_name', 'employee']
+        fields = ['employee']
+        widgets = {
+            'employee': forms.Select(attrs={'class': 'form-control'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(DepartmentForm, self).__init__(*args, **kwargs)
+        self.fields['employee'].empty_label = "None"
 
 
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
         fields = ['time_out']
-
+        widgets = {
+            'time_out': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'})  # Use 'datetime-local' for the input type
+        }
 
 class LeaveAddForm(forms.ModelForm):
     employee_name = forms.CharField(label='Employee Name', required=False, widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
@@ -142,6 +151,9 @@ class PayrollForm(forms.ModelForm):
     class Meta:
         model = Payroll
         fields = ['bonus']
+        widgets = {
+            'bonus': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter bonus amount'})
+        }
 
     def save(self, *args, **kwargs):
         payroll = super().save(commit=False)
