@@ -11,7 +11,7 @@ from ..filters import MembershipFilter
 
 # Customer Views
 @login_required
-@department_required('Customer Relations')
+@department_required('Customer Relation')
 def customer_management(request):
     customer_filter = MembershipFilter(request.GET, queryset=Membership.objects.all())
     print(customer_filter.form)
@@ -36,7 +36,7 @@ def customer_management(request):
 
 
 @login_required
-@department_required('Customer Relations')
+@department_required('Customer Relation')
 def customer_details(request, customerID):
     try:
         membership = Membership.objects.get(member_id=customerID)
@@ -59,7 +59,7 @@ def customer_details(request, customerID):
 
 
 @login_required
-@department_required('Customer Relations')
+@department_required('Customer Relation')
 def create_customer(request):
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
@@ -97,7 +97,7 @@ def create_customer(request):
 
 
 @login_required
-@department_required('Customer Relations')
+@department_required('Customer Relation')
 def update_customer(request, customerID):
     membership = Membership.objects.get(member_id=customerID)
 
@@ -129,7 +129,7 @@ def update_customer(request, customerID):
 
 
 @login_required
-@department_required('Customer Relations')
+@department_required('Customer Relation')
 def delete_customer(request, customerID):
     try:
         membership = Membership.objects.get(member_id=customerID)
