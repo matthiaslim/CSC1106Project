@@ -37,6 +37,7 @@ function populateTopSellingItems(){
   const main = document.getElementById("main");
 
   $('#noCarouselItem').show();
+  $('#carouselTopSelling').hide();
 
   var productsHTML = '';
   var indicatorHTML = '';
@@ -66,7 +67,8 @@ function populateTopSellingItems(){
           }
           indicator.innerHTML= indicatorHTML;
           main.innerHTML = productsHTML;
-          
+
+          $('#carouselTopSelling').show();
           $('#noCarouselItem').hide();
       }
     }
@@ -79,8 +81,8 @@ function populateTopSalesPerMonth(){
   if (chartStatus != undefined) {
     chartStatus.destroy();
   }
-
   $("#noChartItem").show();
+  $('#myChart').hide();
 
   const ctx = document.getElementById('myChart');
   let labels = [];
@@ -92,9 +94,8 @@ function populateTopSalesPerMonth(){
     success: function(response){
       labels = response.month;
       data = response.data;
-      $('#myChart').hide();
       if (data.length > 0){
-          $('#noChartItem').hide();
+          
           new Chart(ctx, {
             type: 'bar',
             data: {
@@ -113,7 +114,8 @@ function populateTopSalesPerMonth(){
               }
             }
           });
-        $("#noChartItem").hide();
+          
+        $('#noChartItem').hide();
         $('#myChart').show();
       }
     }
