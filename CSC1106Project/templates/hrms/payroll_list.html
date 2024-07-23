@@ -78,11 +78,13 @@
                 <td>${{ payroll.bonus }}</td>
                 <td>${{ payroll.net_pay }}</td>
                 <td>
+                    {% if user_data.user_id != payroll.employee.user_id %}
                     <a href="{% url 'edit_payroll_bonus' payroll.payroll_id %}">
                         <button class="btn btn-sm btn-secondary" title="Edit Bonus">
                             <i class="bi bi-pencil-square"></i>
                         </button>
                     </a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
