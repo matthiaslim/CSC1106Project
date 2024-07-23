@@ -14,7 +14,6 @@ from ..filters import MembershipFilter
 @department_required('Customer Relation')
 def customer_management(request):
     customer_filter = MembershipFilter(request.GET, queryset=Membership.objects.all())
-    print(customer_filter.form)
     breadcrumbs = [{'title': 'Home', 'url': '/'},
                    {'title': 'Customer'},
                    {'title': 'Management', 'url': '/customer/management/'}]
@@ -100,9 +99,9 @@ def create_customer(request):
 @department_required('Customer Relation')
 def update_customer(request, customerID):
     membership = Membership.objects.get(member_id=customerID)
-
+    
     if request.method == 'POST':
-        form = CreateCustomerForm(request.POST)
+        form = CreateCustomerForm(request.POST, instance=membership)
         if form.is_valid():
             membership.first_name = form.cleaned_data.get('first_name')
             membership.last_name = form.cleaned_data.get('last_name')
