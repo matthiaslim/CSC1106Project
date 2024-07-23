@@ -15,13 +15,13 @@ def display_chart_information(request):
     for item in transactionProductItem:
         transaction_date = item.transaction_id.transaction_date
         
- 
+
         month_year = transaction_date.strftime("%m")
         month_year = datetime.strptime(month_year,"%m").strftime("%B")
    
-        monthly_sums[month_year] += item.transaction_price_per_unit
+        monthly_sums[month_year] += round(item.transaction_price_per_unit * item.transaction_quantity,2)
 
-
+    
     for month_year, total_price in monthly_sums.items():
         month.append(month_year)
         data.append(total_price)

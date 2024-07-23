@@ -46,7 +46,6 @@ class SingleSessionMiddleware(MiddlewareMixin):
                 request.session.session_invalid = True
 
     def process_response(self, request, response = None):
-        print(request.session.session_invalid)
         if request.session.session_invalid:
             return render(request, 'login.html')
         

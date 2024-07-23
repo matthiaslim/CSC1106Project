@@ -33,6 +33,7 @@ class Command(BaseCommand):
                     product_height=row['height'],
                     product_width=row['width'],
                     product_quantity=row['quantity'],
+                    product_image=None
                 )
                 count_product += 1
             else:

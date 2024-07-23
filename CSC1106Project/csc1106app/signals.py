@@ -105,17 +105,18 @@ def handle_product_pre_save(sender, instance, **kwargs):
 def update_image_path(sender, instance, created, **kwargs):
     if created or (instance.product_image and instance.product_image.name.startswith('product_image/temp/')):
         if instance.product_id:
-            temp_path = os.path.join(settings.MEDIA_ROOT, 'product_image/temp/', os.path.basename(instance.product_image.name))
-            new_path = os.path.join(settings.MEDIA_ROOT, 'product_image/', str(instance.product_id), os.path.basename(instance.product_image.name))
+            if not instance.product_image.name is None:
+                temp_path = os.path.join(settings.MEDIA_ROOT, 'product_image/temp/', os.path.basename(instance.product_image.name))
+                new_path = os.path.join(settings.MEDIA_ROOT, 'product_image/', str(instance.product_id), os.path.basename(instance.product_image.name))
 
-            if os.path.exists(temp_path):
-                os.makedirs(os.path.dirname(new_path), exist_ok=True)
-                shutil.move(temp_path, new_path)
+                if os.path.exists(temp_path):
+                    os.makedirs(os.path.dirname(new_path), exist_ok=True)
+                    shutil.move(temp_path, new_path)
 
-                os.rmdir(os.path.join(settings.MEDIA_ROOT, 'product_image/temp/'))
+                    os.rmdir(os.path.join(settings.MEDIA_ROOT, 'product_image/temp/'))
 
-            instance.product_image.name = product_image_path(instance, os.path.basename(instance.product_image.name))
-            instance.save()
+                instance.product_image.name = product_image_path(instance, os.path.basename(instance.product_image.name))
+                instance.save()
 
 @receiver(post_delete, sender=Product)
 def delete_image_file(sender, instance, **kwargs):
