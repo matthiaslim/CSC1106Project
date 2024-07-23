@@ -27,7 +27,7 @@
             <p>Sales Summary {{ current_year }}</p>
             <div class="col-3">
                 <p>Total Revenue</p>
-                <h3>${{ total_sum }}</h3>
+                <h3>${{ total_sum|floatformat:2 }}</h3>
                 <p>{{ total_quantity_sold }} items sold</p>
             </div>
             <div class="col-3">
@@ -94,7 +94,7 @@
                                 data-transaction-id="{{ transaction.transaction_id }}">
                                 <td>{{ transaction.transaction_id }}</td>
                                 <td>{{ transaction.transaction_date }}</td>
-                                <td>{{ transaction.total_value }} </td>
+                                <td>{{ transaction.total_value|floatformat:2 }} </td>
                                 <td>{{ transaction.payment_terms }}</td>
                                 <td>{{ transaction.employee_id }}</td>
                                 <td>
