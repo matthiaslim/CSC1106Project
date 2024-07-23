@@ -45,3 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+
+window.addEventListener('onunload',(event) => {
+
+    event.preventDefault();
+
+
+
+});
