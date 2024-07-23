@@ -9,6 +9,7 @@ from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
 from ..models import UserSession
 from django.contrib.sessions.models import Session
+from datetime import datetime 
 
 
 
@@ -99,11 +100,19 @@ def onboard(request):
     return render(request, 'onboard.html', {'form': form})
 
 def logout_user(request):
-    usersession = UserSession.objects.get(session_id=request.session.session_key)
 
-    if usersession:
-        usersession.delete()
+    try:
+        usersession = UserSession.objects.get(session_id=request.session.session_key)
+        sessionExpired = Session.objects.filter(expire_date__lt=datetime.now())
+    
+        sessionExpired.delete()
 
+        if usersession:
+            usersession.delete()
+
+    except UserSession.DoesNotExist:
+        pass
+    
     logout(request)
     return redirect('login')
 

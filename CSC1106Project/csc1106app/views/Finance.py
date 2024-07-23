@@ -60,32 +60,6 @@ def sales_management(request):
 
 @login_required
 @department_required("Finance")
-# def create_sales(request):
-#     if request.method == 'POST':
-#         sales_form = SalesForm(request.POST)
-#         formset = SalesProductFormSet(request.POST, request.FILES)
-#         print(formset.errors)
-#         if sales_form.is_valid() and formset.is_valid():
-#             sales = sales_form.save()
-#             point_earned = sales_form.cleaned_data.get('points_earned')
-#             member = sales_form.cleaned_data.get('membership_id')
-#             member.points += point_earned
-#             formset.instance = sales
-#             member.save()
-#             formset.save()
-#             pdf_buffer = generate_sales(sales)
-#             return redirect('sales_management')
-#     else:
-#         sales_form = SalesForm()
-#         formset = SalesProductFormSet()
-
-#     for form in formset.forms:
-#         form.set_initial_price()
-
-#     return render(request, 'finance/create_sales.html', {'sales_form': sales_form, 'formset': formset})
-
-@login_required
-@department_required("Finance")
 def create_sales(request):
     if request.method == 'POST':
         sales_form = SalesForm(request.POST)

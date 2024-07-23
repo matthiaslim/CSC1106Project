@@ -36,6 +36,9 @@ function populateTopSellingItems(){
   const indicator = document.getElementById("indict");
   const main = document.getElementById("main");
 
+  $('#noCarouselItem').show();
+  $('#carouselTopSelling').hide();
+
   var productsHTML = '';
   var indicatorHTML = '';
 
@@ -49,13 +52,9 @@ function populateTopSellingItems(){
             activeClass = i == 0 ? 'active' : '';
             current = i == 0 ? 'true' : '';
 
-            indicatorHTML += `<button type="button" data-bs-indicator="#carouselTopSelling" 
-                              data-bs-slide-to="${i}" class=${activeClass} aria-current=${current} 
-                              aria-label="Slide ${i}"></button>`
-
 
             productsHTML += `<div class="carousel-item ${activeClass}">
-                              <img src="/media/${dataProduct[i].product_image}" class="d-block w-100" alt="${dataProduct[i].product_name}">
+                              <img src="/media/${dataProduct[i].product_image}" class="d-block w-100" style="max-height: 400px" alt="${dataProduct[i].product_name}">
                               <div style="color:black;" class="carousel-caption d-none d-md-block">
                                   <h5>${dataProduct[i].product_name}</h5>
                                   <p>${dataProduct[i].product_description}</p>
@@ -64,7 +63,8 @@ function populateTopSellingItems(){
           }
           indicator.innerHTML= indicatorHTML;
           main.innerHTML = productsHTML;
-          
+
+          $('#carouselTopSelling').show();
           $('#noCarouselItem').hide();
       }
     }
@@ -77,6 +77,8 @@ function populateTopSalesPerMonth(){
   if (chartStatus != undefined) {
     chartStatus.destroy();
   }
+  $("#noChartItem").show();
+  $('#myChart').hide();
 
   const ctx = document.getElementById('myChart');
   let labels = [];
@@ -88,9 +90,8 @@ function populateTopSalesPerMonth(){
     success: function(response){
       labels = response.month;
       data = response.data;
-      $('#myChart').hide();
       if (data.length > 0){
-          $('#noChartItem').hide();
+          
           new Chart(ctx, {
             type: 'bar',
             data: {
@@ -109,6 +110,8 @@ function populateTopSalesPerMonth(){
               }
             }
           });
+          
+        $('#noChartItem').hide();
         $('#myChart').show();
       }
     }
