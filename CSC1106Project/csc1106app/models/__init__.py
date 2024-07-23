@@ -1,6 +1,7 @@
 from .attendance import Attendance
 from .department import Department
 from .employee import Employee
+from .failedLogin import FailedLogin
 from .invoice import Invoice
 from .invoiceProduct import InvoiceProduct
 from .leave import Leave
@@ -15,4 +16,4 @@ from .usersession import UserSession
 
 __all__ = ['Attendance', 'Department', 'Employee', 'Invoice',
            'InvoiceProduct', 'Leave', 'LeaveBalance', 'Membership', 'Payroll',
-           'Product', 'Transaction', 'TransactionProduct', 'User', 'UserSession']
+           'Product', 'Transaction', 'TransactionProduct', 'User', 'UserSession', 'FailedLogin']

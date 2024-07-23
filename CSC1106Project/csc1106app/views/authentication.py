@@ -46,8 +46,11 @@ def login_user(request):
             email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(request, email=email, password=password)
-            
-            if user is not None and user.is_active:
+
+            if user and user.is_locked:
+                messages.error(request, "Your account has been locked. Please contact HR to unlock your account.")
+
+            elif user is not None and user.is_active:
                 employee = Employee.objects.get(user=user)
                 login(request, user)
                 
@@ -55,6 +58,7 @@ def login_user(request):
                     return redirect('onboard')
 
                 return redirect('home')  # Redirect to a home page or another page after login
+
         else:
             # Handle invalid login attempt
             error_message = "Invalid username or password."

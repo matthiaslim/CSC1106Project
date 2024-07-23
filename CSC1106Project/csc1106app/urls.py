@@ -71,6 +71,7 @@ urlpatterns = [
     # Employee URLs
     path('hr/employees/', views.employee_list, name='employee_list'),
     path('hr/employees/<int:employee_id>/', views.employee_detail, name='employee_detail'),
+    path('hr/employees/unlock/<int:employee_id>/', views.employee_unlock, name='employee_unlock'),
     path('hr/employees/create/', views.employee_create, name='employee_create'),
     path('hr/employees/<int:employee_id>/update/', views.employee_update, name='employee_update'),
     path('hr/employees/<int:employee_id>/delete/', views.employee_delete, name='employee_delete'),

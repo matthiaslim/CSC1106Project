@@ -1,8 +1,10 @@
 import os
 
+from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save, post_delete, pre_save, post_delete
+from django.contrib.auth.signals import user_logged_in, user_login_failed
 from django.dispatch import receiver
-from .models import Employee, LeaveBalance, Transaction, Invoice
+from .models import Employee, LeaveBalance, Transaction, Invoice, FailedLogin
 from django.conf import settings
 
 from .models import Employee, LeaveBalance, Product, Attendance
@@ -84,13 +86,13 @@ def handle_product_pre_save(sender, instance, **kwargs):
             old_instance = sender.objects.get(pk=instance.pk)
             old_image = old_instance.product_image.name if old_instance.product_image else None
             new_image = instance.product_image.name
-            
+
             if old_image and old_image != new_image:
                 old_file_path = os.path.join(settings.MEDIA_ROOT, old_image)
-                
+
                 if os.path.isfile(old_file_path):
                     os.remove(old_file_path)
-                    
+
                     directory = os.path.dirname(old_file_path)
                     while directory != settings.MEDIA_ROOT and not os.listdir(directory):
                         os.rmdir(directory)
@@ -105,7 +107,7 @@ def update_image_path(sender, instance, created, **kwargs):
         if instance.product_id:
             temp_path = os.path.join(settings.MEDIA_ROOT, 'product_image/temp/', os.path.basename(instance.product_image.name))
             new_path = os.path.join(settings.MEDIA_ROOT, 'product_image/', str(instance.product_id), os.path.basename(instance.product_image.name))
-            
+
             if os.path.exists(temp_path):
                 os.makedirs(os.path.dirname(new_path), exist_ok=True)
                 shutil.move(temp_path, new_path)
@@ -119,11 +121,28 @@ def update_image_path(sender, instance, created, **kwargs):
 def delete_image_file(sender, instance, **kwargs):
     if instance.product_image:
         file_path = os.path.join(settings.MEDIA_ROOT, instance.product_image.name)
-        
+
         if os.path.isfile(file_path):
             os.remove(file_path)
-            
+
             directory = os.path.dirname(file_path)
             while directory != settings.MEDIA_ROOT and not os.listdir(directory):
                 os.rmdir(directory)
                 directory = os.path.dirname(directory)
+
+@receiver(user_logged_in)
+def user_logged_recv(sender, request, user, **kwargs):
+    FailedLogin.objects.filter(user=user).delete()
+
+@receiver(user_login_failed)
+def user_login_failed_recv(sender, credentials, request, **kwargs):
+    User = get_user_model()
+    try:
+        u = User.objects.get(email=credentials.get('username'))
+        FailedLogin.objects.create(user=u)
+        if FailedLogin.objects.filter(user=u).count() >= 3:
+            u.is_locked=True
+            u.save()
+
+    except User.DoesNotExist:
+        pass

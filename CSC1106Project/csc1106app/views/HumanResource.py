@@ -1,6 +1,6 @@
 import base64
 from django.core.files.base import ContentFile
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,7 @@ from ..crud_ops import search_and_filter_attendances, search_and_filter_departme
 from ..forms import  ( UserEditForm, AttendanceForm, DepartmentForm, 
                       EmployeeForm, LeaveAddForm, LeaveStatusUpdateForm, 
                       PayrollForm, CustomUserCreationForm)
+from ..models import FailedLogin
 from ..models.attendance import Attendance
 from ..models.department import Department
 from ..models.employee import Employee
@@ -44,7 +45,8 @@ def employee_list(request):
 @department_required('Human Resource')
 def employee_detail(request, employee_id):
     employee = get_object_or_404(Employee, pk=employee_id)
-    return render(request, 'hrms/employee_detail.html', {'employee': employee})
+    user = get_object_or_404(User, pk=employee.user_id)
+    return render(request, 'hrms/employee_detail.html', {'employee': employee, 'is_locked': user.is_locked})
 
 @login_required
 @department_required('Human Resource')
@@ -69,6 +71,32 @@ def employee_create(request):
         form = EmployeeForm()
 
     return render(request, 'hrms/employee_form.html', {'form': form, 'user_form' : user_form})
+
+@login_required
+@department_required('Human Resource')
+def employee_unlock(request, employee_id):
+    if request.method == "POST":
+        employee = get_object_or_404(Employee, pk=employee_id)
+        user = get_object_or_404(User, pk=employee.user_id)
+
+        print(user)
+
+        if user.is_locked:
+            user.is_locked = False
+            user.save()
+            FailedLogin.objects.filter(user=user).delete()
+
+            messages.success(request, "Account successfully unlocked")
+
+            return redirect('employee_detail', employee_id=employee_id)
+
+        elif not user.is_locked:
+            messages.error(request, "Account is not locked", extra_tags='danger')
+            return redirect('employee_detail', employee_id=employee_id)
+
+    messages.error(request, "Failed to unlock account", extra_tags='danger')
+    return redirect('employee_detail', employee_id=employee_id)
+
 
 @login_required
 @department_required('Human Resource')
