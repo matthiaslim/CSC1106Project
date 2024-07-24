@@ -42,12 +42,7 @@ function deleteProduct(productID, productName) {
             method: 'DELETE',
             headers: { 'X-CSRFToken': csrf_token },
             success: function (response) {
-                if (response.status == 200) {
-                    alert("Product deleted successfully.");
-                    window.location.reload();
-                } else {
-                    alert("Product not deleted successfully");
-                }
+                window.location.reload();
             }
         });
     }
@@ -122,11 +117,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             success: function (data) {
-                if (data.status == 200) {
-                    window.location.reload();
-                } else if (data.status == 400) {
-                    alert('Product not updated successfully');
-                }
+                window.location.reload();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('Error: ' + errorThrown);

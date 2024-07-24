@@ -90,10 +90,11 @@ def update_product(request, pk):
         
         if order.is_valid():
             order.save()
-            messages.add_message(request, messages.SUCCESS, 'updated product successfully')
+            messages.add_message(request, messages.SUCCESS, 'Product has been updated successfully')
         else:
-            return JsonResponse({'status':400, 'message' : order.errors})
-
+            messages.add_message(request, messages.ERROR, 'Product has not been updated successfully')
+            return JsonResponse({'status':400 , 'message': "error"})
+    return JsonResponse({'status':200, 'message' :"update done"})
    
     
     
@@ -106,8 +107,10 @@ def delete_product(request, pk):
         if request.method == 'DELETE':
             product.is_deleted = True
             product.save()
+            messages.add_message(request, messages.SUCCESS, 'Product has been deleted successfully')
         return JsonResponse({'status': 200, 'message': 'Product deleted successfully.'})
     except:
+        messages.add_message(request, messages.ERROR, 'Product has not been deleted!')
         return JsonResponse({'status': 400, 'message': 'Bad request.'})
 
 
