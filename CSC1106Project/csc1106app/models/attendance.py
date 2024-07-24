@@ -1,9 +1,9 @@
 from django.db import models
 from .employee import Employee
-from datetime import datetime
+from django.utils import timezone
 
 def attendance_path(instance, filename):
-    dt = datetime.now()
+    dt = timezone.now()
     numeric_date = dt.strftime('%Y%m%d%H%M%S')
     if instance.attendance_id:
         return f'attendance_images/{instance.employee.employee_id}/{filename}'

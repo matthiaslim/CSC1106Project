@@ -3,9 +3,10 @@ from django.http import JsonResponse
 from django.db.models import Sum
 from datetime import datetime
 from collections import defaultdict
+from django.utils import timezone
 
 def display_chart_information(request):
-    current_year = datetime.now().year
+    current_year = timezone.now().year
 
     transactionProductItem = TransactionProduct.objects.filter(transaction_id__transaction_date__year=current_year)
     monthly_sums = defaultdict(float)

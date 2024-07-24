@@ -20,7 +20,7 @@ from ..models.user import User
 from ..decorators import department_required
 from datetime import datetime
 from django.db.models import Q
-
+from django.utils import timezone
 
 
 # Employee Views
@@ -222,11 +222,10 @@ def attendance_create(request):
                 messages.error(request, 'Employee not found for the logged-in user.')
                 return render(request, 'hrms/attendance_form.html')
 
-            print(datetime.now())
 
             attendance = Attendance(
                 employee=employee, 
-                time_in=datetime.now(),
+                time_in=timezone.now(),
                 image=data
             )
             attendance.save()
@@ -240,7 +239,7 @@ def attendance_create(request):
 def attendance_check_out(request):
     try:
         attendance = Attendance.objects.filter(employee=request.user.employee, time_out__isnull=True).latest('time_in')
-        attendance.time_out = datetime.now()
+        attendance.time_out = timezone.now()
         attendance.save()
         messages.success(request, 'You have successfully checked out.')
     except Attendance.DoesNotExist:
@@ -421,7 +420,7 @@ def payroll_list(request):
 @login_required
 @department_required('Human Resource')
 def generate_payroll(request):
-    current_month = datetime.now().replace(day=1)
+    current_month = timezone.now().replace(day=1)
 
     if Payroll.objects.filter(month=current_month).exists():
         messages.warning(request, 'Payroll for the current month has already been generated.')

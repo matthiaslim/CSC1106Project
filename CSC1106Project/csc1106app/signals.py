@@ -12,6 +12,8 @@ import os
 import shutil
 from django.conf import settings
 from datetime import datetime
+from django.utils import timezone
+
 
 @receiver(post_save, sender=Employee)
 def create_leave_balance(sender, instance, created, **kwargs):
@@ -54,7 +56,7 @@ def product_image_path(instance, filename):
     return f'product_image/temp/{filename}'
 
 def attendance_path(instance, filename):
-    dt = datetime.now()
+    dt = timezone.now()
     numeric_date = dt.strftime('%Y%m%d%H%M%S')
     if instance.attendance_id:
         return f'attendance_images/{instance.employee.employee_id}/{filename}'

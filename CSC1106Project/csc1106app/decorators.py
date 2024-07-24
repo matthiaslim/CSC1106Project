@@ -4,6 +4,7 @@ from datetime import date
 from django.shortcuts import render
 from .models import Employee
 from .models import Attendance
+from django.utils import timezone
 
 
 def department_required(*department_names):
@@ -28,14 +29,13 @@ def user_check_in_status(request):
     if request.user.is_authenticated:
         user = request.user.id
         employee = Employee.objects.filter(user=user).first()
-        today = date.today()
+        today = timezone.now().date()
 
         if (employee is not None):
             employee_id = employee.employee_id
 
-            userClockIn = Attendance.objects.filter(employee_id=employee_id, time_in__date=today).first()
-
-            if (userClockIn is not None):
+            userClockIn = Attendance.objects.filter(employee_id=employee_id).first()
+            if (userClockIn is not None and userClockIn.time_in.date() == today):
                 is_checked_in = True
 
                 if (userClockIn.time_out is not None):
