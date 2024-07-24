@@ -51,13 +51,14 @@ function populateTopSellingItems(){
           for (var i=0; i<dataProduct.length; i++){
             activeClass = i == 0 ? 'active' : '';
             current = i == 0 ? 'true' : '';
+            productImage = dataProduct[i].product_image == "" ?  "product_image/no_image.png" : dataProduct[i].product_image ; 
 
-            indicatorHTML += `<button type="button" data-bs-indicator="#carouselTopSelling" 
+            indicatorHTML += `<button type="button" data-bs-target="#carouselTopSelling" 
                             data-bs-slide-to="${i}" class=${activeClass} aria-current=${current} 
                             aria-label="Slide ${i}"></button>`
 
             productsHTML += `<div class="carousel-item ${activeClass}">
-                              <img src="/media/${dataProduct[i].product_image}" class="d-block w-100" style="max-height: 400px" alt="${dataProduct[i].product_name}">
+                              <img src="/media/${productImage}" class="d-block w-100" style="max-height: 400px" alt="${dataProduct[i].product_name}">
                               <div style="color:black;" class="carousel-caption d-none d-md-block">
                                   <h5>${dataProduct[i].product_name}</h5>
                                   <p>${dataProduct[i].product_description}</p>
