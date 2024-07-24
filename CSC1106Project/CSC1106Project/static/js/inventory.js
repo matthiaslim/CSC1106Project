@@ -61,7 +61,6 @@ function editProductView(productID){
         success: function(data) {
             if (data.status == 200) {
                 var product = data.product;
-                console.log(data.status);
                 for (var itemName in product) {
                     if (product.hasOwnProperty(itemName)) {
                         var element =  document.getElementById( "id_"+ itemName);
@@ -126,7 +125,9 @@ $(document).ready(function() {
                 if(data.status == 200){
                     alert('Product updated successfully');
                     window.location.reload();
-                }                
+                } else if(data.status == 400){
+                    alert('Product not updated successfully');
+                }
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert('Error: ' + errorThrown);

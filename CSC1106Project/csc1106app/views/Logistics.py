@@ -84,10 +84,16 @@ def update_product(request, pk):
 
     if request.method == 'POST':
         order = editProductForm(request.POST,request.FILES,instance=product)
-        order.save()
         
-    return JsonResponse({'status' : 200, 'message' : 'updated product successfully'})
+        if order.is_valid():
+            order.save()
+            return JsonResponse({'status' : 200, 'message' : 'updated product successfully'})
+        else:
+            return JsonResponse({'status':400, 'message' : order.errors})
 
+   
+    
+    
 
 @login_required
 @department_required('Logistics')
