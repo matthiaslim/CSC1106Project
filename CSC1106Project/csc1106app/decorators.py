@@ -1,7 +1,7 @@
 # decorators.py
 from functools import wraps
 from datetime import date
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from .models import Employee
 from .models import Attendance
 

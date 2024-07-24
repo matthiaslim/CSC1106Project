@@ -9,7 +9,7 @@ from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
 from ..models import UserSession
 from django.contrib.sessions.models import Session
-from django.utils import timezone
+from datetime import datetime
 
 
 # Home View
@@ -102,7 +102,7 @@ def logout_user(request):
 
     try:
         usersession = UserSession.objects.get(session_id=request.session.session_key)
-        sessionExpired = Session.objects.filter(expire_date__lt=timezone.now())
+        sessionExpired = Session.objects.filter(expire_date__lt=datetime.now())
     
         sessionExpired.delete()
 
