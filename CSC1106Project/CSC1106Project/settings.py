@@ -26,18 +26,13 @@ environ.Env.read_env()  # This reads from the .env file
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True # Change to False when deploying in production
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600
-
-EMAIL_PORT = env('EMAIL_PORT')
-EMAIL_USE_TLS = env('EMAIL_USE_TLS')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-
+# SECURE_SSL_REDIRECT = True # Uncomment this when deploying
 
 ALLOWED_HOSTS = ['*']
 
