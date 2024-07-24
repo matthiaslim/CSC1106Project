@@ -23,22 +23,22 @@
             <p>Payment Summary {{ current_year }}</p>
             <div class="col-2 me-5">
                 <p>Total Purchases</p>
-                <h3>${{ total_sum }}</h3>
+                <h3>${{ total_sum|floatformat:2 }}</h3>
                 <p>{{ total_invoice_count }} Invoices</p>
             </div>
             <div class="col-3">
                 <p>Payment Due Today</p>
-                <h3>${{ sum_due_today }}</h3>
+                <h3>${{ sum_due_today|floatformat:2 }}</h3>
                 <p>{{ count_due_today }} Invoices</p>
             </div>
             <div class="col-3">
                 <p>Payment Due in 30 days</p>
-                <h3>${{ sum_due_30_days }}</h3>
+                <h3>${{ sum_due_30_days|floatformat:2 }}</h3>
                 <p>{{ count_due_30_days }} Invoices</p>
             </div>
             <div class="col-3">
                 <p>Overdue Invoice</p>
-                <h3>${{ sum_overdue }}</h3>
+                <h3>${{ sum_overdue|floatformat:2 }}</h3>
                 <p>{{ count_overdue }} Invoices</p>
             </div>
         </div>
@@ -108,7 +108,7 @@
                             <tr class="invoice-row" data-invoice-id="{{ invoice.invoice_id }}">
                                 <td>{{ invoice.invoice_id }}</td>
                                 <td>{{ invoice.invoice_date }}</td>
-                                <td>{{ invoice.total_value }}</td>
+                                <td>{{ invoice.total_value|floatformat:2 }}</td>
                                 <td>{{ invoice.payment_terms }}</td>
                                 <td>{{ invoice.employee_id }}</td>
                                 <td>{{ invoice.payment_due_date }}</td>

@@ -306,6 +306,12 @@ class InvoiceProductForm(forms.ModelForm):
         model = InvoiceProduct
         fields = ['product_id', 'invoice_quantity', 'invoice_price_per_unit']
 
+    invoice_price_per_unit = forms.DecimalField(
+        decimal_places=2,
+        max_digits=10, 
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': '0.01'})
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -318,11 +324,8 @@ class InvoiceProductForm(forms.ModelForm):
         self.fields['product_id'] = forms.ModelChoiceField(queryset=Product.objects.all(),
                                                       widget=forms.Select(attrs={'class': 'form-select'}))
 
-        # Add class to invoice_quantity field
-        self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-control'})
-        self.fields['invoice_price_per_unit'].widget.attrs.update({'class': 'form-select'})
-
-
+        # Modify invoice_quantity field
+        self.fields['invoice_quantity'].widget.attrs.update({'class': 'form-control', 'min': 1})
 
 
 InvoiceProductFormSet = inlineformset_factory(
@@ -374,7 +377,7 @@ class SalesProductForm(forms.ModelForm):
             widget=forms.Select(attrs={'class': 'form-select product-select'})
         )
 
-        self.fields['transaction_quantity'].widget.attrs.update({'class': 'form-control quantity', 'value': 1})
+        self.fields['transaction_quantity'].widget.attrs.update({'class': 'form-control quantity', 'value': 1, 'min': 1})
         self.fields['transaction_price_per_unit'].widget.attrs.update(
             {'class': 'form-control price-per-unit', 'readonly': True, 'value': products[0].product_sale_price}
         )

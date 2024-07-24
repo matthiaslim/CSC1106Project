@@ -36,14 +36,14 @@ def sales_management(request):
     total_quantity_sold = 0
 
     for transaction in sales:
-        transaction.total_value = sum(item.transaction_quantity * item.transaction_price_per_unit for item in
-                                      transaction.transactionproduct_set.all())
+        transaction.total_value = round(sum(item.transaction_quantity * item.transaction_price_per_unit for item in
+                                      transaction.transactionproduct_set.all()),2)
         total_quantity_sold += sum(item.transaction_quantity for item in transaction.transactionproduct_set.all())
 
         for item in transaction.transactionproduct_set.all():
             item.sub_total = item.sub_total()
 
-    total_sum = sum(transaction.total_value for transaction in sales)
+    total_sum = round(sum(transaction.total_value for transaction in sales),2)
     total_transaction_count = len(sales)
 
     sales_filter = SalesFilter(request.GET, queryset=sales)
@@ -178,30 +178,30 @@ def invoice_management(request):
     invoices = Invoice.objects.all().prefetch_related('invoiceproduct_set')
 
     for invoice in invoices:
-        invoice.total_value = sum(
-            item.invoice_quantity * item.invoice_price_per_unit for item in invoice.invoiceproduct_set.all())
+        invoice.total_value = round(sum(
+            item.invoice_quantity * item.invoice_price_per_unit for item in invoice.invoiceproduct_set.all()),2)
 
         for item in invoice.invoiceproduct_set.all():
             item.sub_total = item.sub_total()
 
     # Revenue yearly
-    total_sum = sum(invoice.total_value for invoice in invoices)
+    total_sum = round(sum(invoice.total_value for invoice in invoices),2)
     total_invoice_count = len(invoices)
 
     # Payment Dues 
     today = date.today()
     invoices_due_today = invoices.filter(payment_due_date=today)
-    sum_due_today = sum(invoice.total_value() for invoice in invoices_due_today)
+    sum_due_today = round(sum(invoice.total_value() for invoice in invoices_due_today),2)
     count_due_today = len(invoices_due_today)
 
     invoices_due_30_days = invoices.filter(
         payment_due_date__range=[today, today + timedelta(days=30)]
     )
-    sum_due_30_days = sum(invoice.total_value() for invoice in invoices_due_30_days)
+    sum_due_30_days = round(sum(invoice.total_value() for invoice in invoices_due_30_days),2)
     count_due_30_days = len(invoices_due_30_days)
 
     overdue_invoices = invoices.filter(payment_due_date__lt=today)
-    sum_overdue = sum(invoice.total_value() for invoice in overdue_invoices)
+    sum_overdue = round(sum(invoice.total_value() for invoice in overdue_invoices),2)
     count_overdue = len(overdue_invoices)
 
     invoice_filter = InvoiceFilter(request.GET, queryset=invoices)
@@ -331,9 +331,9 @@ def financial_data_for_year(year):
     purchases = Invoice.objects.filter(invoice_date__year=year)
     payroll = Payroll.objects.filter(month__year=year)
 
-    total_sales = Decimal(sum(sale.total_value() for sale in sales))
-    total_purchases = Decimal(sum(invoice.total_value() for invoice in purchases))
-    total_employee_wages = Decimal(sum(item.net_pay for item in payroll))
+    total_sales = round(Decimal(sum(sale.total_value() for sale in sales)),2)
+    total_purchases = round(Decimal(sum(invoice.total_value() for invoice in purchases)),2)
+    total_employee_wages = round(Decimal(sum(item.net_pay for item in payroll)),2)
 
     net_profit = total_sales - total_purchases - total_employee_wages
 
@@ -373,8 +373,8 @@ def financial_report(request):
     )
 
     inventory = Product.objects.all()
-
-    inventory_value = sum(product.product_total_value() for product in inventory)
+    inventory_value = round(sum(product.product_total_value() for product in inventory),2)
+    
     total_assets = inventory_value
 
     return render(request, 'finance/financial_report.html', {
@@ -395,7 +395,7 @@ def calculate_yoy_change(current_year_value, previous_year_value):
     if previous_year_value == 0:
         return None
     else:
-        return round(((current_year_value - previous_year_value) / previous_year_value) * 100)
+        return round(((current_year_value - previous_year_value) / previous_year_value) * 100, 2)
 
 
 def split_text_to_fit(text, font_name, font_size, max_width):
