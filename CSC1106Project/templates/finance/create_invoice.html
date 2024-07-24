@@ -91,7 +91,7 @@
                 if (e.target && e.target.name.includes('product_id')) {
                     const productSelect = e.target;
                     const selectedOption = productSelect.options[productSelect.selectedIndex];
-                    console.log(productSelect);
+
                     const price = selectedOption.getAttribute('data-price');
                     // Find the corresponding price input by replacing 'product_id' with 'invoice_price_per_unit' in the name attribute
                     const priceInputName = productSelect.name.replace('product_id', 'invoice_price_per_unit');
@@ -104,7 +104,7 @@
 
             // Disable the first row button
             let firstRowButton = tableBody.rows[0].querySelector("button.remove-row");
-            console.log(firstRowButton)
+
             firstRowButton.disabled = true;
             firstRowButton.classList.remove("btn-danger");
             firstRowButton.classList.add("btn-secondary");

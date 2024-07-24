@@ -82,8 +82,9 @@ class EmployeeForm(forms.ModelForm):
 class DepartmentForm(forms.ModelForm):
     class Meta:
         model = Department
-        fields = ['employee']
+        fields = ['department_name','employee']
         widgets = {
+            'department_name':forms.TextInput(attrs={'class': 'form-control'}),
             'employee': forms.Select(attrs={'class': 'form-control'})
         }
 

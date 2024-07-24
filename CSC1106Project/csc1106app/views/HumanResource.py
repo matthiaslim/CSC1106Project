@@ -76,7 +76,6 @@ def employee_unlock(request, employee_id):
         employee = get_object_or_404(Employee, pk=employee_id)
         user = get_object_or_404(User, pk=employee.user_id)
 
-        print(user)
 
         if user.is_locked:
             user.is_locked = False
@@ -309,8 +308,7 @@ def add_leave(request):
     leave_balance, created = LeaveBalance.objects.get_or_create(employee=logged_in_employee)
 
     if request.method == 'POST':
-        print("POST request received")
-        print("POST data:", request.POST)
+
         form = LeaveAddForm(request.POST)
         if form.is_valid():
             leave = form.save(commit=False)
@@ -333,7 +331,6 @@ def add_leave(request):
                             leave_balance.annual_leave_balance -= leave_days
                             leave_balance.save()
                             leave.save()
-                            print("Annual leave balance updated:", leave_balance.annual_leave_balance)
                             return redirect('leave_list')
 
                     elif leave.leave_type == 'Medical':
@@ -343,13 +340,9 @@ def add_leave(request):
                             leave_balance.medical_leave_balance -= leave_days
                             leave_balance.save()
                             leave.save()
-                            print("Medical leave balance updated:", leave_balance.medical_leave_balance)
                             return redirect('leave_list')
             else: 
                 return redirect('leave_list')
-        else:
-            print("Form is not valid")
-            print(form.errors)
     else:
         employeeData = request.user.employee
 

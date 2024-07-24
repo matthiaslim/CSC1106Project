@@ -64,7 +64,6 @@ def create_sales(request):
     if request.method == 'POST':
         sales_form = SalesForm(request.POST)
         formset = SalesProductFormSet(request.POST, request.FILES)
-        print(formset.errors)
         if sales_form.is_valid() and formset.is_valid():
             message = ""
             # Start a transaction
@@ -108,7 +107,6 @@ def create_sales(request):
                     return redirect('sales_management')
 
                 elif not all_products_sufficient:
-                    print(message)
                     messages.error(request, message, extra_tags='danger')
     else:
         sales_form = SalesForm()
@@ -235,7 +233,6 @@ def invoice_details(request, invoice_id):
 
         pdf_file_path = os.path.join('media', 'invoices', invoice.invoice_date.strftime('%Y-%m-%d') ,f"invoice_{invoice.uuid_filename}.pdf").replace('\\', '/')
 
-        print(pdf_file_path)
 
         if not default_storage.exists(pdf_file_path):
             generate_invoice(invoice)
