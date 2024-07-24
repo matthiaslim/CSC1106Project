@@ -47,9 +47,9 @@
             </a>
             <div class="collapse {% if 'inventory' in request.path %}show{% endif %}" id="collapse-inventory">
                 <a class="collapse-item {% if request.path == '/inventory/management' %}active{% endif %}"
-                   href="{% url 'inventory_management' %}">Manage</a>
+                   href="{% url 'inventory_management' %}">Manage Products</a>
                    <a class="collapse-item {% if request.path == '/inventory/order_management' %}active{% endif %}"
-                   href="{% url 'order_management' %}">Order Manage</a>
+                   href="{% url 'order_management' %}">Manage Orders</a>
             </div>
             {% endif %}
             {% if user_data.department.department_name == "Finance" or user_data.department.department_name == "Chairman" %}
