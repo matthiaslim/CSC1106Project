@@ -50,42 +50,42 @@
         canvas.style.display = 'block';
     });
 
-    // function isCanvasBlackorBlank(){
-    //     const pixelData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-    //     let isBlank = true;
-    //     let isBlack = true;
-    //     for (let i = 0; i < pixelData.length; i += 4) {
-    //         const r = pixelData[i];
-    //         const g = pixelData[i + 1];
-    //         const b = pixelData[i + 2];
-    //         const a = pixelData[i + 3];
-    //         // Check if the pixel is neither fully transparent nor black
-    //         if (a !== 0) {
-    //             isBlank = false;
-    //         }
-    //         if (r !== 0 || g !== 0 || b !== 0) {
-    //             isBlack = false;
-    //         }
-    //         // If we find a pixel that is neither transparent nor black, we can return early
-    //         if (!isBlank && !isBlack) {
-    //             return false;
-    //         }
-    //     }
-    //     return isBlank || isBlack;
-    // }
+    function isCanvasBlackorBlank(){
+        const pixelData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        let isBlank = true;
+        let isBlack = true;
+        for (let i = 0; i < pixelData.length; i += 4) {
+            const r = pixelData[i];
+            const g = pixelData[i + 1];
+            const b = pixelData[i + 2];
+            const a = pixelData[i + 3];
+            // Check if the pixel is neither fully transparent nor black
+            if (a !== 0) {
+                isBlank = false;
+            }
+            if (r !== 0 || g !== 0 || b !== 0) {
+                isBlack = false;
+            }
+            // If we find a pixel that is neither transparent nor black, we can return early
+            if (!isBlank && !isBlack) {
+                return false;
+            }
+        }
+        return isBlank || isBlack;
+    }
 
 
-    // submit.addEventListener('click', (event) => {
-    //     if (context && isCanvasBlackorBlank()){
+    submit.addEventListener('click', (event) => {
+        if (context && isCanvasBlackorBlank()){
         
-    //         event.preventDefault();
-    //         alert("You havent taken a photo, please take a photo to check in");
+            event.preventDefault();
+            alert("You havent taken a photo, please take a photo to check in");
         
 
-    //     } else {
-    //         console.error('Canvas context could not be retrieved.');
-    //     }
-    // });
+        } else {
+            console.error('Canvas context could not be retrieved.');
+        }
+    });
 
 </script>
 {% endblock %}
