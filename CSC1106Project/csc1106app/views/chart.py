@@ -49,10 +49,10 @@ def inventory_summary(request):
 
 def top_selling_items(request):
     transcationItemLists = TransactionProduct.objects.all()
-    transactionItemList = transcationItemLists.values('product_id').annotate(count = Sum('transaction_quantity')).order_by('-count')[:5]
+    transactionItemList = transcationItemLists.values('product_id').annotate(count = Sum('transaction_quantity')).order_by('-count')[:10]
     top_product_ids = [item['product_id'] for item in transactionItemList]
     
     product = Product.objects.filter(product_id__in=top_product_ids).values()
 
 
-    return JsonResponse({"Product": list(product)})
+    return JsonResponse({"Product": list(product)[:5]})
