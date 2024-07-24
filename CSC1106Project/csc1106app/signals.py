@@ -11,7 +11,6 @@ from .models import Employee, LeaveBalance, Product, Attendance
 import os
 import shutil
 from django.conf import settings
-from datetime import datetime
 from django.utils import timezone
 
 

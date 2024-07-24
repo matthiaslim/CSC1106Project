@@ -18,7 +18,6 @@ from ..models.leaveBalance import LeaveBalance
 from ..models.payroll import Payroll
 from ..models.user import User
 from ..decorators import department_required
-from datetime import datetime
 from django.db.models import Q
 from django.utils import timezone
 
