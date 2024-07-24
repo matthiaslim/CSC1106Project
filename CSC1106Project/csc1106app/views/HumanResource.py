@@ -233,7 +233,7 @@ def attendance_create(request):
             )
             attendance.save()
             messages.success(request, 'You have successfully checked in.')
-            return redirect('attendance_list')
+            return redirect('home')
 
     return render(request, 'hrms/attendance_form.html')
 
