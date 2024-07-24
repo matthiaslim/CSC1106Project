@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from ..forms import CreateCustomerForm
 from ..models.membership import Membership
 from ..crud_ops import *
@@ -42,7 +43,6 @@ def customer_details(request, customerID):
         member_sales = Transaction.objects.filter(membership_id_id=membership.member_id).select_related(
             'employee_id')
     except Membership.DoesNotExist:
-        # Handle the case where the customer does not exist
         membership = None
     except Transaction.DoesNotExist:
         member_sales = None
@@ -63,7 +63,7 @@ def create_customer(request):
     if request.method == 'POST':
         form = CreateCustomerForm(request.POST)
         if form.is_valid():
-            # Process the data in form.cleaned_data
+
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
             email_address = form.cleaned_data.get('email_address')
@@ -73,17 +73,17 @@ def create_customer(request):
             membership_status = form.cleaned_data.get('membership_status')
             gender = form.cleaned_data.get('gender')
             address = form.cleaned_data.get('address')
-            # call a func to save the data
 
-            # m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address, phone_number=phone_number, dob=dob, country=country, status=status, age=age, address=address)
-            # m1.save()
             expiry_date = datetime.now() + relativedelta(years=1)
             m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address,
                             phone_number=phone_number, points_expiry_date=expiry_date, member_expiry_date=expiry_date,
                             membership_status=membership_status, points=0, membership_level="Bronze", address=address,
                             country=country, date_of_birth=date_of_birth, gender=gender)
             m1.save()
+            messages.add_message(request, messages.SUCCESS, 'Customer Created Successfully.')
             return redirect('customer_management')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed to create customer.')
     else:
         form = CreateCustomerForm()
 
@@ -113,8 +113,10 @@ def update_customer(request, customerID):
             membership.gender = form.cleaned_data.get('gender')
             membership.address = form.cleaned_data.get('address')
             membership.save()
-
+            messages.add_message(request, messages.SUCCESS, 'Customer Details Saved Successfully.')
             return redirect('customer_management')
+        else:
+            messages.add_message(request, messages.ERROR, 'Failed to save customer details.')
     else:
 
         form = CreateCustomerForm(instance=membership)
@@ -133,8 +135,11 @@ def delete_customer(request, customerID):
     try:
         membership = Membership.objects.get(member_id=customerID)
         membership.delete()
+        messages.add_message(request, messages.SUCCESS, 'Customer Deleted Successfully.')
     except Membership.DoesNotExist:
-        # Handle the case where the customer does not exist
         membership = None
+        messages.add_message(request, messages.ERROR, 'Customer does not exist.')
+    except Exception as e:
+        messages.add_message(request, messages.ERROR, 'Failed to delete customer.')
 
     return redirect('customer_management')
