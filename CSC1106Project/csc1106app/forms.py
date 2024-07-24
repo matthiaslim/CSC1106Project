@@ -122,11 +122,10 @@ class LeaveAddForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         initial = kwargs.get('initial', {})
-        if 'employee' in initial:
-            employee_instance = initial['employee']
-            if employee_instance:
-                initial['employee_name'] = f"{employee_instance.first_name} {employee_instance.last_name}"
-                initial['employee_id'] = employee_instance.id
+        employee_instance = initial.get('employee', None)
+        if employee_instance:
+            initial['employee_name'] = f"{employee_instance.first_name} {employee_instance.last_name}"
+            initial['employee_id'] = employee_instance.employee_id  
         super().__init__(*args, **kwargs)
         self.initial = initial
 
@@ -135,17 +134,16 @@ class LeaveAddForm(forms.ModelForm):
         employee_id = cleaned_data.get('employee_id')
         leave_start_date = cleaned_data.get('leave_start_date')
         leave_end_date = cleaned_data.get('leave_end_date')
-        leave_type = cleaned_data.get('leave_type')
 
         if leave_start_date and leave_end_date:
             conflicting_leave = Leave.objects.filter(
                 employee_id=employee_id,
                 leave_start_date__lte=leave_end_date,
                 leave_end_date__gte=leave_start_date
-            ).exclude(leave_type=leave_type).exists()
+            ).exists()
 
             if conflicting_leave:
-                raise ValidationError('You cannot have Medical and Annual leave on the same day.')
+                raise ValidationError('You cannot have overlapping leaves on the same day.')
 
         return cleaned_data
 

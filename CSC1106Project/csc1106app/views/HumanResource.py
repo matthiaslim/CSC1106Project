@@ -20,6 +20,7 @@ from ..models.user import User
 from ..decorators import department_required
 from django.db.models import Q
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 
 # Employee Views
@@ -59,10 +60,13 @@ def employee_create(request):
                 employee.user = user
                 employee.save()
                 
+                messages.success(request, 'Employee created successfully.')
                 return redirect('employee_list')
             except IntegrityError:
                 form.add_error(None, "An employee with this user already exists.")
-            
+                messages.error(request, "An employee with this user already exists.")
+        else:
+            messages.error(request, 'Error Creating Employee. Please try again.')
     else:
         user_form = CustomUserCreationForm()
         form = EmployeeForm()
@@ -106,9 +110,14 @@ def employee_update(request, employee_id):
     
     if request.method == "POST":
         form = EmployeeForm(request.POST, instance=employee)
-        if form.is_valid():
+        user_form = UserEditForm(request.POST, instance=user)
+        if form.is_valid() and user_form.is_valid():
             form.save()
+            user_form.save()
+            messages.success(request, 'Employee updated successfully.')
             return redirect('employee_list')
+        else:
+            messages.error(request, 'Error Creating Employee. Please try again.')
     else:
         user_form = UserEditForm(instance=user)
         form = EmployeeForm(instance=employee)
@@ -159,7 +168,10 @@ def department_create(request):
         form = DepartmentForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Department created successfully.')
             return redirect('department_list')
+        else:
+            messages.error(request, 'There was an error creating the department.')
     else:
         form = DepartmentForm()
     return render(request, 'hrms/department_form.html', {'form': form})
@@ -308,50 +320,49 @@ def add_leave(request):
     leave_balance, created = LeaveBalance.objects.get_or_create(employee=logged_in_employee)
 
     if request.method == 'POST':
-
         form = LeaveAddForm(request.POST)
         if form.is_valid():
-            leave = form.save(commit=False)
-            leave.employee = logged_in_employee
-            leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1
+            try:
+                leave = form.save(commit=False)
+                leave.employee = logged_in_employee
+                leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1
 
-            leave_date_exists = Leave.objects.filter(
-                    leave_start_date__gte=leave.leave_start_date,
-                    leave_end_date__lte=leave.leave_end_date
-                ).exists()
-            
-            if (not leave_date_exists):
                 if leave_days <= 0:
-                    form.add_error(None, 'End date must be after start date.')
+                    messages.error(request, 'End date must be after start date.')
                 else:
                     if leave.leave_type == 'Annual':
                         if leave_days > leave_balance.annual_leave_balance:
-                            form.add_error(None, 'Not enough annual leave balance.')
+                            messages.error(request, 'Not enough annual leave balance.')
                         else:
                             leave_balance.annual_leave_balance -= leave_days
                             leave_balance.save()
                             leave.save()
+                            messages.success(request, 'Leave applied successfully.')
                             return redirect('leave_list')
 
                     elif leave.leave_type == 'Medical':
                         if leave_days > leave_balance.medical_leave_balance:
-                            form.add_error(None, 'Not enough medical leave balance.')
+                            messages.error(request, 'Not enough medical leave balance.')
                         else:
                             leave_balance.medical_leave_balance -= leave_days
                             leave_balance.save()
                             leave.save()
+                            messages.success(request, 'Leave applied successfully.')
                             return redirect('leave_list')
-            else: 
-                return redirect('leave_list')
+            except ValidationError as e:
+                messages.error(request, e.message)
+        else:
+            for error in form.non_field_errors():
+                messages.error(request, error)
     else:
         employeeData = request.user.employee
-
-        initial_data = {"employee_name" : f"{employeeData.first_name} {employeeData.last_name}",
-                        "employee_id" : employeeData.employee_id}
-
+        initial_data = {
+            "employee_name": f"{employeeData.first_name} {employeeData.last_name}",
+            "employee_id": employeeData.employee_id
+        }
         form = LeaveAddForm(initial=initial_data)
 
-    return render(request, 'hrms/leave_add.html', {'form': form})
+    return render(request, 'hrms/leave_add.html', {'form': form, 'leave_balance': leave_balance})
 
 @login_required
 @department_required('Human Resource')
