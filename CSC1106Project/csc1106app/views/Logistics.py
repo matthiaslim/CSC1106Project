@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from ..forms import ProductForm, editProductForm
 from ..models.product import Product
 from ..models.invoice import Invoice
@@ -43,9 +44,11 @@ def add_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid:
             form.save()
+            messages.add_message(request, messages.SUCCESS, 'Product successfully created.')
             return redirect('inventory_management')
     else:
         form = ProductForm()
+        messages.add_message(request, messages.ERROR, 'Error adding product.')
     return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs, 'form': form})
 
 
@@ -87,7 +90,7 @@ def update_product(request, pk):
         
         if order.is_valid():
             order.save()
-            return JsonResponse({'status' : 200, 'message' : 'updated product successfully'})
+            messages.add_message(request, messages.SUCCESS, 'updated product successfully')
         else:
             return JsonResponse({'status':400, 'message' : order.errors})
 
