@@ -46,9 +46,11 @@ def add_product(request):
             form.save()
             messages.add_message(request, messages.SUCCESS, 'Product successfully created.')
             return redirect('inventory_management')
+        else:
+            messages.add_message(request, messages.ERROR, 'Error adding product.')
     else:
         form = ProductForm()
-        messages.add_message(request, messages.ERROR, 'Error adding product.')
+        
     return render(request, 'inventory/add_product.html', {'breadcrumbs': breadcrumbs, 'form': form})
 
 

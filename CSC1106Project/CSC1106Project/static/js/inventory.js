@@ -32,20 +32,25 @@ function openProductView(productId) {
     });
 }
 
-function deleteProduct(productID, productName) {
-    var deleteConfirmation = confirm(`Are you sure you want to delete this product: ${productName}?`);
+function deleteProductModal(productID,productName){
+    $('#deleteProductid').val(productID);
+    $('#deleteProductName').text(productName);
+    $("#deleteProductViewModal").modal('show');
+}
 
-    if (deleteConfirmation) {
-        var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
-        $.ajax({
-            url: `delete/${productID}`,
-            method: 'DELETE',
-            headers: { 'X-CSRFToken': csrf_token },
-            success: function (response) {
-                window.location.reload();
-            }
-        });
-    }
+
+function deleteProduct() {
+    var productID = $("#deleteProductid").val();
+    var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+    $.ajax({
+        url: `delete/${productID}`,
+        method: 'DELETE',
+        headers: { 'X-CSRFToken': csrf_token },
+        success: function (response) {
+            window.location.reload();
+        }
+    });
+    
 }
 
 function editProductView(productID) {
@@ -124,6 +129,11 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    $("#submitDeleteButton").on("click", function(){
+        deleteProduct();
+    })
 
     $('#submitEditProduct').on('click', function () {
         $('#editProductForm').submit();

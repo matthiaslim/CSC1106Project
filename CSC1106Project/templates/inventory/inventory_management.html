@@ -41,14 +41,13 @@
                                    title="Update Product">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
-                                <a onclick="editProductView('{{ product.product_id }}')" data-bs-toggle="modal" ,
+                                <a onclick="editProductView('{{ product.product_id }}')" data-bs-toggle="modal"
                                    data-bs-target="#editProductViewModal" class="btn btn-sm btn-secondary"
                                    title="Update Product">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a onclick="deleteProduct('{{ product.product_id }}','{{ product.product_name }}')"
+                                <a onclick="deleteProductModal('{{ product.product_id }}' ,'{{product.product_name}}')" data-bs-toggle="modal" data-bs-target="#deleteProductViewModal"
                                    class="btn btn-sm btn-danger" title="Delete Product">
-                                    {% csrf_token %}
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </td>
@@ -62,6 +61,7 @@
 
     {% include  './modal/add_bootstrap_modal.html' %}
     {% include './modal/edit_bootstrap_modal.html' %}
+    {% include './modal/delete_bootstrap_modal.html' %}
 {% endblock %}
 
 {% block scripts %}
