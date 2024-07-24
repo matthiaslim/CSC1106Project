@@ -71,7 +71,7 @@ class Command(BaseCommand):
                     job_title='Administrator',
                     gender='NA',
                     date_of_birth='1970-01-01',  # Example date
-                    hire_date=timezone.today().strftime('%Y-%m-%d'),  # Example date
+                    hire_date=timezone.now().strftime('%Y-%m-%d'),  # Example date
                     employee_role='Administrator',
                     onboarded=True  # Set onboarded to True for the superuser
                 )
