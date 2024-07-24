@@ -9,7 +9,6 @@ from ..forms import ChangePasswordForm, CustomAuthenticationForm
 from ..models import Employee
 from ..models import UserSession
 from django.contrib.sessions.models import Session
-from django.utils import timezone
 from datetime import datetime
 
 

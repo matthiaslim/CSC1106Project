@@ -2,9 +2,8 @@ from django.utils.deprecation import MiddlewareMixin
 from django.contrib.sessions.models import Session
 from django.contrib.auth import get_user_model
 from .models import UserSession
-from django.contrib import messages
-from django.utils import timezone
 from django.shortcuts import render
+from datetime import datetime
 
 User = get_user_model()
 
@@ -35,7 +34,7 @@ class SingleSessionMiddleware(MiddlewareMixin):
                 request.session.session_invalid = True
                 return 
 
-            if created or user_session.expiry_date < timezone.now() or not existing_session_exists:
+            if created or user_session.expiry_date < datetime.now() or not existing_session_exists:
                 user_session.session_id = current_session.session_key
                 user_session.expiry_date = current_session.expire_date
                 user_session.save()

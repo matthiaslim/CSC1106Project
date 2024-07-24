@@ -1,6 +1,5 @@
 import base64
 from django.core.files.base import ContentFile
-from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -21,7 +20,6 @@ from ..models.user import User
 from ..decorators import department_required
 from datetime import datetime
 from django.db.models import Q
-from django.utils import timezone
 
 
 
@@ -423,7 +421,7 @@ def payroll_list(request):
 @login_required
 @department_required('Human Resource')
 def generate_payroll(request):
-    current_month = timezone.now().replace(day=1)
+    current_month = datetime.now().replace(day=1)
 
     if Payroll.objects.filter(month=current_month).exists():
         messages.warning(request, 'Payroll for the current month has already been generated.')
