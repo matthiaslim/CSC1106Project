@@ -2,9 +2,9 @@ from django.utils.deprecation import MiddlewareMixin
 from django.contrib.sessions.models import Session
 from django.contrib.auth import get_user_model
 from .models import UserSession
-from django.contrib import messages
-from django.utils import timezone
 from django.shortcuts import render
+from django.utils import timezone
+
 
 User = get_user_model()
 

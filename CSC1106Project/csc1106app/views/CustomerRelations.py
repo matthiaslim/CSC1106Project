@@ -5,9 +5,9 @@ from ..forms import CreateCustomerForm
 from ..models.membership import Membership
 from ..crud_ops import *
 from ..decorators import department_required
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from ..filters import MembershipFilter
+from django.utils import timezone
 
 
 # Customer Views
@@ -74,7 +74,7 @@ def create_customer(request):
             gender = form.cleaned_data.get('gender')
             address = form.cleaned_data.get('address')
 
-            expiry_date = datetime.now() + relativedelta(years=1)
+            expiry_date = timezone.now() + relativedelta(years=1)
             m1 = Membership(first_name=first_name, last_name=last_name, email_address=email_address,
                             phone_number=phone_number, points_expiry_date=expiry_date, member_expiry_date=expiry_date,
                             membership_status=membership_status, points=0, membership_level="Bronze", address=address,

@@ -3,7 +3,7 @@ from csc1106app.models.department import Department
 
 from csc1106app.models.user import User
 from csc1106app.models.employee import Employee
-from datetime import datetime
+from django.utils import timezone
 
 
 class Command(BaseCommand):
@@ -33,7 +33,7 @@ class Command(BaseCommand):
                         job_title= job_title,
                         gender='Male',
                         date_of_birth='1970-01-01',  # Example date
-                        hire_date=datetime.today().strftime('%Y-%m-%d'),  # Example date
+                        hire_date=timezone.today().strftime('%Y-%m-%d'),  # Example date
                         employee_role= job_title ,
                         onboarded=True  # Set onboarded to True for the superuser
                     )

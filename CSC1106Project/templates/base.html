@@ -48,7 +48,7 @@
             <div class="collapse {% if 'inventory' in request.path %}show{% endif %}" id="collapse-inventory">
                 <a class="collapse-item {% if request.path == '/inventory/management' %}active{% endif %}"
                    href="{% url 'inventory_management' %}">Manage Products</a>
-                   <a class="collapse-item {% if request.path == '/inventory/order_management' %}active{% endif %}"
+                <a class="collapse-item {% if request.path == '/inventory/order_management' %}active{% endif %}"
                    href="{% url 'order_management' %}">Manage Orders</a>
             </div>
             {% endif %}
@@ -61,14 +61,14 @@
                     <i class="bi bi-wallet"></i> Finance
                 </div>
                 <i class="bi bi-chevron-right collapse-head" id="caret-finance"></i>
-            </a>  
+            </a>
             <div class="collapse {% if 'finance' in request.path %}show{% endif %}" id="collapse-finance">
                 <a class="collapse-item {% if request.path == '/finance/sales' %}active{% endif %}"
-                    href="{% url 'sales_management' %}">Sales</a>
+                   href="{% url 'sales_management' %}">Sales</a>
                 <a class="collapse-item {% if request.path == '/finance/orders' %}active{% endif %}"
-                    href="{% url 'invoice_management' %}">Purchase Order</a>
+                   href="{% url 'invoice_management' %}">Purchase Order</a>
                 <a class="collapse-item {% if request.path == '/finance/financial_report' %}active{% endif %}"
-                    href="{% url 'financial_report' %}">Financial Report</a>
+                   href="{% url 'financial_report' %}">Financial Report</a>
             </div>
 
             {% endif %}
@@ -97,9 +97,9 @@
                 </div>
                 <i class="bi bi-chevron-right collapse-head" id="caret-hrm"></i>
             </a>
-               
+
             <div class="collapse {% if 'hr' in request.path %}show{% endif %}" id="collapse-hrm">
-                {% if  user_data.department.department_name == "Human Resource" or user_data.department.department_name == "Chairman"%}
+                {% if user_data.department.department_name == "Human Resource" or user_data.department.department_name == "Chairman"%}
                 <a class="collapse-item {% if request.path == '/hr/employees/' %}active{% endif %}"
                    href="{% url 'employee_list' %}">Employee</a>
                 <a class="collapse-item {% if request.path == '/hr/departments/' %}active{% endif %}"
@@ -193,6 +193,25 @@
     </div>
 </div>
 
+<!-- Bootstrap Modal for Session Expiration -->
+<div class="modal fade" id="sessionWarningModal" tabindex="-1" aria-labelledby="sessionWarningModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sessionWarningModalLabel">Session Expired</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Your session is about to expire in 1 minute. Please log in again to continue.
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'login' %}" class="btn btn-primary">Log in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% if permission_denied %}
 <script>
     window.onload = function () {
@@ -218,6 +237,28 @@
             "pagingType": "simple_numbers"
         });
     });
+</script>
+<!-- Custom JavaScript for session timeout -->
+<script>
+    // Set the session timeout duration (same as SESSION_COOKIE_AGE in milliseconds)
+    let sessionTimeoutDuration = 600000;
+    let warningTime = 60000;
+
+    // Function to show session warning
+    function showSessionWarning() {
+        let myModal = new bootstrap.Modal(document.getElementById('sessionWarningModal'));
+        myModal.show();
+    }
+
+    // Function to redirect to login page
+    function redirectToLogin() {
+        window.location.href = "{% url 'login' %}";
+    }
+
+    // Set up warnings and redirection
+    setTimeout(showSessionWarning, sessionTimeoutDuration - warningTime);
+    setTimeout(redirectToLogin, sessionTimeoutDuration);
+
 </script>
 {% block scripts %}
 {% endblock %}

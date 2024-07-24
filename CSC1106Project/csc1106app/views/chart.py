@@ -3,28 +3,30 @@ from django.http import JsonResponse
 from django.db.models import Sum
 from datetime import datetime
 from collections import defaultdict
+from django.utils import timezone
 
 def display_chart_information(request):
-    current_year = datetime.now().year
+    current_year = timezone.now().year
 
     transactionProductItem = TransactionProduct.objects.filter(transaction_id__transaction_date__year=current_year)
-    month = []
-    data = []
     monthly_sums = defaultdict(float)
 
     for item in transactionProductItem:
         transaction_date = item.transaction_id.transaction_date
-        
-
         month_year = transaction_date.strftime("%m")
-        month_year = datetime.strptime(month_year,"%m").strftime("%B")
-   
-        monthly_sums[month_year] += round(item.transaction_price_per_unit * item.transaction_quantity,2)
+        month_year_name = datetime.strptime(month_year, "%m").strftime("%B")
+        monthly_sums[month_year_name] += round(item.transaction_price_per_unit * item.transaction_quantity, 2)
 
-    
-    for month_year, total_price in monthly_sums.items():
-        month.append(month_year)
-        data.append(total_price)
+    # Create a list of months in the order they appear in the year
+    months_order = [datetime(2024, i, 1).strftime("%B") for i in range(1, 13)]
+
+    # Sort monthly_sums based on the months_order
+    sorted_monthly_sums = {month: monthly_sums[month] for month in months_order if month in monthly_sums}
+
+    # Prepare the data for chart
+    month = list(sorted_monthly_sums.keys())
+    data = list(sorted_monthly_sums.values())
+
     
     return JsonResponse({'month':month, 'data':data})
 

@@ -2,14 +2,15 @@
 
 from django.core.management.base import BaseCommand
 from csc1106app.models import Payroll, Employee
-from datetime import datetime, timedelta
+from datetime import  timedelta
 from decimal import Decimal
+from django.utils import timezone
 
 class Command(BaseCommand):
     help = 'Generate payroll for all employees'
 
     def handle(self, *args, **kwargs):
-        current_month = datetime.now().replace(day=1)
+        current_month = timezone.now().replace(day=1)
 
         # Check if payroll for the current month already exists
         if Payroll.objects.filter(month=current_month).exists():

@@ -1,6 +1,5 @@
 import base64
 from django.core.files.base import ContentFile
-from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -19,10 +18,8 @@ from ..models.leaveBalance import LeaveBalance
 from ..models.payroll import Payroll
 from ..models.user import User
 from ..decorators import department_required
-from datetime import datetime
 from django.db.models import Q
 from django.utils import timezone
-
 
 
 # Employee Views
@@ -224,16 +221,15 @@ def attendance_create(request):
                 messages.error(request, 'Employee not found for the logged-in user.')
                 return render(request, 'hrms/attendance_form.html')
 
-            print(datetime.now())
 
             attendance = Attendance(
                 employee=employee, 
-                time_in=datetime.now(),
+                time_in=timezone.now(),
                 image=data
             )
             attendance.save()
             messages.success(request, 'You have successfully checked in.')
-            return redirect('attendance_list')
+            return redirect('home')
 
     return render(request, 'hrms/attendance_form.html')
 
@@ -242,7 +238,7 @@ def attendance_create(request):
 def attendance_check_out(request):
     try:
         attendance = Attendance.objects.filter(employee=request.user.employee, time_out__isnull=True).latest('time_in')
-        attendance.time_out = datetime.now()
+        attendance.time_out = timezone.now()
         attendance.save()
         messages.success(request, 'You have successfully checked out.')
     except Attendance.DoesNotExist:

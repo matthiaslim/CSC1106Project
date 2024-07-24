@@ -14,7 +14,7 @@ from ..decorators import department_required
 @department_required('Logistics')
 def inventory_management(request):
     # Fetch all products initially
-    products = Product.objects.all()
+    products = Product.objects.all().filter(is_deleted=0)
 
     # Handle filtering based on request parameters
     product_name = request.GET.get('product_name')
@@ -104,11 +104,12 @@ def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     try:
         if request.method == 'DELETE':
-            product.delete()
+            product.is_deleted = True
+            product.save()
         return JsonResponse({'status': 200, 'message': 'Product deleted successfully.'})
     except:
         return JsonResponse({'status': 400, 'message': 'Bad request.'})
-    
+
 
 @login_required
 @department_required('Logistics')

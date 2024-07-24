@@ -19,6 +19,7 @@ class Product(models.Model):
     product_height = models.IntegerField()
     product_length = models.IntegerField()
     product_image = models.ImageField(upload_to=product_image_path, null=True, blank=True)
+    is_deleted = models.BooleanField(default=False)
 
     def product_total_value(self):
         return self.product_quantity * self.product_sale_price

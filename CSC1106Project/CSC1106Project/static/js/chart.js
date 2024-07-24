@@ -97,6 +97,8 @@ function populateTopSalesPerMonth(){
     success: function(response){
       labels = response.month;
       data = response.data;
+
+      console.log(labels);
       if (data.length > 0){
           
           new Chart(ctx, {

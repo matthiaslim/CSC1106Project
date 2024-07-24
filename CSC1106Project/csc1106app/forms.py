@@ -315,13 +315,8 @@ class InvoiceProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Fetch the products and generate the product items list dynamically
-        products = Product.objects.all()
-        product_items = [(product.product_id, f"{product.product_name} - ${product.product_sale_price}") for product in
-                         products]
-
         # Set the product_id field dynamically
-        self.fields['product_id'] = forms.ModelChoiceField(queryset=Product.objects.all(),
+        self.fields['product_id'] = forms.ModelChoiceField(queryset=Product.objects.all().filter(is_deleted=0),
                                                       widget=forms.Select(attrs={'class': 'form-select'}))
 
         # Modify invoice_quantity field
@@ -367,7 +362,7 @@ class SalesProductForm(forms.ModelForm):
         super(SalesProductForm, self).__init__(*args, **kwargs)
 
         # Dynamically populate the product choices
-        products = Product.objects.all()
+        products = Product.objects.all().filter(is_deleted=0)
         product_items = [(product.product_id, f"{product.product_name} - ${product.product_sale_price} ({product.product_quantity})") for product in
                          products]
 
