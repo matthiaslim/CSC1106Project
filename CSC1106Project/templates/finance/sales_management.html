@@ -186,10 +186,10 @@
             {#const transactionRows = document.querySelectorAll('.transaction-row');#}
             {##}
             {#transactionRows.forEach(row => {#}
-            {#    // console.log('Event listener row:', row);#}
+            {#    #}
             {#    row.addEventListener('click', function () {#}
             {#        const element_transaction_id = this.getAttribute('data-transaction-id');#}
-            {#        // console.log('Clicked row transaction ID:', element_transaction_id);#}
+            {#        #}
             {#        const productRow = document.getElementById(`products-${element_transaction_id}`);#}
             {##}
             {#        if (productRow) {#}

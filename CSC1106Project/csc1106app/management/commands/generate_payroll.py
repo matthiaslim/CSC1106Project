@@ -23,18 +23,10 @@ class Command(BaseCommand):
         for employee in Employee.objects.all():
             hours_worked = employee.calculate_hours_worked(start_date, end_date)
             hourly_rate = employee.hourly_rate
-            print(f"Employee: {employee.first_name} {employee.last_name}, Job Title: {employee.job_title}, Hourly Rate: {hourly_rate}")
             gross_salary = Decimal(hours_worked * hourly_rate)
             cpf_deduction = gross_salary * Decimal('0.17')
             bonus = Decimal('0.00')  # Set initial bonus to 0, HR can edit later
             net_salary = gross_salary - cpf_deduction + bonus
-
-            # Debugging statements
-            print(f"Hours Worked: {hours_worked}")
-            print(f"Gross Salary: {gross_salary}")
-            print(f"CPF Deduction: {cpf_deduction}")
-            print(f"Bonus: {bonus}")
-            print(f"Net Salary: {net_salary}")
 
             Payroll.objects.create(
                 employee=employee,
