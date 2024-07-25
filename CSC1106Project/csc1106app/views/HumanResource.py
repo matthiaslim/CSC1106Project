@@ -153,14 +153,6 @@ def department_list(request):
         'order': order
     })
 
-
-@login_required
-@department_required('Human Resource')
-def department_detail(request, department_id):
-    department = get_object_or_404(Department, pk=department_id)
-    return render(request, 'hrms/department_detail.html', {'department': department})
-
-
 @login_required
 @department_required('Human Resource')
 def department_create(request):
@@ -322,35 +314,40 @@ def add_leave(request):
     if request.method == 'POST':
         form = LeaveAddForm(request.POST)
         if form.is_valid():
-            try:
-                leave = form.save(commit=False)
-                leave.employee = logged_in_employee
-                leave_days = (leave.leave_end_date - leave.leave_start_date).days + 1
+            leave_start_date = form.cleaned_data.get('leave_start_date')
+            leave_end_date = form.cleaned_data.get('leave_end_date')
+            leave_type = form.cleaned_data.get('leave_type')
 
-                if leave_days <= 0:
-                    messages.error(request, 'End date must be after start date.')
+            leave_days = (leave_end_date - leave_start_date).days + 1
+            if leave_days <= 0:
+                messages.error(request, 'End date must be after start date.')
+            else:
+                conflicting_leave = Leave.objects.filter(
+                    employee=logged_in_employee,
+                    leave_start_date__lte=leave_end_date,
+                    leave_end_date__gte=leave_start_date
+                ).exists()
+
+                if conflicting_leave:
+                    messages.error(request, 'You cannot have overlapping leaves on the same day.')
                 else:
-                    if leave.leave_type == 'Annual':
-                        if leave_days > leave_balance.annual_leave_balance:
-                            messages.error(request, 'Not enough annual leave balance.')
-                        else:
+                    if leave_type == 'Annual' and leave_days > leave_balance.annual_leave_balance:
+                        messages.error(request, 'Not enough annual leave balance.')
+                    elif leave_type == 'Medical' and leave_days > leave_balance.medical_leave_balance:
+                        messages.error(request, 'Not enough medical leave balance.')
+                    else:
+                        leave = form.save(commit=False)
+                        leave.employee = logged_in_employee
+                        leave.save()
+                        
+                        if leave_type == 'Annual':
                             leave_balance.annual_leave_balance -= leave_days
-                            leave_balance.save()
-                            leave.save()
-                            messages.success(request, 'Leave applied successfully.')
-                            return redirect('leave_list')
-
-                    elif leave.leave_type == 'Medical':
-                        if leave_days > leave_balance.medical_leave_balance:
-                            messages.error(request, 'Not enough medical leave balance.')
-                        else:
+                        elif leave_type == 'Medical':
                             leave_balance.medical_leave_balance -= leave_days
-                            leave_balance.save()
-                            leave.save()
-                            messages.success(request, 'Leave applied successfully.')
-                            return redirect('leave_list')
-            except ValidationError as e:
-                messages.error(request, e.message)
+                        leave_balance.save()
+
+                        messages.success(request, 'Leave applied successfully.')
+                        return redirect('leave_list')
         else:
             for error in form.non_field_errors():
                 messages.error(request, error)
