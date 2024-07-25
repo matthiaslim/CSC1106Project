@@ -8,7 +8,7 @@ from .CustomerRelations import (customer_management,customer_details,create_cust
 
 from .HumanResource import (employee_list, employee_detail, employee_create, employee_update, employee_delete,
                             department_list,
-                            department_detail, department_create, department_update, attendance_list,
+                            department_create, department_update, attendance_list,
                             attendance_create, attendance_check_out, attendance_detail, attendance_update, leave_list,
                             add_leave,
                             edit_leave_status, payroll_list, edit_payroll_bonus, generate_payroll, employee_unlock)
