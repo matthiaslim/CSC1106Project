@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
 from datetime import date, timedelta
 from .models import *
+from django.utils import timezone 
 
 import datetime
 
@@ -245,7 +246,7 @@ class CreateCustomerForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'email_address', 'phone_number', 'date_of_birth', 'country',
                   'membership_status', 'gender', 'address']
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'max': datetime.datetime.now().date()}),
             'country': forms.Select(),
             'membership_status': forms.Select(),
             'gender': forms.Select(),

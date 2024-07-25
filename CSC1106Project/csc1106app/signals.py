@@ -1,7 +1,7 @@
 import os
 
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save, post_delete, pre_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save, post_delete, pre_delete
 from django.contrib.auth.signals import user_logged_in, user_login_failed
 from django.dispatch import receiver
 from .models import Employee, LeaveBalance, Transaction, Invoice, FailedLogin
@@ -119,9 +119,10 @@ def update_image_path(sender, instance, created, **kwargs):
                 instance.product_image.name = product_image_path(instance, os.path.basename(instance.product_image.name))
                 instance.save()
 
-@receiver(post_delete, sender=Product)
+@receiver(pre_delete, sender=Product)
 def delete_image_file(sender, instance, **kwargs):
     if instance.product_image:
+        print(instance.product_image)
         file_path = os.path.join(settings.MEDIA_ROOT, instance.product_image.name)
 
         if os.path.isfile(file_path):

@@ -91,8 +91,6 @@ def update_product(request, pk):
 
     if request.method == 'POST':
         form = editProductForm(request.POST, request.FILES, instance=product)
-        print(product)
-        print(form)
         if form.is_valid:
             form.save()
             messages.add_message(request, messages.SUCCESS, 'Product has been updated successfully')

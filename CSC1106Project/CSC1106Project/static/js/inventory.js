@@ -115,7 +115,7 @@ function validateFileType(input) {
             var productId = $('#edit_product_id').val();
             var formData = new FormData($('#editProductForm')[0]);
 
-            if (formData.get('product_length') > 0  && formData.get('product_width') > 0 && formData.get('product_height') > 0 && formData.get('product_sale_price')) {
+            if (formData.get('product_length') > 0  && formData.get('product_width') > 0 && formData.get('product_height') > 0 && formData.get('product_sale_price') > 0) {
                 $.ajax({
                     url: `update/${productId}`,
                     method: "POST",
