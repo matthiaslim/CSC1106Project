@@ -78,7 +78,6 @@ urlpatterns = [
 
     # Department URLs
     path('hr/departments/', views.department_list, name='department_list'),
-    path('hr/departments/<int:department_id>/', views.department_detail, name='department_detail'),
     path('hr/departments/create/', views.department_create, name='department_create'),
     path('hr/departments/<int:department_id>/update/', views.department_update, name='department_update'),
 

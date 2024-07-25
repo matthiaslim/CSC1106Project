@@ -137,9 +137,10 @@ def edit_order(request,pk):
         for invoice in invoices:
             product = get_object_or_404(Product, pk=invoice.product_id.product_id)
             product.product_quantity += invoice.invoice_quantity
+            
             product.save()
-
-        return JsonResponse({'success': True, 'message' : "successfully update the order."})
+        messages.add_message(request, messages.SUCCESS, 'Product successfully created.')
+        return render(request, 'order_management')
     
     return render(request, 'inventory/edit_order.html',{"invoices":invoices})
   
