@@ -84,6 +84,7 @@ def create_customer(request):
             return redirect('customer_management')
         else:
             messages.add_message(request, messages.ERROR, 'Failed to create customer.')
+            return redirect('customer_management')
     else:
         form = CreateCustomerForm()
 
@@ -117,6 +118,7 @@ def update_customer(request, customerID):
             return redirect('customer_management')
         else:
             messages.add_message(request, messages.ERROR, 'Failed to save customer details.')
+            return redirect('customer_management')
     else:
 
         form = CreateCustomerForm(instance=membership)
