@@ -7,12 +7,8 @@ from .Logistics import (inventory_management,add_product,get_product,update_prod
 from .CustomerRelations import (customer_management,customer_details,create_customer,update_customer,delete_customer)
 
 from .HumanResource import (employee_list, employee_detail, employee_create, employee_update, employee_delete,
-<<<<<<< HEAD
                             department_list,
                             department_create, department_update, attendance_list,
-=======
-                            department_list, department_create, department_update, attendance_list,
->>>>>>> 7e7f1f6acb1032d712ac60799506547548e7d36d
                             attendance_create, attendance_check_out, attendance_detail, attendance_update, leave_list,
                             add_leave,
                             edit_leave_status, payroll_list, edit_payroll_bonus, generate_payroll, employee_unlock)
