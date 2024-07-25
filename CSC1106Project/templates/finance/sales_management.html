@@ -117,28 +117,6 @@
                                     </form>
                                 </td>
                             </tr>
-                            {#                                <tr class="transactionProduct" id="products-{{ transaction.transaction_id }}" style="display: none;">#}
-                            {#                                <td colspan="5">#}
-                            {#                                    <table id="transactionProductTable" class="table table-hover">#}
-                            {#                                        <thead>#}
-                            {#                                            <tr>#}
-                            {#                                                <th class="product">Product Name</th>#}
-                            {#                                                <th class="quantity">Quantity</th>#}
-                            {#                                                <th class="price">Price</th>#}
-                            {#                                            </tr>#}
-                            {#                                        </thead>#}
-                            {#                                        <tbody>#}
-                            {#                                         tnspdt product name, quantity, price     #}
-                            {#                                        {% for item in transaction.transactionproduct_set.all %}#}
-                            {#                                        <tr class="transaction-product-row" id="products-{{ transaction.transaction_id }}">#}
-                            {#                                            <td>{{ item.product_id.product_name }}</td>#}
-                            {#                                            <td>{{ item.transaction_quantity }}</td>#}
-                            {#                                            <td>{{ item.transaction_price_per_unit }}</td>#}
-                            {#                                        </tr>#}
-                            {#                                        {% endfor %}#}
-                            {#                                        </tbody>#}
-                            {#                                    </table>#}
-                            {#                                </td>    #}
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -182,27 +160,6 @@
                     }
                 });
             });
-
-            {#const transactionRows = document.querySelectorAll('.transaction-row');#}
-            {##}
-            {#transactionRows.forEach(row => {#}
-            {#    #}
-            {#    row.addEventListener('click', function () {#}
-            {#        const element_transaction_id = this.getAttribute('data-transaction-id');#}
-            {#        #}
-            {#        const productRow = document.getElementById(`products-${element_transaction_id}`);#}
-            {##}
-            {#        if (productRow) {#}
-            {#            if (productRow.style.display === 'none' || productRow.style.display === '') {#}
-            {#                productRow.style.display = 'table-row';#}
-            {#            } else {#}
-            {#                productRow.style.display = 'none';#}
-            {#            }#}
-            {#        } else {#}
-            {#            console.error('Product row not found for ID:', element_transaction_id);#}
-            {#        }#}
-            {#    });#}
-            {# });#}
 
             $('#salesTable').DataTable({
                 "columnDefs": [

@@ -86,7 +86,6 @@
                                 {{ form.status }}
                             </div>
                         </div>
-                        {#                        {{ form.as_p }}#}
                     </form>
                     <table id="invoiceTable" class="table table-hover">
                         <thead>
@@ -140,30 +139,6 @@
                                     </form>
                                 </td>
                             </tr>
-                            {#                        <tr class="invoiceProduct" id="products-{{ invoice.invoice_id }}" style="display: none;">#}
-                            {#                            <td colspan="10">#}
-                            {#                                <table id="invoiceProductTable" class="table table-hover">#}
-                            {#                                    <thead>#}
-                            {#                                        <tr>#}
-                            {#                                            <th>Product Name</th>#}
-                            {#                                            <th>Quantity</th>#}
-                            {#                                            <th>Price</th>#}
-                            {#                                            <th>Sub-total</th>#}
-                            {#                                        </tr>#}
-                            {#                                    </thead>#}
-                            {#                                    <tbody>#}
-                            {#                                    {% for item in invoice.invoiceproduct_set.all %}#}
-                            {#                                    <tr class="invoice-product-row" id="products-{{ invoice.invoice_id }}">#}
-                            {#                                        <td>{{ item.product_id.product_name }}</td>#}
-                            {#                                        <td>{{ item.invoice_quantity }}</td>#}
-                            {#                                        <td>{{ item.invoice_price_per_unit }}</td>#}
-                            {#                                        <td>{{ item.sub_total }}</td>#}
-                            {#                                    </tr>#}
-                            {#                                    {% endfor %}#}
-                            {#                                    </tbody>#}
-                            {#                                </table>#}
-                            {#                            </td>#}
-                            {#                        </tr>#}
                         {% endfor %}
                         </tbody>
                     </table>

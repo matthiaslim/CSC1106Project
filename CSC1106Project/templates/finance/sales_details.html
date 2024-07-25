@@ -72,7 +72,7 @@
                 <div class="bg-white rounded shadow">
                     {% csrf_token %}
                     <button class="btn btn-outline-secondary m-3"
-                            onclick="sendEmail({{ sales.transaction_id }})">
+                            onclick="sendEmail('{{ sales.transaction_id }}')">
                         <i class="bi bi-envelope"></i>
                         Email Sales
                     </button>
