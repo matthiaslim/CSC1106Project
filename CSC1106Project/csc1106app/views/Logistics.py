@@ -42,12 +42,14 @@ def add_product(request):
 
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-        if form.is_valid:
+        filepath = request.FILES['product_image'] if 'product_image' in request.FILES else False
+
+        if form.is_valid and filepath != False:
             form.save()
             messages.add_message(request, messages.SUCCESS, 'Product successfully created.')
             return redirect('inventory_management')
         else:
-            messages.add_message(request, messages.ERROR, 'Error adding product.')
+            messages.error(request, 'Product is missing some fields.')
     else:
         form = ProductForm()
         
@@ -88,16 +90,15 @@ def update_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
     if request.method == 'POST':
-        order = editProductForm(request.POST,request.FILES,instance=product)
-        
-        if order.is_valid():
-            order.save()
+        form = editProductForm(request.POST, request.FILES, instance=product)
+        print(product)
+        print(form)
+        if form.is_valid:
+            form.save()
             messages.add_message(request, messages.SUCCESS, 'Product has been updated successfully')
         else:
-            messages.add_message(request, messages.ERROR, 'Product has not been updated successfully')
-            return JsonResponse({'status':400 , 'message': "error"})
-    return JsonResponse({'status':200, 'message' :"update done"})
-   
+            return JsonResponse({"status":400,"message":form.errors})
+        return JsonResponse({'status':200,"message":"succeeded successfully"})
     
     
 
@@ -139,8 +140,9 @@ def edit_order(request,pk):
             product.product_quantity += invoice.invoice_quantity
             
             product.save()
-        messages.add_message(request, messages.SUCCESS, 'Product successfully created.')
-        return render(request, 'order_management')
+
+        messages.success(request, "Successfully imported product")
+        return redirect('order_management')
     
-    return render(request, 'inventory/edit_order.html',{"invoices":invoices})
+    return render(request, 'inventory/edit_order.html',{"invoices":invoices, "invoice_id":pk})
   

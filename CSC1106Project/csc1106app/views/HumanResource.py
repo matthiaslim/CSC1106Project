@@ -189,10 +189,9 @@ def department_update(request, department_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Department edited successfully.')
-            return redirect('department_list')
         else:
             messages.error(request, 'There was an error editing the department.')
-            return redirect('department_list')
+        return redirect('department_list')
     else:
         form = DepartmentForm(instance=department)
     return render(request, 'hrms/department_form.html', {'form': form})

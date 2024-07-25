@@ -54,6 +54,7 @@ function deleteProduct() {
 }
 
 function editProductView(productID) {
+
     $('#edit_product_id').val(productID);
     $.ajax({
         url: `get/${productID}`,
@@ -106,36 +107,39 @@ function validateFileType(input) {
 }
 
 
-$(document).ready(function () {
-    $('#editProductForm').on('submit', function (event) {
-        event.preventDefault(); // Prevent the default form submission
+    $(document).ready(function () {
+        $('#editProductForm').submit(function (event) {
+            event.preventDefault(); // Prevent the default form submission
 
-        var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
-        var formData = new FormData($('#editProductForm')[0]);
-        var productId = $('#edit_product_id').val();
+            var csrf_token = $('input[name=csrfmiddlewaretoken]').val();
+            var productId = $('#edit_product_id').val();
+            var formData = new FormData($('#editProductForm')[0]);
 
-        $.ajax({
-            url: `update/${productId}`,
-            method: "POST",
-            data: formData,
-            headers: { 'X-CSRFToken': csrf_token },
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                window.location.reload();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('Error: ' + errorThrown);
+            if (formData.get('product_length') > 0  && formData.get('product_width') > 0 && formData.get('product_height') > 0 && formData.get('product_sale_price')) {
+                $.ajax({
+                    url: `update/${productId}`,
+                    method: "POST",
+                    data:formData,
+                    headers: { 'X-CSRFToken': csrf_token },
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if(data.status == 200){
+                            window.location.reload();
+                        }
+                    }
+                });
+
             }
-        });
     });
+
 
 
     $("#submitDeleteButton").on("click", function(){
         deleteProduct();
     })
 
-    $('#submitEditProduct').on('click', function () {
+    $('#submitEditProduct').on('click', function (event) {
         $('#editProductForm').submit();
     });
 });

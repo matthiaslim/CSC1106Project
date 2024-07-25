@@ -191,12 +191,12 @@ class ProductForm(forms.ModelForm):
                 ("Nursery furniture", "Nursery furniture"),
                 ("Wardrobes", "Wardrobes")
             ]),
-            'product_quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_quantity': forms.NumberInput(attrs={'class': 'form-control', 'min':0}),
             'product_sale_price': forms.NumberInput(attrs={'class': 'form-control'}),
             'product_location': forms.TextInput(attrs={'class': 'form-control'}),
-            'product_width': forms.NumberInput(attrs={'class': 'form-control'}),
-            'product_height': forms.NumberInput(attrs={'class': 'form-control'}),
-            'product_length': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_width': forms.NumberInput(attrs={'class': 'form-control' , 'min':0}),
+            'product_height': forms.NumberInput(attrs={'class': 'form-control','min':0}),
+            'product_length': forms.NumberInput(attrs={'class': 'form-control','min':0}),
             'product_image': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
@@ -229,13 +229,15 @@ class editProductForm(forms.ModelForm):
                 ("Nursery furniture", "Nursery furniture"),
                 ("Wardrobes", "Wardrobes")
             ]),
-            'product_sale_price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_sale_price': forms.NumberInput(attrs={'class': 'form-control','min':0}),
             'product_location': forms.TextInput(attrs={'class': 'form-control'}),
-            'product_length': forms.NumberInput(attrs={'class': 'form-control'}),
-            'product_width': forms.NumberInput(attrs={'class': 'form-control'}),
-            'product_height': forms.NumberInput(attrs={'class': 'form-control'}),
+            'product_length': forms.NumberInput(attrs={'class': 'form-control','min':0}),
+            'product_width': forms.NumberInput(attrs={'class': 'form-control','min':0}),
+            'product_height': forms.NumberInput(attrs={'class': 'form-control','min':0}),
         
         }
+
+        
 
 class CreateCustomerForm(forms.ModelForm):
     class Meta:
