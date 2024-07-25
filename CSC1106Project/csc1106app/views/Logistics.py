@@ -3,9 +3,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from ..forms import ProductForm, editProductForm
-from ..models.product import Product
-from ..models.invoice import Invoice
-from ..models.invoiceProduct import InvoiceProduct
 from ..crud_ops import *
 from ..decorators import department_required
 

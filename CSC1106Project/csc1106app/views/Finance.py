@@ -10,7 +10,6 @@ from django.contrib import messages
 
 from ..forms import InvoiceForm, InvoiceProductFormSet, SalesForm, SalesProductFormSet
 from ..filters import InvoiceFilter, SalesFilter
-from ..models.product import Product
 from ..crud_ops import *
 from ..decorators import department_required
 

@@ -20,7 +20,6 @@ from ..models.user import User
 from ..decorators import department_required
 from django.db.models import Q
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 
 
 # Employee Views
