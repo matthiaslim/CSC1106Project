@@ -117,7 +117,7 @@
                                        class="btn btn-primary btn-small">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
-                                    {% if user_data.employee_role == "Manager" or user_data.employee_role == "Chairman" %}
+                                    {% if user_data.employee_role == "Manager" or user_data.department.department_name == "Chairman" %}
                                         {% if invoice.status == 'Pending' %}
 
                                             <a onclick="openEditBootstrapModal('{{ invoice.invoice_id }}','{{ invoice.status }}')"

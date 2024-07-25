@@ -126,7 +126,7 @@ def employee_update(request, employee_id):
             messages.success(request, 'Employee updated successfully.')
             return redirect('employee_list')
         else:
-            messages.error(request, 'Error Creating Employee. Please try again.')
+            messages.error(request, 'Employee Creation Failed.')
     else:
         user_form = UserEditForm(instance=user)
         form = EmployeeForm(instance=employee)
@@ -172,7 +172,7 @@ def department_create(request):
             messages.success(request, 'Department created successfully.')
             return redirect('department_list')
         else:
-            messages.error(request, 'There was an error creating the department.')
+            messages.error(request, 'Department creation failed.')
             return redirect('department_list')
     else:
         form = DepartmentForm()
@@ -189,7 +189,7 @@ def department_update(request, department_id):
             form.save()
             messages.success(request, 'Department edited successfully.')
         else:
-            messages.error(request, 'There was an error editing the department.')
+            messages.error(request, 'Departmnet update failed')
         return redirect('department_list')
     else:
         form = DepartmentForm(instance=department)
