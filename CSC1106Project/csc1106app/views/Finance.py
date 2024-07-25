@@ -101,7 +101,7 @@ def create_sales(request):
 
                     formset.instance = sales
                     formset.save()
-                    pdf_buffer = generate_sales(sales)
+                    generate_sales(sales)
                     messages.success(request, 'Sales order successfully created')
                     return redirect('sales_management')
 
@@ -155,7 +155,7 @@ def update_sales(request, sales_id):
             payment_terms=request.POST.get('payment_terms'),
             transaction_date=request.POST.get('transaction_date')
         )
-
+        messages.success(request,"Successfully updated the Invoice")
         return JsonResponse({'success': True})
 
 
@@ -299,6 +299,7 @@ def create_invoice(request):
 def update_invoice(request, invoice_id):
     if request.method == "POST":
         Invoice.objects.filter(invoice_id=invoice_id).update(status=request.POST.get('product_status'))
+        messages.success(request,"Successfully updated invoice")
         return JsonResponse({'success': True})
 
 

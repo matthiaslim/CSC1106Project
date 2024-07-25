@@ -122,7 +122,6 @@ def update_image_path(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Product)
 def delete_image_file(sender, instance, **kwargs):
     if instance.product_image:
-        print(instance.product_image)
         file_path = os.path.join(settings.MEDIA_ROOT, instance.product_image.name)
 
         if os.path.isfile(file_path):
