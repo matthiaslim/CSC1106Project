@@ -275,10 +275,12 @@ class InvoiceForm(forms.ModelForm):
     max_date = (datetime.datetime.now() + datetime.timedelta(days=365)).date()
     present_date = datetime.datetime.now().date()
 
+    valid_employees = Employee.objects.all().filter(department_id__in=[1,3])
+
     invoice_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'min':f'{min_date}', 'max':f'{present_date}'}))
     payment_due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'min':f'{present_date}', 'max':f'{max_date}'}))
     payment_terms = forms.ChoiceField(label="Payment terms", widget=forms.Select(attrs={'class': 'form-select'}))
-    employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
+    employee_id = forms.ModelChoiceField(queryset=valid_employees, label="Employee", to_field_name="employee_id")
 
     class Meta:
         model = Invoice
@@ -321,8 +323,10 @@ class SalesForm(forms.ModelForm):
     min_date = (datetime.datetime.now() - datetime.timedelta(days=365)).date()
     present_date = datetime.datetime.now().date()
 
+    valid_employees = Employee.objects.all().filter(department_id__in=[1,3])
+
     membership_id = forms.ModelChoiceField(queryset=Membership.objects.all(), label="Member", to_field_name="member_id")
-    employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
+    employee_id = forms.ModelChoiceField(queryset=valid_employees, label="Employee", to_field_name="employee_id")
     transaction_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'min':f'{min_date}', 'max':f'{present_date}'}))
     points_earned = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'true', 'value': 0}))
     payment_terms = forms.ChoiceField(label="Payment Terms", widget=forms.Select(attrs={'class': 'form-select'}))
