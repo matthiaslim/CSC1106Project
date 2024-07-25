@@ -156,6 +156,7 @@ def update_sales(request, sales_id):
             payment_terms=request.POST.get('payment_terms'),
             transaction_date=request.POST.get('transaction_date')
         )
+
         return JsonResponse({'success': True})
 
 
@@ -165,6 +166,7 @@ def delete_sales(request, sales_id):
     if request.method == 'POST':
         sales = get_object_or_404(Transaction, transaction_id=sales_id)
         sales.delete()
+        messages.success(request, 'Sales order successfully deleted')
         return redirect('sales_management')
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -307,6 +309,7 @@ def delete_invoice(request, invoice_id):
     if request.method == 'POST':
         invoice = get_object_or_404(Invoice, pk=invoice_id)
         invoice.delete()
+        messages.success(request, "Invoice successfully deleted")
         return redirect('invoice_management')
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)

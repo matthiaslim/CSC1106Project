@@ -5,6 +5,8 @@ from django.forms import inlineformset_factory
 from datetime import date, timedelta
 from .models import *
 
+import datetime
+
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
@@ -269,8 +271,12 @@ class CreateCustomerForm(forms.ModelForm):
 
 
 class InvoiceForm(forms.ModelForm):
-    invoice_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
-    payment_due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    min_date = (datetime.datetime.now() - datetime.timedelta(days=365)).date()
+    max_date = (datetime.datetime.now() + datetime.timedelta(days=365)).date()
+    present_date = datetime.datetime.now().date()
+
+    invoice_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'min':f'{min_date}', 'max':f'{present_date}'}))
+    payment_due_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'min':f'{present_date}', 'max':f'{max_date}'}))
     payment_terms = forms.ChoiceField(label="Payment terms", widget=forms.Select(attrs={'class': 'form-select'}))
     employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
 
@@ -312,9 +318,12 @@ InvoiceProductFormSet = inlineformset_factory(
 
 
 class SalesForm(forms.ModelForm):
+    min_date = (datetime.datetime.now() - datetime.timedelta(days=365)).date()
+    present_date = datetime.datetime.now().date()
+
     membership_id = forms.ModelChoiceField(queryset=Membership.objects.all(), label="Member", to_field_name="member_id")
     employee_id = forms.ModelChoiceField(queryset=Employee.objects.all(), label="Employee", to_field_name="employee_id")
-    transaction_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    transaction_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'min':f'{min_date}', 'max':f'{present_date}'}))
     points_earned = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'true', 'value': 0}))
     payment_terms = forms.ChoiceField(label="Payment Terms", widget=forms.Select(attrs={'class': 'form-select'}))
 

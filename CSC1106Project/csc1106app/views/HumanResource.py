@@ -66,7 +66,17 @@ def employee_create(request):
                 form.add_error(None, "An employee with this user already exists.")
                 messages.error(request, "An employee with this user already exists.")
         else:
-            messages.error(request, 'Error Creating Employee. Please try again.')
+            message = "";
+            for field, errors in form.errors.items():
+                for error in errors:
+                    message += f"{error}\n"
+
+            for field, errors in user_form.errors.items():
+                for error in errors:
+                    message += f"{error}\n"
+                    
+            messages.error(request, message, extra_tags='danger')
+
     else:
         user_form = CustomUserCreationForm()
         form = EmployeeForm()
@@ -164,6 +174,7 @@ def department_create(request):
             return redirect('department_list')
         else:
             messages.error(request, 'There was an error creating the department.')
+            return redirect('department_list')
     else:
         form = DepartmentForm()
     return render(request, 'hrms/department_form.html', {'form': form})
@@ -177,7 +188,10 @@ def department_update(request, department_id):
         form = DepartmentForm(request.POST, instance=department)
         if form.is_valid():
             form.save()
-            return redirect('department_list')
+            messages.success(request, 'Department edited successfully.')
+        else:
+            messages.error(request, 'There was an error editing the department.')
+        return redirect('department_list')
     else:
         form = DepartmentForm(instance=department)
     return render(request, 'hrms/department_form.html', {'form': form})
@@ -262,6 +276,10 @@ def attendance_update(request, attendance_id):
         form = AttendanceForm(request.POST, instance=attendance)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Attendance updated successfully.')
+            return redirect('attendance_list')
+        else:
+            messages.error(request, 'Error updating attendance.')
             return redirect('attendance_list')
     else:
         form = AttendanceForm(instance=attendance)
@@ -388,6 +406,10 @@ def edit_leave_status(request, leave_id):
                 leaveBalanceObj.save()
                 
             form.save()
+            messages.success(request, 'Leave updated successfully.')
+            return redirect('leave_list')
+        else:
+            messages.error(request, 'Error updating leave.')
             return redirect('leave_list')
     else:
         form = LeaveStatusUpdateForm(instance=leave)
@@ -438,6 +460,10 @@ def edit_payroll_bonus(request, payroll_id):
         form = PayrollForm(request.POST, instance=payroll)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Payroll updated successfully.')
+            return redirect('payroll_list')
+        else:
+            messages.error(request, 'Error updating payroll.')
             return redirect('payroll_list')
     else:
         form = PayrollForm(instance=payroll)
