@@ -20,10 +20,6 @@ from ..models.user import User
 from ..decorators import department_required
 from django.db.models import Q
 from django.utils import timezone
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 
 # Employee Views

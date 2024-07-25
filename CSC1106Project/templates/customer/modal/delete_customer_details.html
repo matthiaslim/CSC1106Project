@@ -1,0 +1,22 @@
+<!-- Modal -->
+<div class="modal fade" id="deleteCustomerViewModal" tabindex="-1" aria-labelledby="deleteCustomerViewModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Delete Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% csrf_token %}
+                <div> Are you sure you want to delete this customer? (<span id="deleteCustomerName"></span>) </div>
+               
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="deleteCustomerID" value="">
+                <button id="submitDeleteCustomerID" type="submit" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          
+        </div>
+    </div>
+</div>

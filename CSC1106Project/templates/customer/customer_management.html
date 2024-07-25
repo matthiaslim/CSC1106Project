@@ -97,7 +97,7 @@
                                        title="Update Product">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a href="{% url 'delete_customer' membership.member_id %}"
+                                    <a onclick="openDeleteCustomerModal('{{membership.member_id}}','{{membership.first_name}} {{membership.last_name}}')" data-bs-toggle="modal" data-bs-target="#deleteCustomerViewModal" 
                                        class="btn btn-sm btn-danger" title="Delete Product">
                                         <i class="bi bi-trash"></i>
                                     </a>
@@ -113,6 +113,9 @@
     <ul>
 
     </ul>
+
+    {% include './modal/delete_customer_details.html' %}
+
 {% endblock %}
 
 {% block scripts %}
@@ -140,5 +143,34 @@
                 triggerElement.querySelector('.bi').classList.add('bi-chevron-down');
             });
         });
+
+        $("#submitDeleteCustomerID").on("click", function(){
+            deleteCustomer();
+        })
+
+        function openDeleteCustomerModal(customerID, customerName){
+            
+            $('#deleteCustomerID').val(customerID);
+            $('#deleteCustomerName').text(customerName);
+            $("#deleteProductViewModal").modal('show');
+
+        }
+
+        function deleteCustomer(){
+            customerID = $('#deleteCustomerID').val();
+            var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+            
+            $.ajax({
+                url: `delete/${customerID}`,
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': csrf_token },
+                success: function (response) {
+                    window.location.reload();
+                }
+            });
+
+        }
+
+
     </script>
 {% endblock %}

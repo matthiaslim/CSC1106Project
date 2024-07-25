@@ -7,6 +7,8 @@ from ..decorators import department_required
 from dateutil.relativedelta import relativedelta
 from ..filters import MembershipFilter
 from django.utils import timezone
+from django.http import JsonResponse
+
 
 
 # Customer Views
@@ -140,7 +142,7 @@ def delete_customer(request, customerID):
     except Membership.DoesNotExist:
         membership = None
         messages.add_message(request, messages.ERROR, 'Customer does not exist.')
+        return JsonResponse({"success":True})
     except Exception as e:
         messages.add_message(request, messages.ERROR, 'Failed to delete customer.')
-
-    return redirect('customer_management')
+    return JsonResponse({"success":True})
